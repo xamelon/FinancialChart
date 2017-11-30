@@ -10,6 +10,12 @@
 		685F2C761FC440750061E262 /* ecn_chart.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 685F2C6C1FC440750061E262 /* ecn_chart.framework */; };
 		685F2C7B1FC440750061E262 /* ecn_chartTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 685F2C7A1FC440750061E262 /* ecn_chartTests.m */; };
 		685F2C7D1FC440750061E262 /* ecn_chart.h in Headers */ = {isa = PBXBuildFile; fileRef = 685F2C6F1FC440750061E262 /* ecn_chart.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		685F2C971FC440B40061E262 /* Candle.m in Sources */ = {isa = PBXBuildFile; fileRef = 685F2C901FC440B20061E262 /* Candle.m */; };
+		685F2C981FC440B40061E262 /* GraphicHost.m in Sources */ = {isa = PBXBuildFile; fileRef = 685F2C911FC440B30061E262 /* GraphicHost.m */; };
+		685F2C991FC440B40061E262 /* Tick.m in Sources */ = {isa = PBXBuildFile; fileRef = 685F2C921FC440B30061E262 /* Tick.m */; };
+		685F2C9A1FC440B40061E262 /* TilingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 685F2C961FC440B40061E262 /* TilingView.m */; };
+		685F2C9C1FC442170061E262 /* GraphicHost.h in Headers */ = {isa = PBXBuildFile; fileRef = 685F2C931FC440B30061E262 /* GraphicHost.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		685F2C9D1FC4421A0061E262 /* Tick.h in Headers */ = {isa = PBXBuildFile; fileRef = 685F2C8F1FC440B20061E262 /* Tick.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +35,14 @@
 		685F2C751FC440750061E262 /* ecn-chartTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ecn-chartTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		685F2C7A1FC440750061E262 /* ecn_chartTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ecn_chartTests.m; sourceTree = "<group>"; };
 		685F2C7C1FC440750061E262 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		685F2C8F1FC440B20061E262 /* Tick.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tick.h; sourceTree = "<group>"; };
+		685F2C901FC440B20061E262 /* Candle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Candle.m; sourceTree = "<group>"; };
+		685F2C911FC440B30061E262 /* GraphicHost.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GraphicHost.m; sourceTree = "<group>"; };
+		685F2C921FC440B30061E262 /* Tick.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tick.m; sourceTree = "<group>"; };
+		685F2C931FC440B30061E262 /* GraphicHost.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GraphicHost.h; sourceTree = "<group>"; };
+		685F2C941FC440B30061E262 /* TilingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TilingView.h; sourceTree = "<group>"; };
+		685F2C951FC440B40061E262 /* Candle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Candle.h; sourceTree = "<group>"; };
+		685F2C961FC440B40061E262 /* TilingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TilingView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +85,14 @@
 		685F2C6E1FC440750061E262 /* ecn-chart */ = {
 			isa = PBXGroup;
 			children = (
+				685F2C951FC440B40061E262 /* Candle.h */,
+				685F2C901FC440B20061E262 /* Candle.m */,
+				685F2C931FC440B30061E262 /* GraphicHost.h */,
+				685F2C911FC440B30061E262 /* GraphicHost.m */,
+				685F2C8F1FC440B20061E262 /* Tick.h */,
+				685F2C921FC440B30061E262 /* Tick.m */,
+				685F2C941FC440B30061E262 /* TilingView.h */,
+				685F2C961FC440B40061E262 /* TilingView.m */,
 				685F2C6F1FC440750061E262 /* ecn_chart.h */,
 				685F2C701FC440750061E262 /* Info.plist */,
 			);
@@ -94,6 +116,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				685F2C7D1FC440750061E262 /* ecn_chart.h in Headers */,
+				685F2C9C1FC442170061E262 /* GraphicHost.h in Headers */,
+				685F2C9D1FC4421A0061E262 /* Tick.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -195,6 +219,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				685F2C981FC440B40061E262 /* GraphicHost.m in Sources */,
+				685F2C9A1FC440B40061E262 /* TilingView.m in Sources */,
+				685F2C991FC440B40061E262 /* Tick.m in Sources */,
+				685F2C971FC440B40061E262 /* Candle.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
