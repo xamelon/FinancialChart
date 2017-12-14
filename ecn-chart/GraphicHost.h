@@ -10,6 +10,7 @@
 
 @class Candle;
 @class Tick;
+
 typedef enum {
     PeriodTypeM1, //minute
     PeriodTypeM5,
@@ -49,5 +50,9 @@ typedef enum {
 -(void)reloadData;
 
 -(void)setupView;
+
+-(CGFloat)cellSize;
+
+-(Candle *)candleAtPosition:(CGFloat)x;
 
 @end

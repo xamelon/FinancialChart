@@ -10,12 +10,14 @@
 #import "Candle.h"
 #import "Tick.h"
 #import "TilingView.h"
+#import "TimeLine.h"
+#import "PriceView.h"
 
 const float cellSize = 24;
 const float offset = 24;
 const float maxScale = 3.0;
 const float minScale = 0.5;
-@interface GraphicHost() <UIScrollViewDelegate>
+@interface GraphicHost() <UIScrollViewDelegate, TimeLineDataSource, PriceViewDataSource>
 
 @property CGFloat maxValue;
 @property CGFloat minValue;
@@ -24,6 +26,8 @@ const float minScale = 0.5;
 @property CGFloat candlesPerCell;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinch;
 @property (strong, nonatomic) TilingView *tiling;
+@property (strong, nonatomic) TimeLine *timeline;
+@property (strong, nonatomic) PriceView *priceView;
 @end
 
 @implementation GraphicHost
@@ -54,6 +58,7 @@ const float minScale = 0.5;
     self.scrollView.transform = CGAffineTransformMakeScale(-1, 1);
     [self.scrollView setContentSize:CGSizeMake(self.frame.size.width * 3, self.frame.size.height)];
     self.scrollView.delegate = self;
+    self.scrollView.bounces = NO;
     self.pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(scale:)];
     [self addGestureRecognizer:self.pinch];
     if(!self.scrollView.superview) {
@@ -64,13 +69,25 @@ const float minScale = 0.5;
         [self.scrollView addSubview:self.tiling];
     }
     
+    if(!self.timeline) {
+        self.timeline = [[TimeLine alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+        self.timeline.dataSource = self;
+        [self.scrollView addSubview:self.timeline];
+    }
+    
+    if(!self.priceView) {
+        self.priceView = [[PriceView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+        self.priceView.datasource = self;
+        [self addSubview:self.priceView];
+    }
+    
     
 }
 
 -(void)layoutSubviews {
     [super layoutSubviews];
     self.scrollView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-    CGFloat contentWidth = (self.dataSource.numberOfItems / self.candlesPerCell) * cellSize + offset;
+    CGFloat contentWidth = (self.dataSource.numberOfItems / self.candlesPerCell) * self.cellSize + offset;
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
     if(contentWidth < self.frame.size.width) {
         contentWidth = self.frame.size.width;
@@ -78,8 +95,11 @@ const float minScale = 0.5;
             [self.delegate needAdditionalData];
         }
     }
+    self.timeline.frame = CGRectMake(0, 0, contentWidth, self.frame.size.height);
     self.tiling.frame = CGRectMake(0, 0, contentWidth, self.frame.size.height);
+    self.priceView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
     [self.tiling setNeedsDisplay];
+    [self.timeline setNeedsDisplay];
 }
 
 -(void)reloadData {
@@ -94,7 +114,7 @@ const float minScale = 0.5;
         if(currentX >= maxX) {
             return;
         }
-        Candle *c = [self viewAtPosition:currentX];
+        Candle *c = [self candleAtPosition:currentX];
         if(c) {
             continue;
         }
@@ -102,6 +122,9 @@ const float minScale = 0.5;
         
         [self setupCandle:prevView withTick:tick forPosition:CGRectMake(currentX, 0, candleWidth, self.frame.size.height)];
     }
+    
+    [self.priceView setNeedsDisplay];
+    
 }
 
 
@@ -139,7 +162,7 @@ const float minScale = 0.5;
     return candleSize;
 }
 
--(Candle *)viewAtPosition:(CGFloat)x {
+-(Candle *)candleAtPosition:(CGFloat)x {
     for(UIView *view in self.scrollView.subviews) {
         if(view.frame.origin.x == x && [view isKindOfClass:[Candle class]]) {
             return (Candle *)view;
@@ -168,6 +191,7 @@ const float minScale = 0.5;
         prevCandle.min = tick.min;
         prevCandle.open = tick.open;
         prevCandle.close = tick.close;
+        prevCandle.date = [NSDate dateWithTimeIntervalSince1970:tick.date];
         [prevCandle setNeedsDisplay];
     }
 }
@@ -189,9 +213,26 @@ const float minScale = 0.5;
     [self layoutSubviews];
 }
 
+-(CGFloat)cellSize {
+    return 24.0;
+}
+
 #pragma mark UIScrollViewDelegate;
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self reloadData];
+}
+
+#pragma mark TimeLineDataSource
+
+-(NSDate *)dateAtPosition:(CGFloat)x {
+    return [NSDate date];
+}
+
+#pragma mark PracieViewDataSource
+-(CGFloat)priceForY:(CGFloat)y {
+    float max = self.maxValue;
+    float maxY = self.frame.size.height;
+    return ((y * max) / maxY);
 }
 
 @end

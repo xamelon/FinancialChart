@@ -15,6 +15,7 @@
 @property (assign, nonatomic) float min;
 @property (assign, nonatomic) float open;
 @property (assign, nonatomic) float close;
+@property (strong, nonatomic) NSDate *date;
 
 -(id)initWithMax:(float)max min:(float)min candle:(Tick *)candle frame:(CGRect)frame;
 

@@ -21,6 +21,7 @@
         self.min = candle.min;
         self.open = candle.open;
         self.close = candle.close;
+        self.date = [NSDate dateWithTimeIntervalSince1970:candle.date];
         maxHost = max;
         minHost = min;
         self.backgroundColor = [UIColor clearColor];

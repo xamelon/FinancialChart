@@ -16,6 +16,10 @@
 		685F2C9A1FC440B40061E262 /* TilingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 685F2C961FC440B40061E262 /* TilingView.m */; };
 		685F2C9C1FC442170061E262 /* GraphicHost.h in Headers */ = {isa = PBXBuildFile; fileRef = 685F2C931FC440B30061E262 /* GraphicHost.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		685F2C9D1FC4421A0061E262 /* Tick.h in Headers */ = {isa = PBXBuildFile; fileRef = 685F2C8F1FC440B20061E262 /* Tick.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		68DB24C81FD0125D003F73F4 /* TimeLine.h in Headers */ = {isa = PBXBuildFile; fileRef = 68DB24C61FD0125D003F73F4 /* TimeLine.h */; };
+		68DB24C91FD0125D003F73F4 /* TimeLine.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DB24C71FD0125D003F73F4 /* TimeLine.m */; };
+		68DB24CD1FD19794003F73F4 /* PriceView.h in Headers */ = {isa = PBXBuildFile; fileRef = 68DB24CB1FD19794003F73F4 /* PriceView.h */; };
+		68DB24CE1FD19794003F73F4 /* PriceView.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DB24CC1FD19794003F73F4 /* PriceView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +47,10 @@
 		685F2C941FC440B30061E262 /* TilingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TilingView.h; sourceTree = "<group>"; };
 		685F2C951FC440B40061E262 /* Candle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Candle.h; sourceTree = "<group>"; };
 		685F2C961FC440B40061E262 /* TilingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TilingView.m; sourceTree = "<group>"; };
+		68DB24C61FD0125D003F73F4 /* TimeLine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimeLine.h; sourceTree = "<group>"; };
+		68DB24C71FD0125D003F73F4 /* TimeLine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimeLine.m; sourceTree = "<group>"; };
+		68DB24CB1FD19794003F73F4 /* PriceView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PriceView.h; sourceTree = "<group>"; };
+		68DB24CC1FD19794003F73F4 /* PriceView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PriceView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +101,10 @@
 				685F2C921FC440B30061E262 /* Tick.m */,
 				685F2C941FC440B30061E262 /* TilingView.h */,
 				685F2C961FC440B40061E262 /* TilingView.m */,
+				68DB24C61FD0125D003F73F4 /* TimeLine.h */,
+				68DB24C71FD0125D003F73F4 /* TimeLine.m */,
+				68DB24CB1FD19794003F73F4 /* PriceView.h */,
+				68DB24CC1FD19794003F73F4 /* PriceView.m */,
 				685F2C6F1FC440750061E262 /* ecn_chart.h */,
 				685F2C701FC440750061E262 /* Info.plist */,
 			);
@@ -115,9 +127,11 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68DB24CD1FD19794003F73F4 /* PriceView.h in Headers */,
 				685F2C7D1FC440750061E262 /* ecn_chart.h in Headers */,
 				685F2C9C1FC442170061E262 /* GraphicHost.h in Headers */,
 				685F2C9D1FC4421A0061E262 /* Tick.h in Headers */,
+				68DB24C81FD0125D003F73F4 /* TimeLine.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,6 +235,8 @@
 			files = (
 				685F2C981FC440B40061E262 /* GraphicHost.m in Sources */,
 				685F2C9A1FC440B40061E262 /* TilingView.m in Sources */,
+				68DB24CE1FD19794003F73F4 /* PriceView.m in Sources */,
+				68DB24C91FD0125D003F73F4 /* TimeLine.m in Sources */,
 				685F2C991FC440B40061E262 /* Tick.m in Sources */,
 				685F2C971FC440B40061E262 /* Candle.m in Sources */,
 			);
