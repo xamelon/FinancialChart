@@ -14,6 +14,6 @@
 @property float min;
 @property float open;
 @property float close;
-@property float date;
+@property NSInteger date;
 
 @end
