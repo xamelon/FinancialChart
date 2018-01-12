@@ -55,7 +55,6 @@ const float minScale = 0.5;
     if(!self.scrollView) {
         self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
     }
-    self.scrollView.transform = CGAffineTransformMakeScale(-1, 1);
     [self.scrollView setContentSize:CGSizeMake(self.frame.size.width * 3, self.frame.size.height)];
     self.scrollView.delegate = self;
     self.scrollView.bounces = NO;
@@ -80,7 +79,7 @@ const float minScale = 0.5;
         self.priceView.datasource = self;
         [self addSubview:self.priceView];
     }
-    
+    [self.scrollView addObserver:self forKeyPath:@"contentSize" options:0 context:nil];
     
 }
 
@@ -108,12 +107,13 @@ const float minScale = 0.5;
     CGFloat candleWidth = [self candleWidth];
     NSInteger candleCount = [self.dataSource numberOfItems];
     for(int i = 0; i<candleCount; i++) {
-        Tick *tick = [self.dataSource candleForIndex:i];
+        Tick *tick = [self.dataSource candleForIndex:candleCount-1-i];
         float maxX = self.scrollView.contentOffset.x + self.frame.size.width;
         float currentX = offset - candleWidth/2 + ((candleWidth + candleWidth) * i);
         if(currentX >= maxX) {
             return;
         }
+        NSLog(@"Candle index: %d %f", i, currentX);
         Candle *c = [self candleAtPosition:currentX];
         if(c) {
             continue;
@@ -124,6 +124,7 @@ const float minScale = 0.5;
     }
     
     [self.priceView setNeedsDisplay];
+    [self.timeline setNeedsDisplay];
     
 }
 
@@ -217,6 +218,40 @@ const float minScale = 0.5;
     return 24.0;
 }
 
+-(void)reloadLastTick {
+    CGFloat candleWidth = [self candleWidth];
+    NSInteger candleCount = [self.dataSource numberOfItems];
+    CGFloat contentWidth = (self.dataSource.numberOfItems / self.candlesPerCell) * self.cellSize + offset;
+    [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
+    Tick *tick = [self.dataSource candleForIndex:candleCount-1];
+    NSLog(@"Reloaded tick: %@", tick);
+    float maxX = self.scrollView.contentOffset.x + self.frame.size.width;
+    NSInteger lastTick = [self.dataSource numberOfItems] - 1;
+    float currentX = offset - candleWidth/2 + ((candleWidth + candleWidth) * lastTick);
+    if(currentX >= maxX) {
+        return;
+    }
+    Candle *c = [self candleAtPosition:currentX];
+    if(c) {
+        c.max = tick.max;
+        c.min = tick.min;
+        c.open = tick.open;
+        c.close = tick.close;
+        [c setNeedsDisplay];
+        return;
+    }
+    Candle *prevView = [self invisibleView];
+    CGSize contentSize = self.scrollView.contentSize;
+    contentSize.width = offset;
+    [self setupCandle:prevView withTick:tick forPosition:CGRectMake(currentX, 0, candleWidth, self.frame.size.height)];
+}
+
+-(void)insertTick:(Tick *)tick {
+    CGSize contentSize = self.scrollView.contentSize;
+    contentSize.width += 100;
+    [self.scrollView setContentSize:contentSize];
+}
+
 #pragma mark UIScrollViewDelegate;
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
     [self reloadData];
@@ -225,7 +260,8 @@ const float minScale = 0.5;
 #pragma mark TimeLineDataSource
 
 -(NSDate *)dateAtPosition:(CGFloat)x {
-    return [NSDate date];
+    Candle *candle = [self candleAtPosition:x];
+    return candle.date;
 }
 
 #pragma mark PracieViewDataSource
@@ -233,6 +269,15 @@ const float minScale = 0.5;
     float max = self.maxValue;
     float maxY = self.frame.size.height;
     return ((y * max) / maxY);
+}
+
+#pragma mark Observer
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+    if([object isEqual:self.scrollView] && [keyPath isEqualToString:@"contentSize"]) {
+        NSLog(@"Update content size");
+        [self.timeline setNeedsDisplay];
+        [self.tiling setNeedsDisplay];
+    }
 }
 
 @end

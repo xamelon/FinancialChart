@@ -47,6 +47,10 @@ typedef enum {
 
 @property (weak, nonatomic) id <GraphicHostDelegate> delegate;
 
+-(void)insertTick:(Tick *)tick;
+
+-(void)reloadLastTick;
+
 -(void)reloadData;
 
 -(void)setupView;
