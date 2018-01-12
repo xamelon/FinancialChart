@@ -223,7 +223,7 @@ const float minScale = 0.5;
     NSInteger candleCount = [self.dataSource numberOfItems];
     CGFloat contentWidth = (self.dataSource.numberOfItems / self.candlesPerCell) * self.cellSize + offset;
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
-    Tick *tick = [self.dataSource candleForIndex:candleCount-1];
+    Tick *tick = [self.dataSource candleForIndex:0];
     NSLog(@"Reloaded tick: %@", tick);
     float maxX = self.scrollView.contentOffset.x + self.frame.size.width;
     NSInteger lastTick = [self.dataSource numberOfItems] - 1;
@@ -275,6 +275,7 @@ const float minScale = 0.5;
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
     if([object isEqual:self.scrollView] && [keyPath isEqualToString:@"contentSize"]) {
         NSLog(@"Update content size");
+        self.timeline.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
         [self.timeline setNeedsDisplay];
         [self.tiling setNeedsDisplay];
     }
