@@ -37,7 +37,7 @@
     
     CGFloat open = 20+(rect.size.height-40) * (1 - (self.max - minHost)/(maxHost - minHost));
     CGFloat close = 20+(rect.size.height-40) * (1 - (self.min - minHost)/(maxHost - minHost));
-    if(self.open < self.close) {
+    if(self.open > self.close) {
         CGContextSetRGBStrokeColor(context, (233.0/255.0), (77.0/255.0), (37.0/255.0), 1.0);
         CGContextSetRGBFillColor(context, (233.0/255.0), (77.0/255.0), (37.0/255.0), 1.0);
     } else {
