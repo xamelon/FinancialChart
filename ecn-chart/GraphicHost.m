@@ -164,8 +164,9 @@ const float minScale = 0.5;
 }
 
 -(Candle *)candleAtPosition:(CGFloat)x {
+    CGPoint point = CGPointMake(x, 1);
     for(UIView *view in self.scrollView.subviews) {
-        if(view.frame.origin.x == x && [view isKindOfClass:[Candle class]]) {
+        if([view pointInside:point withEvent:nil] && [view isKindOfClass:[Candle class]]) {
             return (Candle *)view;
         }
     }

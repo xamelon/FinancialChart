@@ -36,7 +36,7 @@ const float lineHeight = 5.0;
         CGContextAddLineToPoint(context, x*24, self.frame.size.height-1-lineHeight);
         NSDate *date = [NSDate date];
         if([self.dataSource respondsToSelector:@selector(dateAtPosition:)]) {
-            date = [self.dataSource dateAtPosition:x];
+            date = [self.dataSource dateAtPosition:x*24];
         }
         NSDateFormatter *df = [[NSDateFormatter alloc] init];
         [df setDateFormat:@"d MMM HH:mm"];

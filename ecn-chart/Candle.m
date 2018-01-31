@@ -24,7 +24,7 @@
         self.date = [NSDate dateWithTimeIntervalSince1970:candle.date];
         maxHost = max;
         minHost = min;
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor blueColor];
     }
     return self;
 }
@@ -45,7 +45,7 @@
         CGContextSetRGBFillColor(context, (20.0/255.0), (160.0/255.0), (66.0/255.0), 1.0);
 
     }
-    CGContextSetLineWidth(context, 2.0);    
+    CGContextSetLineWidth(context, 1.0);
     CGContextMoveToPoint(context, rect.size.width/2, open);
     CGContextAddLineToPoint(context, rect.size.width/2, close);
     CGContextAddRect(context, CGRectMake(0, top, rect.size.width, bot-top));
