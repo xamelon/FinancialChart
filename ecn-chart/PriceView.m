@@ -34,12 +34,12 @@
     CGContextMoveToPoint(context, 12, 0);
     CGContextAddLineToPoint(context, 12, self.frame.size.height);
     int rows = self.frame.size.height / 24;
-    for(int y = 1; y<rows; y++) {
+    for(int y = 0; y<rows; y++) {
         CGContextMoveToPoint(context, 8, y*24);
         CGContextAddLineToPoint(context, 16, y*24);
         NSString *text = @"Price";
         if([self.datasource respondsToSelector:@selector(priceForY:)]) {
-            CGFloat price = [self.datasource priceForY:y*24];
+            CGFloat price = [self.datasource priceForY:(y*24)];
             NSLog(@"Price: %f", price);
             text = [NSString stringWithFormat:@"%f", price];
         }
