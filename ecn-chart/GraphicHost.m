@@ -193,6 +193,9 @@ const float minScale = 0.5;
     CGFloat maxOffset = scrollView.contentOffset.x + self.frame.size.width;
     minCandle = (offsetX - [self candleWidth]/2) / (2 * [self candleWidth]);
     maxCandle = (maxOffset - [self candleWidth]/2) / (2 * [self candleWidth]);
+    if(maxCandle > self.dataSource.numberOfItems) {
+        maxCandle = self.dataSource.numberOfItems;
+    }
     CGRect graphicOffset = self.graphic.frame;
     graphicOffset.origin.x = offsetX;
     [self.graphic setFrame:graphicOffset];
