@@ -131,6 +131,9 @@ const float minScale = 0.5;
 
 -(void)reloadLastTick {
     [self reloadData];
+    if(maxCandle + 1 >= self.candleCount) {
+        [self.scrollView scrollRectToVisible:CGRectMake(self.scrollView.contentSize.width-100, 0, 100, 10) animated:NO];
+    }
 }
 
 -(Candle *)candleAtPosition:(CGFloat)x {
