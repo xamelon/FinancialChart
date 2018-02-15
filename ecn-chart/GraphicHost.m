@@ -131,7 +131,6 @@ const float minScale = 0.5;
 
 -(void)reloadLastTick {
     [self reloadData];
-    [self.scrollView scrollRectToVisible:CGRectMake(self.scrollView.contentSize.width-100, 0, 100, 100) animated:YES];
 }
 
 -(Candle *)candleAtPosition:(CGFloat)x {
