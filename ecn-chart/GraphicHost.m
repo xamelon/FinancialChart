@@ -129,6 +129,11 @@ const float minScale = 0.5;
     
 }
 
+-(void)reloadLastTick {
+    [self reloadData];
+    [self.scrollView scrollRectToVisible:CGRectMake(self.scrollView.contentSize.width-100, 0, 100, 100) animated:YES];
+}
+
 -(Candle *)candleAtPosition:(CGFloat)x {
     CGPoint point = CGPointMake(x, 1);
     for(UIView *view in self.scrollView.subviews) {
@@ -190,9 +195,14 @@ const float minScale = 0.5;
 #pragma mark UIScrollViewDelegate;
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
-    minCandle = [self minCandle];
-    maxCandle = [self maxCandle];
     CGFloat offsetX = self.scrollView.contentOffset.x;
+    minCandle = (offsetX - [self candleWidth]/2) / (2 * [self candleWidth]);
+    NSInteger count = [self candleCount];
+    CGFloat maxOffset = self.scrollView.contentOffset.x + self.frame.size.width;
+    maxCandle = (maxOffset - [self candleWidth]/2) / (2 * [self candleWidth]);
+    if(maxCandle > count) {
+        maxCandle = count;
+    }
     CGRect graphicOffset = self.graphic.frame;
     graphicOffset.origin.x = offsetX;
     [self.graphic setFrame:graphicOffset];
@@ -270,19 +280,12 @@ const float minScale = 0.5;
 }
 
 -(NSInteger)minCandle {
-    CGFloat offsetX = self.scrollView.contentOffset.x;
-    minCandle = (offsetX - [self candleWidth]/2) / (2 * [self candleWidth]);
+    
     return minCandle;
 }
 
 -(NSInteger)maxCandle {
-    NSInteger count = [self candleCount];
-    CGFloat maxOffset = self.scrollView.contentOffset.x + self.frame.size.width;
-    maxCandle = (maxOffset - [self candleWidth]/2) / (2 * [self candleWidth]);
-    if(maxCandle > count) {
-        maxCandle = count;
-    }
-    return maxCandle >= count ? count : maxCandle;
+    return maxCandle;
 }
 
 -(NSInteger)candleCount {
