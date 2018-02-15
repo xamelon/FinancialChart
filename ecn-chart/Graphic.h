@@ -15,6 +15,7 @@
 -(NSInteger)minCandle;
 -(Tick *)tickForIndex:(NSInteger)i;
 -(NSInteger)candleCount;
+-(CGFloat)offsetForCandles;
 @end
 
 @interface Graphic : UIView

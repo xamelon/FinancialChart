@@ -203,6 +203,15 @@ const float minScale = 0.5;
     NSLog(@"Current candle: %d", minCandle);
 }
 
+-(CGFloat)offsetForCandles {
+    int cellCount = self.scrollView.contentOffset.x / 24;
+    CGFloat off = self.scrollView.contentOffset.x - 24 * cellCount;
+    CGFloat offset = self.candleWidth - off;
+    NSLog(@"Cell count: %f", off);
+    NSLog(@"Offset: %f", offset);
+    return offset;
+}
+
 #pragma mark TimeLineDataSource
 
 -(NSDate *)dateAtPosition:(CGFloat)x {
