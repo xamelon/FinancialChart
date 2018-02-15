@@ -33,8 +33,8 @@ const float minScale = 0.5;
 @end
 
 @implementation GraphicHost {
-    int minCandle;
-    int maxCandle;
+    NSInteger minCandle;
+    NSInteger maxCandle;
     
 }
 
@@ -174,6 +174,8 @@ const float minScale = 0.5;
             self.candlesPerCell += 1;
         }
     }
+    minCandle = [self minCandle];
+    maxCandle = [self maxCandle];
     NSLog(@"Candles per cell: %f", self.candlesPerCell);
     NSArray *subviews = [self.scrollView.subviews filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"SELF.class == %@", [Candle class]]];
     [subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
@@ -188,14 +190,9 @@ const float minScale = 0.5;
 #pragma mark UIScrollViewDelegate;
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
     
-    CGFloat candleWidth = [self candleWidth];
-    CGFloat offsetX = scrollView.contentOffset.x;
-    CGFloat maxOffset = scrollView.contentOffset.x + self.frame.size.width;
-    minCandle = (offsetX - [self candleWidth]/2) / (2 * [self candleWidth]);
-    maxCandle = (maxOffset - [self candleWidth]/2) / (2 * [self candleWidth]);
-    if(maxCandle > self.dataSource.numberOfItems) {
-        maxCandle = self.dataSource.numberOfItems;
-    }
+    minCandle = [self minCandle];
+    maxCandle = [self maxCandle];
+    CGFloat offsetX = self.scrollView.contentOffset.x;
     CGRect graphicOffset = self.graphic.frame;
     graphicOffset.origin.x = offsetX;
     [self.graphic setFrame:graphicOffset];
@@ -268,16 +265,23 @@ const float minScale = 0.5;
 
 -(Tick *)tickForIndex:(NSInteger)i {
     NSInteger count = [self.dataSource numberOfItems];
-    if(count == 0) return nil;
+    if(count == 0 || i > count) return nil;
     return [self.dataSource candleForIndex:i];
 }
 
 -(NSInteger)minCandle {
+    CGFloat offsetX = self.scrollView.contentOffset.x;
+    minCandle = (offsetX - [self candleWidth]/2) / (2 * [self candleWidth]);
     return minCandle;
 }
 
 -(NSInteger)maxCandle {
     NSInteger count = [self candleCount];
+    CGFloat maxOffset = self.scrollView.contentOffset.x + self.frame.size.width;
+    maxCandle = (maxOffset - [self candleWidth]/2) / (2 * [self candleWidth]);
+    if(maxCandle > count) {
+        maxCandle = count;
+    }
     return maxCandle >= count ? count : maxCandle;
 }
 
