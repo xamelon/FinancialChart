@@ -271,7 +271,6 @@ const float minScale = 0.5;
 
 -(Tick *)tickForIndex:(NSInteger)i {
     NSInteger count = [self.dataSource numberOfItems];
-    if(count == 0 || i > count) return nil;
     return [self.dataSource candleForIndex:i];
 }
 
@@ -286,7 +285,7 @@ const float minScale = 0.5;
     CGFloat maxOffset = self.scrollView.contentOffset.x + self.frame.size.width;
     maxCandle = (maxOffset - [self candleWidth]/2) / (2 * [self candleWidth]);
     if(maxCandle > count) {
-        maxCandle = count-1;
+        maxCandle = count;
     }
     return maxCandle;
 }
