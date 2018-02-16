@@ -94,7 +94,7 @@ const float minScale = 0.5;
     }
     [self.scrollView addObserver:self forKeyPath:@"contentSize" options:0 context:nil];
     minCandle = 0;
-    maxCandle = (self.frame.size.width - [self candleWidth]/2) / (2 * [self candleWidth]);
+    maxCandle = 0;
 }
 
 -(void)layoutSubviews {
@@ -196,15 +196,9 @@ const float minScale = 0.5;
 
 #pragma mark UIScrollViewDelegate;
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
     CGFloat offsetX = self.scrollView.contentOffset.x;
-    minCandle = (offsetX - [self candleWidth]/2) / (2 * [self candleWidth]);
-    NSInteger count = [self candleCount];
-    CGFloat maxOffset = self.scrollView.contentOffset.x + self.frame.size.width;
-    maxCandle = (maxOffset - [self candleWidth]/2) / (2 * [self candleWidth]);
-    if(maxCandle > count) {
-        maxCandle = count;
-    }
+    minCandle = [self minCandle];
+    maxCandle = [self maxCandle];
     CGRect graphicOffset = self.graphic.frame;
     graphicOffset.origin.x = offsetX;
     [self.graphic setFrame:graphicOffset];
@@ -245,7 +239,7 @@ const float minScale = 0.5;
 -(CGFloat)getMaxValue {
     self.maxValue = 0;
     NSInteger candleCount = [self.dataSource numberOfItems];
-    if(maxCandle > candleCount) return 1.0;
+    if(maxCandle > candleCount) return 0.0;
     for(int i = minCandle; i<maxCandle; i++) {
         Tick *tick = [self.dataSource candleForIndex:i];
         float max = tick.max;
@@ -282,11 +276,18 @@ const float minScale = 0.5;
 }
 
 -(NSInteger)minCandle {
-    
+    CGFloat offsetX = self.scrollView.contentOffset.x;
+    minCandle = (offsetX - [self candleWidth]/2) / (2 * [self candleWidth]);
     return minCandle;
 }
 
 -(NSInteger)maxCandle {
+    NSInteger count = [self candleCount];
+    CGFloat maxOffset = self.scrollView.contentOffset.x + self.frame.size.width;
+    maxCandle = (maxOffset - [self candleWidth]/2) / (2 * [self candleWidth]);
+    if(maxCandle > count) {
+        maxCandle = count-1;
+    }
     return maxCandle;
 }
 
