@@ -131,9 +131,9 @@ const float minScale = 0.5;
 
 -(void)reloadLastTick {
     [self reloadData];
-    if(maxCandle + 1 >= self.candleCount) {
+    /* if(self.scrollView.contentOffset.x =) {
         [self.scrollView scrollRectToVisible:CGRectMake(self.scrollView.contentSize.width-100, 0, 100, 10) animated:NO];
-    }
+    } */
 }
 
 -(Candle *)candleAtPosition:(CGFloat)x {
@@ -210,8 +210,12 @@ const float minScale = 0.5;
     int cellCount = self.scrollView.contentOffset.x / 24;
     CGFloat off = self.scrollView.contentOffset.x - 24 * cellCount;
     CGFloat offset = self.candleWidth - off;
-    NSLog(@"Cell count: %f", off);
-    NSLog(@"Offset: %f", offset);
+    if(off < self.candleWidth/2) {
+        
+    }
+    NSLog(@"Offset: %f off: %f", offset, off);
+    NSLog(@"Cell count: %d", cellCount);
+    NSLog(@"Min candle: %d Max Candle: %d", self.minCandle, self.maxCandle);
     return offset;
 }
 
@@ -275,15 +279,16 @@ const float minScale = 0.5;
 }
 
 -(NSInteger)minCandle {
-    CGFloat offsetX = self.scrollView.contentOffset.x;
-    minCandle = (offsetX - [self candleWidth]/2) / (2 * [self candleWidth]);
+    int cellCount = self.scrollView.contentOffset.x / 24;
+    minCandle = cellCount * self.candlesPerCell;
     return minCandle;
 }
 
 -(NSInteger)maxCandle {
     NSInteger count = [self candleCount];
     CGFloat maxOffset = self.scrollView.contentOffset.x + self.frame.size.width;
-    maxCandle = (maxOffset - [self candleWidth]/2) / (2 * [self candleWidth]);
+    int cellCount = maxOffset / 24;
+    maxCandle = cellCount * self.candlesPerCell;
     if(maxCandle > count) {
         maxCandle = count;
     }

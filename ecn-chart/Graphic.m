@@ -46,7 +46,7 @@
     CGFloat offsetForCandles = [self.dataSource offsetForCandles];
     for(NSInteger i = minCandle; i<maxCandle; i++) {
         Tick *tick = [self.dataSource tickForIndex:i];
-        float currentX = candleWidth/2 + (2 * candleWidth * j++); // + offsetForCandles;
+        float currentX = candleWidth/2 + (2 * candleWidth * j++) + offsetForCandles;
         CGFloat y1 = 20+(self.frame.size.height-40) * (1 - (tick.open - minValue)/(maxValue - minValue));
         CGFloat y2 = 20+(self.frame.size.height-40) * (1 - (tick.close - minValue)/(maxValue - minValue));
         if(tick.open > tick.close) {
