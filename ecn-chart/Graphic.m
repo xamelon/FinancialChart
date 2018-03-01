@@ -9,10 +9,17 @@
 #import "Graphic.h"
 #import "Tick.h"
 
+typedef enum ChartType : NSInteger {
+    Candle = 0,
+    Bar,
+    Line
+} ChartType;
+
 @interface Graphic()
 
 @property (assign, nonatomic) CGFloat minValue;
 @property (assign, nonatomic) CGFloat maxValue;
+
 
 
 @end
@@ -47,8 +54,8 @@
     for(NSInteger i = minCandle; i<maxCandle; i++) {
         Tick *tick = [self.dataSource tickForIndex:i];
         float currentX = candleWidth/2 + (2 * candleWidth * j++) + offsetForCandles;
-        CGFloat y1 = 20+(self.frame.size.height-40) * (1 - (tick.open - minValue)/(maxValue - minValue));
-        CGFloat y2 = 20+(self.frame.size.height-40) * (1 - (tick.close - minValue)/(maxValue - minValue));
+        CGFloat open = 20+(self.frame.size.height-40) * (1 - (tick.open - minValue)/(maxValue - minValue));
+        CGFloat close = 20+(self.frame.size.height-40) * (1 - (tick.close - minValue)/(maxValue - minValue));
         if(tick.open > tick.close) {
             CGContextSetRGBFillColor(context, 233.0/255.0, 77.0/255.0, 37.0/255.0, 1.0);
             CGContextSetRGBStrokeColor(context, 233.0/255.0, 77.0/255.0, 37.0/255.0, 1.0);
@@ -56,15 +63,41 @@
             CGContextSetRGBFillColor(context, 20.0/255.0, 160.0/255.0, 66.0/255.0, 1.0);
             CGContextSetRGBStrokeColor(context, 20.0/255.0, 160.0/255.0, 66.0/255.0, 1.0);
         }
-        CGFloat open = 20+(self.frame.size.height-40) * (1 - (tick.max - minValue)/(maxValue - minValue));
-        CGFloat close = 20+(self.frame.size.height-40) * (1 - (tick.min - minValue)/(maxValue - minValue));
-        CGRect rect1 = CGRectMake(currentX, MIN(y1, y2), candleWidth, fabs(y1-y2));
-        CGContextFillRect(context, rect1);
-        CGContextMoveToPoint(context, currentX + candleWidth/2, open);
-        CGContextAddLineToPoint(context, currentX + candleWidth/2, close);
-        CGContextStrokePath(context);
+        CGFloat y1 = 20+(self.frame.size.height-40) * (1 - (tick.max - minValue)/(maxValue - minValue));
+        CGFloat y2 = 20+(self.frame.size.height-40) * (1 - (tick.min - minValue)/(maxValue - minValue));
+        //[self drawCandle:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
+        //[self drawBar:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
+        if(i == minCandle) {
+            CGContextMoveToPoint(context, currentX, open);
+        }
+        [self drawLine:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
+        
     }
+    CGContextStrokePath(context);
 }
 
+-(void)drawCandle:(CGFloat)open close:(CGFloat)close y1:(CGFloat)y1 y2:(CGFloat)y2 currentX:(CGFloat)currentX candleWidth:(CGFloat)candleWidth context:(CGContextRef)context  {
+    CGRect rect1 = CGRectMake(currentX, MIN(open, close), candleWidth, fabs(open-close));
+    CGContextFillRect(context, rect1);
+    CGContextMoveToPoint(context, currentX + candleWidth/2, y1);
+    CGContextAddLineToPoint(context, currentX + candleWidth/2, y2);
+    CGContextStrokePath(context);
+}
+
+-(void)drawBar:(CGFloat)open close:(CGFloat)close y1:(CGFloat)y1 y2:(CGFloat)y2 currentX:(CGFloat)currentX candleWidth:(CGFloat)candleWidth context:(CGContextRef)context {
+    CGContextSetLineWidth(context, 1);
+    CGContextMoveToPoint(context, currentX - candleWidth/2, open);
+    CGContextAddLineToPoint(context, currentX + candleWidth/2, open);
+    CGContextMoveToPoint(context, currentX + candleWidth/2, y1);
+    CGContextAddLineToPoint(context, currentX + candleWidth/2, y2);
+    CGContextMoveToPoint(context, currentX + candleWidth/2, close);
+    CGContextAddLineToPoint(context, currentX + candleWidth + candleWidth/2, close);
+    CGContextStrokePath(context);
+}
+
+-(void)drawLine:(CGFloat)open close:(CGFloat)close y1:(CGFloat)y1 y2:(CGFloat)y2 currentX:(CGFloat)currentX candleWidth:(CGFloat)candleWidth context:(CGContextRef)context {
+    CGContextAddLineToPoint(context, currentX, open);
+    CGContextAddLineToPoint(context, currentX+candleWidth, close);
+}
 
 @end
