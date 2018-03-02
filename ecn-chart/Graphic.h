@@ -7,6 +7,13 @@
 //
 @class Tick;
 #import <UIKit/UIKit.h>
+
+typedef enum ChartType : NSInteger {
+    ChartTypeLine = 0,
+    ChartTypeBar,
+    ChartTypeCandle
+} ChartType;
+
 @protocol GraphicDataSource <NSObject>
 -(CGFloat)getMinValue;
 -(CGFloat)getMaxValue;
@@ -16,6 +23,7 @@
 -(Tick *)tickForIndex:(NSInteger)i;
 -(NSInteger)candleCount;
 -(CGFloat)offsetForCandles;
+-(ChartType)chartType;
 @end
 
 @interface Graphic : UIView

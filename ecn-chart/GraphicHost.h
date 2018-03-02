@@ -33,6 +33,8 @@
 
 @property (weak, nonatomic) id <GraphicHostDelegate> delegate;
 
+@property (assign, nonatomic) NSInteger graphicType;
+
 -(void)insertTick:(Tick *)tick;
 
 -(void)reloadLastTick;

@@ -9,11 +9,7 @@
 #import "Graphic.h"
 #import "Tick.h"
 
-typedef enum ChartType : NSInteger {
-    Candle = 0,
-    Bar,
-    Line
-} ChartType;
+
 
 @interface Graphic()
 
@@ -44,11 +40,13 @@ typedef enum ChartType : NSInteger {
     NSInteger maxCandle = [self.dataSource maxCandle];
     CGFloat candleWidth = [self.dataSource candleWidth];
     NSInteger candleCount = [self.dataSource candleCount];
+    ChartType chartType =  [self.dataSource chartType];
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextClearRect(context, rect);
     CGContextSetRGBFillColor(context, 1.0, 1.0, 1.0, 1.0);
     CGContextSetRGBFillColor(context, 1.0, 0.0, 0.0, 1.0);
     CGContextSetRGBStrokeColor(context, 1.0, 0.0, 0.0, 1.0);
+    
     int j = 0;
     CGFloat offsetForCandles = [self.dataSource offsetForCandles];
     for(NSInteger i = minCandle; i<maxCandle; i++) {
@@ -65,12 +63,19 @@ typedef enum ChartType : NSInteger {
         }
         CGFloat y1 = 20+(self.frame.size.height-40) * (1 - (tick.max - minValue)/(maxValue - minValue));
         CGFloat y2 = 20+(self.frame.size.height-40) * (1 - (tick.min - minValue)/(maxValue - minValue));
-        //[self drawCandle:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
-        //[self drawBar:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
-        if(i == minCandle) {
-            CGContextMoveToPoint(context, currentX, open);
+        if(chartType == ChartTypeLine) {
+            if(i == minCandle) {
+                CGContextMoveToPoint(context, currentX, open);
+            }
+            [self drawLine:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
+        } else if(chartType == ChartTypeCandle) {
+             [self drawCandle:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
+        } else if(chartType == ChartTypeBar) {
+            [self drawBar:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
         }
-        [self drawLine:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
+       
+        //
+        
         
     }
     CGContextStrokePath(context);
