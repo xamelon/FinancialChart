@@ -24,7 +24,7 @@ const float lineHeight = 5.0;
 }
 
 - (void)drawRect:(CGRect)rect {
-    /* CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
     CGContextMoveToPoint(context, 0, rect.size.height-10);
     CGContextAddLineToPoint(context, rect.size.width, rect.size.height-10);
@@ -53,7 +53,7 @@ const float lineHeight = 5.0;
                                NSForegroundColorAttributeName: [UIColor blackColor]
                                }];
     }
-    CGContextStrokePath(context); */
+    CGContextStrokePath(context);
 }
 
 @end
