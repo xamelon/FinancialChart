@@ -71,13 +71,13 @@ const float minScale = 0.5;
     }
     if(!self.tiling) {
         self.tiling = [[TilingView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
-        [self.scrollView addSubview:self.tiling];
+        //[self.scrollView addSubview:self.tiling];
     }
     
     if(!self.timeline) {
         self.timeline = [[TimeLine alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
         self.timeline.dataSource = self;
-        [self.scrollView addSubview:self.timeline];
+        //[self.scrollView addSubview:self.timeline];
     }
     
     if(!self.graphic) {
@@ -108,12 +108,12 @@ const float minScale = 0.5;
             [self.delegate needAdditionalData];
         }
     }
-    self.timeline.frame = CGRectMake(0, 0, contentWidth, self.frame.size.height);
-    self.tiling.frame = CGRectMake(0, 0, contentWidth, self.frame.size.height);
+    //self.timeline.frame = CGRectMake(0, 0, contentWidth, self.frame.size.height);
+    //self.tiling.frame = CGRectMake(0, 0, contentWidth, self.frame.size.height);
     self.priceView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
     [self.graphic setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
-    [self.tiling setNeedsDisplay];
-    [self.timeline setNeedsDisplay];
+    //[self.tiling setNeedsDisplay];
+    //[self.timeline setNeedsDisplay];
     [self.graphic setNeedsDisplay];
     
 }
@@ -121,11 +121,11 @@ const float minScale = 0.5;
 -(void)reloadData {
     CGFloat contentWidth = (self.dataSource.numberOfItems / self.candlesPerCell) * self.cellSize + offset;
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
-    self.timeline.frame = CGRectMake(0, 0, contentWidth, self.frame.size.height);
-    self.tiling.frame = CGRectMake(0, 0, contentWidth, self.frame.size.height);
+    //self.timeline.frame = CGRectMake(0, 0, contentWidth, self.frame.size.height);
+    //self.tiling.frame = CGRectMake(0, 0, contentWidth, self.frame.size.height);
     [self.graphic setNeedsDisplay];;
     [self.priceView setNeedsDisplay];
-    [self.timeline setNeedsDisplay];
+    //[self.timeline setNeedsDisplay];
     
 }
 
@@ -197,6 +197,9 @@ const float minScale = 0.5;
 #pragma mark UIScrollViewDelegate;
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGFloat offsetX = self.scrollView.contentOffset.x;
+    if(offsetX < 10) {
+        [self.delegate needAdditionalData];
+    }
     minCandle = [self minCandle];
     maxCandle = [self maxCandle];
     CGRect graphicOffset = self.graphic.frame;
@@ -307,6 +310,10 @@ const float minScale = 0.5;
 
 -(ChartType)chartType {
     return self.graphicType;
+}
+
+-(void)scrollToEnd {
+    [self.scrollView scrollRectToVisible:CGRectMake(self.scrollView.contentSize.width-1, 0, 1, self.scrollView.frame.size.width) animated:YES];
 }
 
 #pragma mark Observer

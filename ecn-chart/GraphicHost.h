@@ -47,4 +47,6 @@
 
 -(Candle *)candleAtPosition:(CGFloat)x;
 
+-(void)scrollToEnd;
+
 @end

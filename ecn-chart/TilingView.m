@@ -20,7 +20,7 @@
 }
 
 - (void)drawRect:(CGRect)rect {
-    CGContextRef context = UIGraphicsGetCurrentContext();
+    /* CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextClearRect(context, rect);
     CGContextSetFillColorWithColor(context, [UIColor clearColor].CGColor);
     CGContextFillRect(context, rect);
@@ -40,7 +40,7 @@
     [path closePath];
     [path stroke];
     
-    CGContextStrokePath(context);
+    CGContextStrokePath(context); */
 }
 
 
