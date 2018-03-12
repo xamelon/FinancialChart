@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol GraphicDataSource;
+
 @interface TilingView : UIView
+
+@property (weak, nonatomic) id <GraphicDataSource> dataSource;
 
 @end

@@ -71,6 +71,7 @@ const float minScale = 0.5;
     }
     if(!self.tiling) {
         self.tiling = [[TilingView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+        self.tiling.dataSource = self;
         [self.scrollView addSubview:self.tiling];
     }
     
@@ -102,14 +103,9 @@ const float minScale = 0.5;
     self.scrollView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
     CGFloat contentWidth = (self.dataSource.numberOfItems / self.candlesPerCell) * self.cellSize + offset;
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
-    if(contentWidth < self.frame.size.width) {
-        contentWidth = self.frame.size.width;
-        if([self.delegate respondsToSelector:@selector(needAdditionalData)]) {
-            [self.delegate needAdditionalData];
-        }
-    }
-    //self.timeline.frame = CGRectMake(0, 0, contentWidth, self.frame.size.height);
-    //self.tiling.frame = CGRectMake(0, 0, contentWidth, self.frame.size.height);
+    
+    self.timeline.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+    self.tiling.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
     self.priceView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
     [self.graphic setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
     //[self.tiling setNeedsDisplay];
@@ -121,8 +117,8 @@ const float minScale = 0.5;
 -(void)reloadData {
     CGFloat contentWidth = (self.dataSource.numberOfItems / self.candlesPerCell) * self.cellSize + offset;
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
-    self.timeline.frame = CGRectMake(0, 0, contentWidth, self.frame.size.height);
-    self.tiling.frame = CGRectMake(0, 0, contentWidth, self.frame.size.height);
+    //self.timeline.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+    //self.tiling.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
     [self.graphic setNeedsDisplay];;
     [self.priceView setNeedsDisplay];
     [self.timeline setNeedsDisplay];
@@ -134,41 +130,6 @@ const float minScale = 0.5;
     /* if(self.scrollView.contentOffset.x =) {
         [self.scrollView scrollRectToVisible:CGRectMake(self.scrollView.contentSize.width-100, 0, 100, 10) animated:NO];
     } */
-}
-
--(Candle *)candleAtPosition:(CGFloat)x {
-    CGPoint point = CGPointMake(x, 1);
-    for(UIView *view in self.scrollView.subviews) {
-        if([view pointInside:point withEvent:nil] && [view isKindOfClass:[Candle class]]) {
-            return (Candle *)view;
-        }
-    }
-    return nil;
-}
-
--(Candle *)invisibleView {
-    CGRect frame = CGRectMake(self.scrollView.contentOffset.x, self.scrollView.contentOffset.y, self.scrollView.frame.size.width, self.scrollView.frame.size.height);
-    for(UIView *view in self.scrollView.subviews) {
-        if(!CGRectIntersectsRect(frame, view.frame) && [view isKindOfClass:[Candle class]]) {
-            return (Candle *)view;
-        }
-    }
-    return nil;
-}
-
--(void)setupCandle:(Candle *)prevCandle withTick:(Tick *)tick forPosition:(CGRect)position {
-    if(!prevCandle) {
-        Candle *candle = [[Candle alloc] initWithMax:self.maxValue min:self.minValue candle:tick frame:position];
-        [self.scrollView addSubview:candle];
-    } else {
-        prevCandle.frame = position;
-        prevCandle.max = tick.max;
-        prevCandle.min = tick.min;
-        prevCandle.open = tick.open;
-        prevCandle.close = tick.close;
-        prevCandle.date = [NSDate dateWithTimeIntervalSince1970:tick.date];
-        [prevCandle setNeedsDisplay];
-    }
 }
 
 -(void)scale:(UIPinchGestureRecognizer *)gesture {
@@ -204,9 +165,10 @@ const float minScale = 0.5;
     maxCandle = [self maxCandle];
     CGRect graphicOffset = self.graphic.frame;
     graphicOffset.origin.x = offsetX;
+    [self.tiling setFrame:graphicOffset];
     [self.graphic setFrame:graphicOffset];
+    [self.timeline setFrame:graphicOffset];
     [self reloadData];
-    NSLog(@"Current candle: %d", minCandle);
 }
 
 -(CGFloat)offsetForCandles {
@@ -216,20 +178,24 @@ const float minScale = 0.5;
     if(off < self.candleWidth/2) {
         
     }
-    NSLog(@"Offset: %f off: %f", offset, off);
-    NSLog(@"Cell count: %d", cellCount);
-    NSLog(@"Min candle: %d Max Candle: %d", self.minCandle, self.maxCandle);
     return offset;
 }
 
 #pragma mark TimeLineDataSource
 
 -(NSDate *)dateAtPosition:(CGFloat)x {
-    int i = (x - [self candleWidth] / 2 ) / (2 * [self candleWidth]);
-    if(self.candleCount == 0) return nil;
-    Tick *tick = [self tickForIndex:i];
+    int count = x / 24;
+    NSInteger index = count * self.candlesPerCell - 1;
+    NSLog(@"Index: %d", index);
+    Tick *tick = [self tickForIndex:index];
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:tick.date];
     return date;;
+}
+
+-(NSInteger)countOfTwoCells {
+    CGFloat offset = self.scrollView.contentOffset.x;
+    int count = offset / 24;
+    return count;
 }
 
 #pragma mark PracieViewDataSource
@@ -320,7 +286,6 @@ const float minScale = 0.5;
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
     if([object isEqual:self.scrollView] && [keyPath isEqualToString:@"contentSize"]) {
         NSLog(@"Update content size");
-        self.timeline.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
         [self.timeline setNeedsDisplay];
         [self.tiling setNeedsDisplay];
     }

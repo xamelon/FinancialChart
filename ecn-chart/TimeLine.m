@@ -9,6 +9,7 @@
 #import "TimeLine.h"
 #import "GraphicHost.h"
 #import "Candle.h"
+#import "Graphic.h"
 
 const float lineHeight = 5.0;
 
@@ -29,14 +30,26 @@ const float lineHeight = 5.0;
     CGContextMoveToPoint(context, 0, rect.size.height-10);
     CGContextAddLineToPoint(context, rect.size.width, rect.size.height-10);
     int cols = self.frame.size.width / 24.0;
-    UIBezierPath *path = [UIBezierPath bezierPath];
+    CGFloat candleWidth = [self.dataSource candleWidth];
+    CGFloat offsetForCandles = [self.dataSource offsetForCandles] - candleWidth;
+    NSInteger countOfTwoCells = [self.dataSource countOfTwoCells];
     
-    for(int x = 1; x<cols; x=x+2) {
-        CGContextMoveToPoint(context, x*24, self.frame.size.height-10);
-        CGContextAddLineToPoint(context, x*24, self.frame.size.height-10-lineHeight);
+    //You SHOULD NOT change this code
+    if(countOfTwoCells % 2 != 0) {
+        offsetForCandles -= 24;
+    }
+    for(int x = 0; x<cols+1; x=x+2) {
+        CGContextMoveToPoint(context, x*24 + offsetForCandles, self.frame.size.height-10);
+        CGContextAddLineToPoint(context, x*24 + offsetForCandles, self.frame.size.height-10-lineHeight);
         NSDate *date = [NSDate date];
         if([self.dataSource respondsToSelector:@selector(dateAtPosition:)]) {
-            date = [self.dataSource dateAtPosition:x*24];
+            CGFloat position = x*24 +  countOfTwoCells*24;
+            if(countOfTwoCells % 2 == 0) {
+                position -= ([self.dataSource offsetForCandles] - candleWidth);
+            } else {
+                position += ([self.dataSource offsetForCandles] - candleWidth);
+            }
+            date = [self.dataSource dateAtPosition:position];
         } 
         NSDateFormatter *df = [[NSDateFormatter alloc] init];
         [df setDateFormat:@"HH:mm"];
@@ -47,13 +60,14 @@ const float lineHeight = 5.0;
         
         NSStringDrawingContext *drawingContext = [[NSStringDrawingContext alloc] init];
         
-        [dateTxt drawAtPoint:CGPointMake((x*24) - size.width/2, self.frame.size.height - 10)
+        [dateTxt drawAtPoint:CGPointMake((x*24 + offsetForCandles) - size.width/2, self.frame.size.height - 10)
               withAttributes:@{
                                NSFontAttributeName: [UIFont fontWithName:@"MuseoSansCyrl-500" size:8.0],
                                NSForegroundColorAttributeName: [UIColor blackColor]
                                }];
     }
     CGContextStrokePath(context);
+    
 }
 
 @end

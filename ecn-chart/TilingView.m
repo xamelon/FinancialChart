@@ -8,6 +8,7 @@
 
 #import "TilingView.h"
 #import "GraphicHost.h"
+#import "Graphic.h"
 
 @implementation TilingView
 
@@ -25,14 +26,16 @@
     CGContextSetFillColorWithColor(context, [UIColor clearColor].CGColor);
     CGContextFillRect(context, rect);
     CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.0 alpha:0.2].CGColor);
+    CGFloat candleWidth = [self.dataSource candleWidth];
+    CGFloat offsetForCandles = [self.dataSource offsetForCandles] - candleWidth;
     UIBezierPath *path = [UIBezierPath bezierPath];
     path.lineWidth = 1.0;
     int rows = self.frame.size.width / 24.0;
     int cols = self.frame.size.height / 24.0;
     for(int x = 0; x<rows; x++) {
         for(int y = 0; y<cols; y++) {
-            [path moveToPoint:CGPointMake((x+1)*24.0, 0)];
-            [path addLineToPoint:CGPointMake((x+1)*24.0, self.frame.size.height)];
+            [path moveToPoint:CGPointMake((x+1)*24.0 + offsetForCandles, 0)];
+            [path addLineToPoint:CGPointMake((x+1)*24.0 + offsetForCandles, self.frame.size.height)];
             [path moveToPoint:CGPointMake(0, (y+1)*24.0)];
             [path addLineToPoint:CGPointMake(self.frame.size.width, (y+1)*24.0)];
         }

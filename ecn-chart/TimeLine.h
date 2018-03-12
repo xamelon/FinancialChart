@@ -10,14 +10,18 @@
 
 @class GraphicHost;
 
+@protocol GraphicDataSource;
+
 @protocol TimeLineDataSource <NSObject>
 
 -(NSDate *)dateAtPosition:(CGFloat)x;
+
+-(NSInteger)countOfTwoCells;
 
 @end
 
 @interface TimeLine : UIView
 
-@property (weak, nonatomic) id <TimeLineDataSource> dataSource;
+@property (weak, nonatomic) id <TimeLineDataSource, GraphicDataSource> dataSource;
 
 @end
