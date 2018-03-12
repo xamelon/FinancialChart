@@ -38,6 +38,8 @@ const float minScale = 0.5;
     
 }
 
+const float kRightOffset = 43;
+
 
 -(instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
@@ -100,14 +102,14 @@ const float minScale = 0.5;
 
 -(void)layoutSubviews {
     [super layoutSubviews];
-    self.scrollView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+    self.scrollView.frame = CGRectMake(0, 0, self.frame.size.width - kRightOffset, self.frame.size.height);
     CGFloat contentWidth = (self.dataSource.numberOfItems / self.candlesPerCell) * self.cellSize + offset;
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
     
-    self.timeline.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-    self.tiling.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+    self.timeline.frame = CGRectMake(0, 0, self.frame.size.width - kRightOffset, self.frame.size.height);
+    self.tiling.frame = CGRectMake(0, 0, self.frame.size.width - kRightOffset, self.frame.size.height);
     self.priceView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-    [self.graphic setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+    [self.graphic setFrame:CGRectMake(0, 0, self.frame.size.width - kRightOffset, self.frame.size.height)];
     //[self.tiling setNeedsDisplay];
     //[self.timeline setNeedsDisplay];
     [self.graphic setNeedsDisplay];
@@ -255,12 +257,14 @@ const float minScale = 0.5;
 
 -(NSInteger)maxCandle {
     NSInteger count = [self candleCount];
-    CGFloat maxOffset = self.scrollView.contentOffset.x + self.frame.size.width;
+    
+    CGFloat maxOffset = self.scrollView.contentOffset.x + self.graphic.frame.size.width;
     int cellCount = maxOffset / 24;
     maxCandle = cellCount * self.candlesPerCell;
     if(maxCandle > count) {
         maxCandle = count;
     }
+    NSLog(@"Max candle: %d", maxCandle);;
     return maxCandle;
 }
 

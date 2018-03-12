@@ -31,12 +31,12 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextClearRect(context, rect);
     CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
-    CGContextMoveToPoint(context, 12, 0);
-    CGContextAddLineToPoint(context, 12, self.frame.size.height);
+    CGContextMoveToPoint(context, rect.size.width - 12 - 25 - 5, 0);
+    CGContextAddLineToPoint(context, rect.size.width - 12 - 25 - 5, self.frame.size.height);
     int rows = self.frame.size.height / 24;
     for(int y = 0; y<rows; y++) {
-        CGContextMoveToPoint(context, 8, y*24);
-        CGContextAddLineToPoint(context, 16, y*24);
+        CGContextMoveToPoint(context, rect.size.width - 8 - 25 - 5, y*24);
+        CGContextAddLineToPoint(context, rect.size.width - 16 - 25 - 5, y*24);
         NSString *text = @"Price";
         if([self.datasource respondsToSelector:@selector(priceForY:)]) {
             CGFloat price = [self.datasource priceForY:(y*24)];
@@ -47,7 +47,7 @@
         CGSize size = [text sizeWithAttributes:@{
                                                  NSFontAttributeName: [UIFont fontWithName:@"MuseoSansCyrl-500" size:8.0],
                                                  }];
-        [text drawAtPoint:CGPointMake(17, (y*24)-size.height/2)
+        [text drawAtPoint:CGPointMake(rect.size.width - 12 - 25, (y*24)-size.height/2)
            withAttributes:@{
                             NSFontAttributeName: [UIFont fontWithName:@"MuseoSansCyrl-500" size:8.0],
                             NSForegroundColorAttributeName: [UIColor blackColor]
