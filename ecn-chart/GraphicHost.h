@@ -49,4 +49,6 @@
 
 -(void)scrollToEnd;
 
+-(void)scrollToBeginAfterReload;
+
 @end

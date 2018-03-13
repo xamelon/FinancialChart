@@ -110,29 +110,23 @@ const float kRightOffset = 43;
     self.tiling.frame = CGRectMake(0, 0, self.frame.size.width - kRightOffset, self.frame.size.height);
     self.priceView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
     [self.graphic setFrame:CGRectMake(0, 0, self.frame.size.width - kRightOffset, self.frame.size.height)];
-    //[self.tiling setNeedsDisplay];
-    //[self.timeline setNeedsDisplay];
     [self.graphic setNeedsDisplay];
     
 }
 
 -(void)reloadData {
     CGFloat contentWidth = (self.dataSource.numberOfItems / self.candlesPerCell) * self.cellSize + offset;
-    [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
-    //self.timeline.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-    //self.tiling.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
     [self.graphic setNeedsDisplay];;
     [self.priceView setNeedsDisplay];
     [self.timeline setNeedsDisplay];
-    
+    [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
 }
 
 -(void)reloadLastTick {
-    [self reloadData];
-    /* if(self.scrollView.contentOffset.x =) {
-        [self.scrollView scrollRectToVisible:CGRectMake(self.scrollView.contentSize.width-100, 0, 100, 10) animated:NO];
-    } */
+   [self reloadData];
 }
+
+
 
 -(void)scale:(UIPinchGestureRecognizer *)gesture {
     if(gesture.velocity > 0) {
@@ -160,7 +154,7 @@ const float kRightOffset = 43;
 #pragma mark UIScrollViewDelegate;
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGFloat offsetX = self.scrollView.contentOffset.x;
-    if(offsetX < 10) {
+    if(minCandle < self.dataSource.numberOfItems * 0.3) {
         [self.delegate needAdditionalData];
     }
     minCandle = [self minCandle];
@@ -264,7 +258,6 @@ const float kRightOffset = 43;
     if(maxCandle > count) {
         maxCandle = count;
     }
-    NSLog(@"Max candle: %d", maxCandle);;
     return maxCandle;
 }
 
@@ -283,7 +276,12 @@ const float kRightOffset = 43;
 }
 
 -(void)scrollToEnd {
-    [self.scrollView scrollRectToVisible:CGRectMake(self.scrollView.contentSize.width-1, 0, 1, self.scrollView.frame.size.width) animated:YES];
+    [self.scrollView scrollRectToVisible:CGRectMake(self.scrollView.contentSize.width-1, 0, 1, self.scrollView.frame.size.width) animated:NO];
+}
+
+-(void)scrollToBeginAfterReload {
+    CGFloat scrollToX = (64 / self.candlesPerCell) * self.cellSize + self.scrollView.contentOffset.x;
+    [self.scrollView setContentOffset:CGPointMake(scrollToX, 0) animated:NO];;
 }
 
 #pragma mark Observer
