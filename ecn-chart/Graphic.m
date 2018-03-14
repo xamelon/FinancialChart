@@ -73,9 +73,6 @@
         } else if(chartType == ChartTypeBar) {
             [self drawBar:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
         }
-       
-        //
-        
         
     }
     CGContextStrokePath(context);

@@ -40,7 +40,6 @@
         NSString *text = @"Price";
         if([self.datasource respondsToSelector:@selector(priceForY:)]) {
             CGFloat price = [self.datasource priceForY:(y*24)];
-            NSLog(@"Price: %f", price);
             text = [NSString stringWithFormat:@"%f", price];
         }
         
@@ -55,8 +54,6 @@
     }
     
     CGContextStrokePath(context);
-    NSLog(@"Time interval: %f",[[NSDate date] timeIntervalSinceDate:date1]);
-    NSLog(@"End");
 }
 
 

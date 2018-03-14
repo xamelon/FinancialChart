@@ -15,5 +15,6 @@
 @property float open;
 @property float close;
 @property NSInteger date;
+@property (strong, nonatomic) NSString *symbolName;
 
 @end

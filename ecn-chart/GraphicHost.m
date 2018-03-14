@@ -116,6 +116,13 @@ const float kRightOffset = 43;
 
 -(void)reloadData {
     CGFloat contentWidth = (self.dataSource.numberOfItems / self.candlesPerCell) * self.cellSize + offset;
+    CGRect graphicOffset = self.graphic.frame;
+    
+    CGFloat offsetX = self.scrollView.contentOffset.x;
+    graphicOffset.origin.x = offsetX;
+    [self.tiling setFrame:graphicOffset];
+    [self.graphic setFrame:graphicOffset];
+    [self.timeline setFrame:graphicOffset];
     [self.graphic setNeedsDisplay];;
     [self.priceView setNeedsDisplay];
     [self.timeline setNeedsDisplay];
@@ -153,17 +160,12 @@ const float kRightOffset = 43;
 
 #pragma mark UIScrollViewDelegate;
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    CGFloat offsetX = self.scrollView.contentOffset.x;
     if(minCandle < self.dataSource.numberOfItems * 0.3) {
         [self.delegate needAdditionalData];
     }
     minCandle = [self minCandle];
     maxCandle = [self maxCandle];
-    CGRect graphicOffset = self.graphic.frame;
-    graphicOffset.origin.x = offsetX;
-    [self.tiling setFrame:graphicOffset];
-    [self.graphic setFrame:graphicOffset];
-    [self.timeline setFrame:graphicOffset];
+    
     [self reloadData];
 }
 
@@ -182,7 +184,6 @@ const float kRightOffset = 43;
 -(NSDate *)dateAtPosition:(CGFloat)x {
     int count = x / 24;
     NSInteger index = count * self.candlesPerCell - 1;
-    NSLog(@"Index: %d", index);
     Tick *tick = [self tickForIndex:index];
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:tick.date];
     return date;;
@@ -200,7 +201,6 @@ const float kRightOffset = 43;
     float maxP = [self getMaxValue];
     float H = self.frame.size.height;
     float price = (-((y-20)/(H-40)) + 1) * (maxP - minP) + minP;
-    NSLog(@"EQUAL: %d", y == (20+(H-40) * (1 - (price - minP)/(maxP - minP))));
     return price;
 }
 
@@ -239,13 +239,13 @@ const float kRightOffset = 43;
 }
 
 -(Tick *)tickForIndex:(NSInteger)i {
-    NSInteger count = [self.dataSource numberOfItems];
     return [self.dataSource candleForIndex:i];
 }
 
 -(NSInteger)minCandle {
     int cellCount = self.scrollView.contentOffset.x / 24;
     minCandle = cellCount * self.candlesPerCell;
+    if(minCandle > self.dataSource.numberOfItems) minCandle = 0;
     return minCandle;
 }
 
@@ -287,7 +287,6 @@ const float kRightOffset = 43;
 #pragma mark Observer
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
     if([object isEqual:self.scrollView] && [keyPath isEqualToString:@"contentSize"]) {
-        NSLog(@"Update content size");
         [self.timeline setNeedsDisplay];
         [self.tiling setNeedsDisplay];
     }
