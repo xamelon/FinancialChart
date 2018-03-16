@@ -40,7 +40,7 @@
         NSString *text = @"Price";
         if([self.datasource respondsToSelector:@selector(priceForY:)]) {
             CGFloat price = [self.datasource priceForY:(y*24)];
-            text = [NSString stringWithFormat:@"%f", price];
+            text = [NSString stringWithFormat:@"%*.*f", [self lengthForFloat:price], [self precisionForFloat:price], price];
         }
         
         CGSize size = [text sizeWithAttributes:@{
@@ -55,6 +55,22 @@
     
     CGContextStrokePath(context);
 }
+
+-(int)lengthForFloat:(float)number {
+    int tort = (int)number;
+    int numberLength = 0;
+    do {
+        numberLength++;
+        tort /= 10;
+    } while(tort);
+    return numberLength;
+}
+
+-(int)precisionForFloat:(float)number {
+    int precision = [self lengthForFloat:number];
+    return 5-precision > 0 ? 5-precision : 0;
+}
+
 
 
 @end
