@@ -185,6 +185,7 @@ const float kRightOffset = 43;
     int count = x / 24;
     NSInteger index = count * self.candlesPerCell - 1;
     Tick *tick = [self tickForIndex:index];
+    if(!tick) return nil;
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:tick.date];
     return date;;
 }
@@ -196,7 +197,7 @@ const float kRightOffset = 43;
 }
 
 #pragma mark PracieViewDataSource
--(CGFloat)priceForY:(CGFloat)y {
+-(float)priceForY:(CGFloat)y {
     float minP = [self getMinValue];
     float maxP = [self getMaxValue];
     float H = self.frame.size.height;

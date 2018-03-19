@@ -10,7 +10,7 @@
 
 @protocol PriceViewDataSource <NSObject>
 
--(CGFloat)priceForY:(CGFloat)y;
+-(float)priceForY:(CGFloat)y;
 
 @end
 

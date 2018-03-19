@@ -41,7 +41,7 @@ const float lineHeight = 5.0;
     for(int x = 0; x<cols+1; x=x+2) {
         CGContextMoveToPoint(context, x*24 + offsetForCandles, self.frame.size.height-10);
         CGContextAddLineToPoint(context, x*24 + offsetForCandles, self.frame.size.height-10-lineHeight);
-        NSDate *date = [NSDate date];
+        NSDate *date;
         if([self.dataSource respondsToSelector:@selector(dateAtPosition:)]) {
             CGFloat position = x*24 +  countOfTwoCells*24;
             if(countOfTwoCells % 2 == 0) {
@@ -54,6 +54,9 @@ const float lineHeight = 5.0;
         NSDateFormatter *df = [[NSDateFormatter alloc] init];
         [df setDateFormat:@"HH:mm"];
         NSString *dateTxt = [df stringFromDate:date];;
+        if(!date) {
+            dateTxt = @"";
+        }
         CGSize size = [dateTxt sizeWithAttributes:@{
                                                     NSFontAttributeName: [UIFont fontWithName:@"MuseoSansCyrl-500" size:8.0]
                                                     }];

@@ -39,8 +39,12 @@
         CGContextAddLineToPoint(context, rect.size.width - 16 - 25 - 5, y*24);
         NSString *text = @"Price";
         if([self.datasource respondsToSelector:@selector(priceForY:)]) {
-            CGFloat price = [self.datasource priceForY:(y*24)];
-            text = [NSString stringWithFormat:@"%*.*f", [self lengthForFloat:price], [self precisionForFloat:price], price];
+            float price = [self.datasource priceForY:(y*24)];
+            if(price != price) {
+                text = @"";
+            } else {
+                text = [NSString stringWithFormat:@"%*.*f", [self lengthForFloat:price], [self precisionForFloat:price], price];
+            }
         }
         
         CGSize size = [text sizeWithAttributes:@{
