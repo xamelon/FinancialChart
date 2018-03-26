@@ -79,7 +79,9 @@
 }
 
 -(void)drawCandle:(CGFloat)open close:(CGFloat)close y1:(CGFloat)y1 y2:(CGFloat)y2 currentX:(CGFloat)currentX candleWidth:(CGFloat)candleWidth context:(CGContextRef)context  {
-    CGRect rect1 = CGRectMake(currentX, MIN(open, close), candleWidth, fabs(open-close));
+    float openCloseHeight = fabs(open-close);
+    if(openCloseHeight <= 0) openCloseHeight = 1;
+    CGRect rect1 = CGRectMake(currentX, MIN(open, close), candleWidth, openCloseHeight);
     CGContextFillRect(context, rect1);
     CGContextMoveToPoint(context, currentX + candleWidth/2, y1);
     CGContextAddLineToPoint(context, currentX + candleWidth/2, y2);
