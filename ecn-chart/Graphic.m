@@ -11,7 +11,9 @@
 
 
 
-@interface Graphic()
+@interface Graphic() {
+    CGPoint selectionPoint;
+}
 
 @property (assign, nonatomic) CGFloat minValue;
 @property (assign, nonatomic) CGFloat maxValue;
@@ -75,7 +77,27 @@
         }
         
     }
+    
+    if(!CGPointEqualToPoint(selectionPoint, CGPointZero)) {
+        CGPoint points[] = {
+            CGPointMake(0, selectionPoint.y),
+            CGPointMake(self.frame.size.width, selectionPoint.y)
+        };
+        CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
+        CGContextAddLines(context, points, 2);
+        CGPoint points1[] = {
+            CGPointMake(selectionPoint.x, 0),
+            CGPointMake(selectionPoint.x, self.frame.size.height)
+        };
+        CGContextAddLines(context, points1, 2);
+    }
+    
     CGContextStrokePath(context);
+}
+
+-(void)drawLinesForSelectionPoint:(CGPoint)point {
+    selectionPoint = point;
+    [self setNeedsDisplay];
 }
 
 -(void)drawCandle:(CGFloat)open close:(CGFloat)close y1:(CGFloat)y1 y2:(CGFloat)y2 currentX:(CGFloat)currentX candleWidth:(CGFloat)candleWidth context:(CGContextRef)context  {

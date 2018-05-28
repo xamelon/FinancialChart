@@ -8,7 +8,9 @@
 
 #import "PriceView.h"
 
-@interface PriceView()
+@interface PriceView() {
+    CGPoint selectionPoint;
+}
 
 @property (strong, nonatomic) CAGradientLayer* gradientLayer;
 
@@ -31,33 +33,72 @@
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextClearRect(context, rect);
     CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
-    CGContextMoveToPoint(context, rect.size.width - 12 - 25 - 5, 0);
-    CGContextAddLineToPoint(context, rect.size.width - 12 - 25 - 5, self.frame.size.height);
+    CGContextMoveToPoint(context, rect.size.width - 12 - 40 - 5, 0);
+    CGContextAddLineToPoint(context, rect.size.width - 12 - 40 - 5, self.frame.size.height);
     int rows = self.frame.size.height / 24;
     for(int y = 0; y<rows; y++) {
-        CGContextMoveToPoint(context, rect.size.width - 8 - 25 - 5, y*24);
-        CGContextAddLineToPoint(context, rect.size.width - 16 - 25 - 5, y*24);
+        CGContextMoveToPoint(context, rect.size.width - 8 - 40 - 5, y*24);
+        CGContextAddLineToPoint(context, rect.size.width - 16 - 40 - 5, y*24);
         NSString *text = @"Price";
         if([self.datasource respondsToSelector:@selector(priceForY:)]) {
             float price = [self.datasource priceForY:(y*24)];
             if(price != price) {
                 text = @"";
             } else {
-                text = [NSString stringWithFormat:@"%*.*f", [self lengthForFloat:price], [self precisionForFloat:price], price];
+                text = [self formatFloatToString:price];
             }
         }
         
         CGSize size = [text sizeWithAttributes:@{
                                                  NSFontAttributeName: [UIFont fontWithName:@"MuseoSansCyrl-500" size:8.0],
                                                  }];
-        [text drawAtPoint:CGPointMake(rect.size.width - 12 - 25, (y*24)-size.height/2)
+        [text drawAtPoint:CGPointMake(rect.size.width - 12 - 35, (y*24)-size.height/2)
            withAttributes:@{
                             NSFontAttributeName: [UIFont fontWithName:@"MuseoSansCyrl-500" size:8.0],
                             NSForegroundColorAttributeName: [UIColor blackColor]
                             }];
     }
+    CGContextStrokePath(context);
+    if(!CGPointEqualToPoint(selectionPoint, CGPointZero)) {
+        
+        NSString *text;
+        float price = [self.datasource priceForY:selectionPoint.y];
+        if(price != price) {
+            text = @"";
+        } else {
+            text = [NSString stringWithFormat:@"%f", price];
+        }
+        CGSize size = [text sizeWithAttributes:@{
+                                                 NSFontAttributeName: [UIFont fontWithName:@"MuseoSansCyrl-500" size:8.0],
+                                                 }];
+        CGContextSetFillColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
+        CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
+        CGContextFillRect(context, CGRectMake(rect.size.width - 12 - 40 - 5, selectionPoint.y-1, 55, size.height + 5));
+        [text drawAtPoint:CGPointMake(rect.size.width - 12 - 35, selectionPoint.y+1)
+           withAttributes:@{
+                            NSFontAttributeName: [UIFont fontWithName:@"MuseoSansCyrl-500" size:9.0],
+                            NSForegroundColorAttributeName: [UIColor whiteColor]
+                            }];
+        
+    }
     
     CGContextStrokePath(context);
+}
+
+-(void)drawPriceInPoint:(CGPoint)point {
+    selectionPoint = point;
+    [self setNeedsDisplay];
+}
+
+-(NSString *)formatFloatToString:(float)num {
+    NSNumber *number = [NSNumber numberWithFloat:num];
+    NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
+    [nf setPositiveFormat:@"#.########*0"];
+    [nf setUsesSignificantDigits:YES];
+    [nf setMaximumSignificantDigits:9];
+    [nf setAllowsFloats:YES];
+    [nf setAlwaysShowsDecimalSeparator:YES];
+    return [nf stringFromNumber:number];
 }
 
 -(int)lengthForFloat:(float)number {

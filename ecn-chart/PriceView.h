@@ -18,4 +18,6 @@
 
 @property (weak, nonatomic) id <PriceViewDataSource> datasource;
 
+-(void)drawPriceInPoint:(CGPoint)point;
+
 @end

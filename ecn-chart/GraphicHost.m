@@ -26,6 +26,7 @@ const float minScale = 0.5;
 @property CGFloat scale;
 @property CGFloat candlesPerCell;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinch;
+@property (strong, nonatomic) UILongPressGestureRecognizer *longPress;
 @property (strong, nonatomic) TilingView *tiling;
 @property (strong, nonatomic) TimeLine *timeline;
 @property (strong, nonatomic) PriceView *priceView;
@@ -68,6 +69,8 @@ const float kRightOffset = 55;
     self.scrollView.bounces = NO;
     self.pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(scale:)];
     [self addGestureRecognizer:self.pinch];
+    self.longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
+    [self addGestureRecognizer:self.longPress];
     if(!self.scrollView.superview) {
         [self addSubview:self.scrollView];
     }
@@ -171,7 +174,18 @@ const float kRightOffset = 55;
     } else if(gesture.state == UIGestureRecognizerStateEnded) {
         
     }
+}
 
+-(void)longPress:(UILongPressGestureRecognizer *)gesture {
+    CGPoint selectionPoint = [gesture locationInView:self];
+    if(gesture.state == UIGestureRecognizerStateBegan || gesture.state == UIGestureRecognizerStateChanged) {
+        [self.graphic drawLinesForSelectionPoint:selectionPoint];
+        [self.priceView drawPriceInPoint:selectionPoint];
+    } else {
+        [self.graphic drawLinesForSelectionPoint:CGPointZero];
+        [self.priceView drawPriceInPoint:CGPointZero];
+    }
+    NSLog(@"Selection x: %f, y: %f", selectionPoint.x, selectionPoint.y);
 }
 
 -(CGFloat)cellSize {

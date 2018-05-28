@@ -29,5 +29,5 @@ typedef enum ChartType : NSInteger {
 @interface Graphic : UIView
 
 @property (weak, nonatomic) id <GraphicDataSource> dataSource;
-
+-(void)drawLinesForSelectionPoint:(CGPoint)point;
 @end
