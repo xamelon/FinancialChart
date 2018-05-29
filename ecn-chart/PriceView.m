@@ -7,6 +7,7 @@
 //
 
 #import "PriceView.h"
+#import "QuoteHelper.h"
 
 @interface PriceView() {
     CGPoint selectionPoint;
@@ -45,16 +46,16 @@
             if(price != price) {
                 text = @"";
             } else {
-                text = [self formatFloatToString:price];
+                text = [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:price]];
             }
         }
         
         CGSize size = [text sizeWithAttributes:@{
-                                                 NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:7.0],
+                                                 NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
                                                  }];
         [text drawAtPoint:CGPointMake(rect.size.width - 12 - 35, (y*24)-size.height/2)
            withAttributes:@{
-                            NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:7.0],
+                            NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
                             NSForegroundColorAttributeName: [UIColor blackColor]
                             }];
     }
@@ -66,17 +67,17 @@
         if(price != price) {
             text = @"";
         } else {
-            text = [NSString stringWithFormat:@"%f", price];
+            text = [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:price]];
         }
         CGSize size = [text sizeWithAttributes:@{
-                                                 NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
+                                                 NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:9.0],
                                                  }];
         CGContextSetFillColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
         CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
         CGContextFillRect(context, CGRectMake(rect.size.width - 12 - 40 - 5, selectionPoint.y-1, 55, size.height + 5));
         [text drawAtPoint:CGPointMake(rect.size.width - 12 - 35, selectionPoint.y+1)
            withAttributes:@{
-                            NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
+                            NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:9.0],
                             NSForegroundColorAttributeName: [UIColor whiteColor]
                             }];
         

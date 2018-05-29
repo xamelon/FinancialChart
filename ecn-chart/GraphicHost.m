@@ -146,7 +146,6 @@ const float kRightOffset = 55;
         
         [self.priceView drawPriceInPoint:CGPointZero];
         [self.graphic drawLinesForSelectionPoint:CGPointZero];
-        [self.graphic drawTick:nil];
         
     } else if(gesture.state == UIGestureRecognizerStateChanged) {
         if(gesture.velocity > 0) {
@@ -190,7 +189,6 @@ const float kRightOffset = 55;
     if(gesture.state == UIGestureRecognizerStateBegan || gesture.state == UIGestureRecognizerStateChanged) {
         [self.graphic drawLinesForSelectionPoint:selectionPoint];
         [self.priceView drawPriceInPoint:selectionPoint];
-        [self.graphic drawTick:tick];
     } else {
     }
     
@@ -209,7 +207,6 @@ const float kRightOffset = 55;
     maxCandle = [self calculateMaxCandle];
     [self.priceView drawPriceInPoint:CGPointZero];
     [self.graphic drawLinesForSelectionPoint:CGPointZero];
-    [self.graphic drawTick:nil];
     
     [self reloadData];
 }
@@ -284,12 +281,18 @@ const float kRightOffset = 55;
     return self.minValue;
 }
 
+-(Tick *)candleForPoint:(CGPoint)point {
+    NSInteger index = [self candleIndexForPoint:point];
+    
+    return [self.dataSource candleForIndex:index];
+}
+
 -(Tick *)tickForIndex:(NSInteger)i {
     return [self.dataSource candleForIndex:i];
 }
 
 -(CGPoint)roundToNearCandlePoint:(CGPoint)point {
-    int candles = point.x / (self.candleWidth * 2);
+    int candles = (point.x - self.candleWidth) / (self.candleWidth * 2);
     CGFloat currentX = self.offsetForCandles + (self.candleWidth * 2) * candles + self.candleWidth;
     point.x = currentX;
     
@@ -298,7 +301,6 @@ const float kRightOffset = 55;
 
 -(NSInteger)candleIndexForPoint:(CGPoint)point {
     int candles = point.x / (self.candleWidth * 2);
-    
     
     return minCandle + candles;
 }

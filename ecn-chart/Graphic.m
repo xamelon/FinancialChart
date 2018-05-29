@@ -8,12 +8,11 @@
 
 #import "Graphic.h"
 #import "Tick.h"
-
+#import "QuoteHelper.h"
 
 
 @interface Graphic() {
     CGPoint selectionPoint;
-    Tick *selectedTick;
 }
 
 @property (assign, nonatomic) CGFloat minValue;
@@ -92,10 +91,13 @@
         };
         CGContextAddLines(context, points1, 2);
         CGContextStrokePath(context);
-    }
-    
-    if(selectedTick) {
-        NSString *text = [NSString stringWithFormat:@"Open: %.5f Close: %.5f High: %.5f Low: %.5f", selectedTick.open, selectedTick.close, selectedTick.max, selectedTick.min];
+        
+        Tick *selectedTick = [self.dataSource candleForPoint:selectionPoint];
+        NSString *text = [NSString stringWithFormat:@"Open: %@ Close: %@ High: %@ Low: %@",
+                          [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.open]],
+                          [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.close]],
+                          [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.max]],
+                          [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.min]]];
         CGSize size = [text sizeWithAttributes:@{
                                                  NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
                                                  }];
@@ -114,11 +116,6 @@
 
 -(void)drawLinesForSelectionPoint:(CGPoint)point {
     selectionPoint = point;
-    [self setNeedsDisplay];
-}
-
--(void)drawTick:(Tick *)tick {
-    selectedTick = tick;
     [self setNeedsDisplay];
 }
 

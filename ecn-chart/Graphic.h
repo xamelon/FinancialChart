@@ -21,6 +21,7 @@ typedef enum ChartType : NSInteger {
 -(NSInteger)maxCandle;
 -(NSInteger)minCandle;
 -(Tick *)tickForIndex:(NSInteger)i;
+-(Tick *)candleForPoint:(CGPoint)point;
 -(NSInteger)candleCount;
 -(CGFloat)offsetForCandles;
 -(ChartType)chartType;
@@ -30,5 +31,4 @@ typedef enum ChartType : NSInteger {
 
 @property (weak, nonatomic) id <GraphicDataSource> dataSource;
 -(void)drawLinesForSelectionPoint:(CGPoint)point;
--(void)drawTick:(Tick *)tick;
 @end
