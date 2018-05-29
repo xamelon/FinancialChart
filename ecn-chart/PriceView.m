@@ -50,11 +50,11 @@
         }
         
         CGSize size = [text sizeWithAttributes:@{
-                                                 NSFontAttributeName: [UIFont fontWithName:@"MuseoSansCyrl-500" size:8.0],
+                                                 NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:7.0],
                                                  }];
         [text drawAtPoint:CGPointMake(rect.size.width - 12 - 35, (y*24)-size.height/2)
            withAttributes:@{
-                            NSFontAttributeName: [UIFont fontWithName:@"MuseoSansCyrl-500" size:8.0],
+                            NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:7.0],
                             NSForegroundColorAttributeName: [UIColor blackColor]
                             }];
     }
@@ -69,14 +69,14 @@
             text = [NSString stringWithFormat:@"%f", price];
         }
         CGSize size = [text sizeWithAttributes:@{
-                                                 NSFontAttributeName: [UIFont fontWithName:@"MuseoSansCyrl-500" size:8.0],
+                                                 NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
                                                  }];
         CGContextSetFillColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
         CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
         CGContextFillRect(context, CGRectMake(rect.size.width - 12 - 40 - 5, selectionPoint.y-1, 55, size.height + 5));
         [text drawAtPoint:CGPointMake(rect.size.width - 12 - 35, selectionPoint.y+1)
            withAttributes:@{
-                            NSFontAttributeName: [UIFont fontWithName:@"MuseoSansCyrl-500" size:9.0],
+                            NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
                             NSForegroundColorAttributeName: [UIColor whiteColor]
                             }];
         

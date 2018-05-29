@@ -30,4 +30,5 @@ typedef enum ChartType : NSInteger {
 
 @property (weak, nonatomic) id <GraphicDataSource> dataSource;
 -(void)drawLinesForSelectionPoint:(CGPoint)point;
+-(void)drawTick:(Tick *)tick;
 @end

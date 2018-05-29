@@ -144,6 +144,10 @@ const float kRightOffset = 55;
     if(gesture.state == UIGestureRecognizerStateBegan) {
         scalingIndexCandle = [self candleIndexForPoint:scalePoint];
         
+        [self.priceView drawPriceInPoint:CGPointZero];
+        [self.graphic drawLinesForSelectionPoint:CGPointZero];
+        [self.graphic drawTick:nil];
+        
     } else if(gesture.state == UIGestureRecognizerStateChanged) {
         if(gesture.velocity > 0) {
             if(self.candlesPerCell > 1) {
@@ -178,14 +182,18 @@ const float kRightOffset = 55;
 
 -(void)longPress:(UILongPressGestureRecognizer *)gesture {
     CGPoint selectionPoint = [gesture locationInView:self];
+    selectionPoint = [self roundToNearCandlePoint:selectionPoint];
+    NSInteger candleIndex = [self candleIndexForPoint:selectionPoint];
+    Tick *tick = [self.dataSource candleForIndex:candleIndex];;
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:tick.date];
+    NSLog(@"Date: %@", date);
     if(gesture.state == UIGestureRecognizerStateBegan || gesture.state == UIGestureRecognizerStateChanged) {
         [self.graphic drawLinesForSelectionPoint:selectionPoint];
         [self.priceView drawPriceInPoint:selectionPoint];
+        [self.graphic drawTick:tick];
     } else {
-        [self.graphic drawLinesForSelectionPoint:CGPointZero];
-        [self.priceView drawPriceInPoint:CGPointZero];
     }
-    NSLog(@"Selection x: %f, y: %f", selectionPoint.x, selectionPoint.y);
+    
 }
 
 -(CGFloat)cellSize {
@@ -199,6 +207,9 @@ const float kRightOffset = 55;
     }
     minCandle = [self calculateMinCandle];
     maxCandle = [self calculateMaxCandle];
+    [self.priceView drawPriceInPoint:CGPointZero];
+    [self.graphic drawLinesForSelectionPoint:CGPointZero];
+    [self.graphic drawTick:nil];
     
     [self reloadData];
 }
@@ -276,11 +287,20 @@ const float kRightOffset = 55;
 -(Tick *)tickForIndex:(NSInteger)i {
     return [self.dataSource candleForIndex:i];
 }
--(NSInteger)candleIndexForPoint:(CGPoint)point {
-    NSInteger cellCount = (self.scrollView.contentOffset.x + point.x) / 24  + 1;
-    NSInteger candleIndex = cellCount * roundf(self.candlesPerCell);
+
+-(CGPoint)roundToNearCandlePoint:(CGPoint)point {
+    int candles = point.x / (self.candleWidth * 2);
+    CGFloat currentX = self.offsetForCandles + (self.candleWidth * 2) * candles + self.candleWidth;
+    point.x = currentX;
     
-    return candleIndex;;
+    return point;
+}
+
+-(NSInteger)candleIndexForPoint:(CGPoint)point {
+    int candles = point.x / (self.candleWidth * 2);
+    
+    
+    return minCandle + candles;
 }
 
 -(NSInteger)calculateMinCandle {

@@ -13,6 +13,7 @@
 
 @interface Graphic() {
     CGPoint selectionPoint;
+    Tick *selectedTick;
 }
 
 @property (assign, nonatomic) CGFloat minValue;
@@ -90,6 +91,22 @@
             CGPointMake(selectionPoint.x, self.frame.size.height)
         };
         CGContextAddLines(context, points1, 2);
+        CGContextStrokePath(context);
+    }
+    
+    if(selectedTick) {
+        NSString *text = [NSString stringWithFormat:@"Open: %.5f Close: %.5f High: %.5f Low: %.5f", selectedTick.open, selectedTick.close, selectedTick.max, selectedTick.min];
+        CGSize size = [text sizeWithAttributes:@{
+                                                 NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
+                                                 }];
+        CGContextSetFillColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
+        CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
+        CGContextFillRect(context, CGRectMake(0, 0, size.width + 10, size.height + 5));
+        [text drawAtPoint:CGPointMake(2.5, 2.5)
+           withAttributes:@{
+                            NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
+                            NSForegroundColorAttributeName: [UIColor whiteColor]
+                            }];
     }
     
     CGContextStrokePath(context);
@@ -97,6 +114,11 @@
 
 -(void)drawLinesForSelectionPoint:(CGPoint)point {
     selectionPoint = point;
+    [self setNeedsDisplay];
+}
+
+-(void)drawTick:(Tick *)tick {
+    selectedTick = tick;
     [self setNeedsDisplay];
 }
 
