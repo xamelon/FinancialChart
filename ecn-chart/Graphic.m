@@ -63,6 +63,9 @@
             CGContextSetRGBFillColor(context, 20.0/255.0, 160.0/255.0, 66.0/255.0, 1.0);
             CGContextSetRGBStrokeColor(context, 20.0/255.0, 160.0/255.0, 66.0/255.0, 1.0);
         }
+        if(chartType == ChartTypeLine) {
+            CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
+        }
         CGFloat y1 = 20+(self.frame.size.height-40) * (1 - (tick.max - minValue)/(maxValue - minValue));
         CGFloat y2 = 20+(self.frame.size.height-40) * (1 - (tick.min - minValue)/(maxValue - minValue));
         if(chartType == ChartTypeLine) {
@@ -91,26 +94,26 @@
         };
         CGContextAddLines(context, points1, 2);
         CGContextStrokePath(context);
-        
-        Tick *selectedTick = [self.dataSource candleForPoint:selectionPoint];
-        NSString *text = [NSString stringWithFormat:@"Open: %@ Close: %@ High: %@ Low: %@",
-                          [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.open]],
-                          [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.close]],
-                          [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.max]],
-                          [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.min]]];
-        CGSize size = [text sizeWithAttributes:@{
-                                                 NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
-                                                 }];
-        CGContextSetFillColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
-        CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
-        CGContextFillRect(context, CGRectMake(0, 0, size.width + 10, size.height + 5));
-        [text drawAtPoint:CGPointMake(2.5, 2.5)
-           withAttributes:@{
-                            NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
-                            NSForegroundColorAttributeName: [UIColor whiteColor]
-                            }];
+        if(chartType != ChartTypeLine) {
+            Tick *selectedTick = [self.dataSource candleForPoint:selectionPoint];
+            NSString *text = [NSString stringWithFormat:@"Open: %@ Close: %@ High: %@ Low: %@",
+                              [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.open]],
+                              [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.close]],
+                              [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.max]],
+                              [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.min]]];
+            CGSize size = [text sizeWithAttributes:@{
+                                                     NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
+                                                     }];
+            CGContextSetFillColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
+            CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
+            CGContextFillRect(context, CGRectMake(0, 0, size.width + 10, size.height + 5));
+            [text drawAtPoint:CGPointMake(2.5, 2.5)
+               withAttributes:@{
+                                NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
+                                NSForegroundColorAttributeName: [UIColor whiteColor]
+                                }];
+        }
     }
-    
     CGContextStrokePath(context);
 }
 
@@ -141,8 +144,7 @@
 }
 
 -(void)drawLine:(CGFloat)open close:(CGFloat)close y1:(CGFloat)y1 y2:(CGFloat)y2 currentX:(CGFloat)currentX candleWidth:(CGFloat)candleWidth context:(CGContextRef)context {
-    CGContextAddLineToPoint(context, currentX, open);
-    CGContextAddLineToPoint(context, currentX+candleWidth, close);
+    CGContextAddLineToPoint(context, currentX+candleWidth/2, close);
 }
 
 @end
