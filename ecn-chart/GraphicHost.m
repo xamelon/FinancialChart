@@ -39,7 +39,7 @@ const float minScale = 0.5;
     NSInteger scalingIndexCandle;
 }
 
-const float kRightOffset = 55;
+const float kRightOffset = 62;
 
 
 -(instancetype)initWithFrame:(CGRect)frame {
@@ -106,7 +106,9 @@ const float kRightOffset = 55;
 -(void)layoutSubviews {
     [super layoutSubviews];
     self.scrollView.frame = CGRectMake(0, 0, self.frame.size.width - kRightOffset, self.frame.size.height);
-    CGFloat contentWidth = (self.dataSource.numberOfItems / roundf(self.candlesPerCell)) * self.cellSize + offset;
+    int candlesPerCell = (int)floor(self.candlesPerCell);
+    if(candlesPerCell == 0) candlesPerCell = 1;
+    CGFloat contentWidth = (self.dataSource.numberOfItems / floor(candlesPerCell)) * self.cellSize + offset;
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
     
     self.timeline.frame = CGRectMake(0, 0, self.frame.size.width - kRightOffset, self.frame.size.height);
@@ -118,7 +120,7 @@ const float kRightOffset = 55;
 }
 
 -(void)reloadData {
-    CGFloat contentWidth = (self.dataSource.numberOfItems / roundf(self.candlesPerCell)) * self.cellSize + offset;
+    CGFloat contentWidth = ([self candleWidth] * 2 * [self.dataSource numberOfItems] + offset);
     CGRect graphicOffset = self.graphic.frame;
     
     CGFloat offsetX = self.scrollView.contentOffset.x;
@@ -148,28 +150,53 @@ const float kRightOffset = 55;
         [self.graphic drawLinesForSelectionPoint:CGPointZero];
         
     } else if(gesture.state == UIGestureRecognizerStateChanged) {
+        
+        int startScale = (int)floor(self.candlesPerCell);
         if(gesture.velocity > 0) {
             if(self.candlesPerCell > 1) {
-                self.candlesPerCell -= 0.1;
+                self.candlesPerCell -= 0.2;
+            } else {
+                return;
             }
         } else {
-            if(self.candlesPerCell < 12) {
-                self.candlesPerCell += 0.1;
+            if(self.candlesPerCell < 8) {
+               self.candlesPerCell += 0.2;
+            } else {
+                return;
             }
+        }
+        int candlesPerCell1 = (int)floor(self.candlesPerCell);
+        if(candlesPerCell1 == 0) self.candlesPerCell = 1;
+        int endScale = (int)floor(self.candlesPerCell);
+        if(endScale == startScale) {
+            return;
         }
         Tick *tick = [self.dataSource candleForIndex:scalingIndexCandle];
         NSDate *date = [NSDate dateWithTimeIntervalSince1970:tick.date];
         NSLog(@"Tick date: %@", date);
-        NSInteger maxWidth = ((self.frame.size.width - scalePoint.x) / 24) * roundf(self.candlesPerCell);
-        NSInteger minWidth = (scalePoint.x / 24) * roundf(self.candlesPerCell);
+        int candlesPerCell = (int)floor(self.candlesPerCell);
+        if(candlesPerCell == 0) candlesPerCell = 1;
+        NSInteger maxWidth = ((self.frame.size.width - scalePoint.x) / 24) * roundf(candlesPerCell);
+        NSInteger minWidth = (scalePoint.x / 24) * roundf(candlesPerCell);
         minCandle = scalingIndexCandle - minWidth;
-        if(minCandle <= 0) minCandle = 0;
         maxCandle = scalingIndexCandle + maxWidth;
+        int candles = self.frame.size.width / ([self candleWidth] * 2);
+        if(maxCandle - minCandle -1 < candles) {
+            minCandle = maxCandle - candles;
+        }
+        if(minCandle <= 0) {
+            minCandle = 0;
+        }
         if(maxCandle >= [self.dataSource numberOfItems]) maxCandle = [self.dataSource numberOfItems];
-        
-        NSInteger cellCount = minCandle / roundf(self.candlesPerCell);
+        NSLog(@"Scale candles: %d %d %d", scalingIndexCandle, minCandle, maxCandle);
         CGPoint offset = self.scrollView.contentOffset;
-        offset.x = cellCount * 24;
+        float setOffset = minCandle * [self candleWidth] * 2;
+        if(setOffset != setOffset) {
+            NSLog(@"WTF");
+        } else {
+            offset.x = minCandle * [self candleWidth] * 2;
+        }
+        
         self.scrollView.contentOffset = offset;
         
         [self reloadData];
@@ -225,7 +252,9 @@ const float kRightOffset = 55;
 
 -(NSDate *)dateAtPosition:(CGFloat)x {
     int count = x / 24;
-    NSInteger index = count * roundf(self.candlesPerCell) - 1;
+    int candlesPerCell = (int)floor(self.candlesPerCell);
+    if(candlesPerCell == 0) candlesPerCell = 1;
+    NSInteger index = count * floor(candlesPerCell) - 1;
     Tick *tick = [self tickForIndex:index];
     if(!tick) return nil;
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:tick.date];
@@ -307,7 +336,7 @@ const float kRightOffset = 55;
 
 -(NSInteger)calculateMinCandle {
     int cellCount = self.scrollView.contentOffset.x / 24;
-    minCandle = cellCount * roundf(self.candlesPerCell);
+    minCandle = cellCount * floor(self.candlesPerCell);
     if(minCandle > self.dataSource.numberOfItems) minCandle = 0;
     return minCandle;
 }
@@ -316,8 +345,8 @@ const float kRightOffset = 55;
     NSInteger count = [self candleCount];
     
     CGFloat maxOffset = self.scrollView.contentOffset.x + self.graphic.frame.size.width;
-    int cellCount = maxOffset / 24;
-    maxCandle = cellCount * roundf(self.candlesPerCell);
+    int candles = maxOffset / (self.candleWidth * 2);
+    maxCandle = minCandle + candles;
     if(maxCandle > count) {
         maxCandle = count;
     }
@@ -337,8 +366,11 @@ const float kRightOffset = 55;
 }
 
 -(CGFloat)candleWidth {
-    CGFloat candleSize = cellSize / roundf(self.candlesPerCell);
+    int candlesPerCell = (int)floor(self.candlesPerCell);
+    if(candlesPerCell == 0) candlesPerCell = 1;
+    CGFloat candleSize = cellSize / floor(self.candlesPerCell);
     candleSize -= candleSize / 2;
+    
     return candleSize;
 }
 
@@ -351,7 +383,9 @@ const float kRightOffset = 55;
 }
 
 -(void)scrollToBeginAfterReload {
-    CGFloat scrollToX = (64 / roundf(self.candlesPerCell)) * self.cellSize + self.scrollView.contentOffset.x;
+    int candlesPerCell = (int)floor(self.candlesPerCell);
+    if(candlesPerCell == 0) candlesPerCell = 1;
+    CGFloat scrollToX = (64 / floor(candlesPerCell)) * self.cellSize + self.scrollView.contentOffset.x;
     [self.scrollView setContentOffset:CGPointMake(scrollToX, 0) animated:NO];;
 }
 
