@@ -42,7 +42,7 @@
 }
 
 +(NSDecimalNumber *)decimalNumberFromDouble:(double)num {
-    NSDecimalNumber *decimalNumber = [NSDecimalNumber decimalNumberWithMantissa:(num * pow(10, 17)) exponent:-17 isNegative:num < 0 ? YES : NO];
+    NSDecimalNumber *decimalNumber = [NSDecimalNumber decimalNumberWithMantissa:(num * pow(10, 8)) exponent:-8 isNegative:num < 0 ? YES : NO];
     
     
     return decimalNumber;
