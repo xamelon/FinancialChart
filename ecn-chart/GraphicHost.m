@@ -385,7 +385,7 @@ const float kRightOffset = 62;
 -(void)scrollToBeginAfterReload {
     int candlesPerCell = (int)floor(self.candlesPerCell);
     if(candlesPerCell == 0) candlesPerCell = 1;
-    CGFloat scrollToX = (64 / floor(candlesPerCell)) * self.cellSize + self.scrollView.contentOffset.x;
+    CGFloat scrollToX = (64 * self.candleWidth * 2) + self.scrollView.contentOffset.x;
     [self.scrollView setContentOffset:CGPointMake(scrollToX, 0) animated:NO];;
 }
 
