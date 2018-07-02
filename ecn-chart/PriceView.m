@@ -53,7 +53,7 @@
         CGSize size = [text sizeWithAttributes:@{
                                                  NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
                                                  }];
-        [text drawAtPoint:CGPointMake(rect.size.width - 12 - 35, (y*24)-size.height/2)
+        [text drawAtPoint:CGPointMake(rect.size.width - 15 - 35, (y*24)-size.height/2)
            withAttributes:@{
                             NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
                             NSForegroundColorAttributeName: [UIColor blackColor]
