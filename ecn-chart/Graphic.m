@@ -64,7 +64,7 @@
             CGContextSetRGBStrokeColor(context, 20.0/255.0, 160.0/255.0, 66.0/255.0, 1.0);
         }
         if(chartType == ChartTypeLine) {
-            CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
+            CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
         }
         CGFloat y1 = 20+(self.frame.size.height-40) * (1 - (tick.max - minValue)/(maxValue - minValue));
         CGFloat y2 = 20+(self.frame.size.height-40) * (1 - (tick.min - minValue)/(maxValue - minValue));
@@ -78,9 +78,8 @@
         } else if(chartType == ChartTypeBar) {
             [self drawBar:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
         }
-        
     }
-    
+    CGContextStrokePath(context);
     if(!CGPointEqualToPoint(selectionPoint, CGPointZero)) {
         CGPoint points[] = {
             CGPointMake(0, selectionPoint.y),
@@ -96,7 +95,7 @@
         CGContextStrokePath(context);
         if(chartType != ChartTypeLine) {
             Tick *selectedTick = [self.dataSource candleForPoint:selectionPoint];
-            NSString *text = [NSString stringWithFormat:@"Open: %@ Close: %@ High: %@ Low: %@",
+            NSString *text = [NSString stringWithFormat:@"Open: %@ Close: %@\nHigh: %@ Low: %@",
                               [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.open]],
                               [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.close]],
                               [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.max]],
