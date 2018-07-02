@@ -42,7 +42,8 @@
 }
 
 +(NSDecimalNumber *)decimalNumberFromDouble:(double)num {
-    NSDecimalNumber *decimalNumber = [NSDecimalNumber decimalNumberWithMantissa:(num * pow(10, 8)) exponent:-8 isNegative:num < 0 ? YES : NO];
+    NSUInteger mantissa = num * pow(10, 8);
+    NSDecimalNumber *decimalNumber = [NSDecimalNumber decimalNumberWithMantissa:mantissa exponent:-8 isNegative:num < 0];
     
     
     return decimalNumber;
