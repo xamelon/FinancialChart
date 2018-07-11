@@ -27,15 +27,23 @@
 -(id)init {
     self = [super init];
     if(self) {
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor clearColor].CGColor;
+        self.contentsScale = [UIScreen mainScreen].scale;
+        self.shouldRasterize = NO;
+        self.rasterizationScale = [UIScreen mainScreen].scale;
     }
     return self;
 }
 
+-(id<CAAction>)actionForKey:(nonnull NSString *)aKey
+{
+    return nil;
+}
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
- 
--(void)drawRect:(CGRect)rect {
+
+-(void)drawInContext:(CGContextRef)context {
+    CGRect rect = self.frame;
     CGFloat minValue = [self.dataSource getMinValue];
     CGFloat maxValue = [self.dataSource getMaxValue];
     NSInteger minCandle = [self.dataSource minCandle];
@@ -43,7 +51,6 @@
     CGFloat candleWidth = [self.dataSource candleWidth];
     NSInteger candleCount = [self.dataSource candleCount];
     ChartType chartType =  [self.dataSource chartType];
-    CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextClearRect(context, rect);
     CGContextSetRGBFillColor(context, 1.0, 1.0, 1.0, 1.0);
     CGContextSetRGBFillColor(context, 1.0, 0.0, 0.0, 1.0);
@@ -74,7 +81,7 @@
             }
             [self drawLine:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
         } else if(chartType == ChartTypeCandle) {
-             [self drawCandle:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
+            [self drawCandle:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
         } else if(chartType == ChartTypeBar) {
             [self drawBar:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
         }

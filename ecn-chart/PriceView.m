@@ -19,21 +19,28 @@
 
 @implementation PriceView
 
--(instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
+-(instancetype)init {
+    self = [super init];
     if(self) {
         
-        self.backgroundColor = [UIColor clearColor];
-        [self setUserInteractionEnabled:NO];
+        self.backgroundColor = [UIColor clearColor].CGColor;
+        self.contentsScale = [UIScreen mainScreen].scale;
+        self.shouldRasterize = NO;
     }
     return self;
 }
 
-- (void)drawRect:(CGRect)rect {
+-(__kindof CAAnimation *)animationForKey:(NSString *)key {
+    return nil;
+}
+
+-(void)drawInContext:(CGContextRef)ctx {
     NSDate *date1 = [NSDate date];
-    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGRect rect = self.frame;
+    CGContextRef context = ctx;
     CGContextClearRect(context, rect);
     CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
+    CGContextSetFillColorWithColor(context, [UIColor blackColor].CGColor);
     CGContextMoveToPoint(context, rect.size.width - 12 - 40 - 5, 0);
     CGContextAddLineToPoint(context, rect.size.width - 12 - 40 - 5, self.frame.size.height);
     int rows = self.frame.size.height / 24;
@@ -53,11 +60,13 @@
         CGSize size = [text sizeWithAttributes:@{
                                                  NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
                                                  }];
+        UIGraphicsPushContext(ctx);
         [text drawAtPoint:CGPointMake(rect.size.width - 15 - 35, (y*24)-size.height/2)
            withAttributes:@{
                             NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
                             NSForegroundColorAttributeName: [UIColor blackColor]
                             }];
+        UIGraphicsPopContext();
     }
     CGContextStrokePath(context);
     if(!CGPointEqualToPoint(selectionPoint, CGPointZero)) {
@@ -75,11 +84,13 @@
         CGContextSetFillColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
         CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
         CGContextFillRect(context, CGRectMake(rect.size.width - 12 - 40 - 5, selectionPoint.y-1, 55, size.height + 5));
+        UIGraphicsPushContext(ctx);
         [text drawAtPoint:CGPointMake(rect.size.width - 12 - 35, selectionPoint.y+1)
            withAttributes:@{
                             NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:9.0],
                             NSForegroundColorAttributeName: [UIColor whiteColor]
                             }];
+        UIGraphicsPopContext();
         
     }
     

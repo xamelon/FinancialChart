@@ -14,7 +14,7 @@
 
 @end
 
-@interface PriceView : UIView
+@interface PriceView : CALayer
 
 @property (weak, nonatomic) id <PriceViewDataSource> datasource;
 

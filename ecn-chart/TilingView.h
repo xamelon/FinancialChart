@@ -10,7 +10,7 @@
 
 @protocol GraphicDataSource;
 
-@interface TilingView : UIView
+@interface TilingView : CALayer
 
 @property (weak, nonatomic) id <GraphicDataSource> dataSource;
 

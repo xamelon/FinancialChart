@@ -14,9 +14,15 @@
 
 @protocol GraphicHostDatasource <NSObject>
 
+@required
+
 -(NSInteger)numberOfItems;
 
 -(Tick *)candleForIndex:(NSInteger)index;
+
+@optional
+
+-(NSDateFormatter *)dateFormatter;
 
 @end
 

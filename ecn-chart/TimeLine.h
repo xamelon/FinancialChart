@@ -16,11 +16,13 @@
 
 -(NSDate *)dateAtPosition:(CGFloat)x;
 
+-(NSDateFormatter *)dateFormatter;
+
 -(NSInteger)countOfTwoCells;
 
 @end
 
-@interface TimeLine : UIView
+@interface TimeLine : CALayer
 
 @property (weak, nonatomic) id <TimeLineDataSource, GraphicDataSource> dataSource;
 

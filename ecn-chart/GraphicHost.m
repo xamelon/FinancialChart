@@ -57,6 +57,7 @@ const float kRightOffset = 62;
     return self;
 }
 
+
 -(void)setupView {
     self.scale = 1.0;
     self.candlesPerCell = 4;
@@ -75,32 +76,35 @@ const float kRightOffset = 62;
         [self addSubview:self.scrollView];
     }
     if(!self.tiling) {
-        self.tiling = [[TilingView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+        self.tiling = [[TilingView alloc] init];
+        self.tiling.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
         self.tiling.dataSource = self;
-        [self addSubview:self.tiling];
+        [self.layer addSublayer:self.tiling];
     }
     
     if(!self.timeline) {
-        self.timeline = [[TimeLine alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+        self.timeline = [[TimeLine alloc] init];
+        self.timeline.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
         self.timeline.dataSource = self;
-        [self addSubview:self.timeline];
+        [self.layer addSublayer:self.timeline];
     }
     
     if(!self.graphic) {
-        self.graphic = [[Graphic alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+        self.graphic = [[Graphic alloc] init];
         self.graphic.dataSource = self;
-        self.graphic.backgroundColor = [UIColor clearColor];
-        [self addSubview:self.graphic];
+        self.graphic.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+        self.graphic.backgroundColor = [UIColor clearColor].CGColor;
+        [self.layer addSublayer:self.graphic];
     }
     
     if(!self.priceView) {
-        self.priceView = [[PriceView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+        self.priceView = [[PriceView alloc] init];
+        self.priceView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
         self.priceView.datasource = self;
-        [self addSubview:self.priceView];
+        [self.layer addSublayer:self.priceView];
     }
     
     [self bringSubviewToFront:self.scrollView];
-    [self.scrollView addObserver:self forKeyPath:@"contentSize" options:0 context:nil];
     minCandle = 0;
     maxCandle = 0;
 }
@@ -132,6 +136,7 @@ const float kRightOffset = 62;
     [self.priceView setNeedsDisplay];
     [self.timeline setNeedsDisplay];
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
+    [self.tiling setNeedsDisplay];
 }
 
 -(void)reloadLastTick {
@@ -256,7 +261,9 @@ const float kRightOffset = 62;
     if(candlesPerCell == 0) candlesPerCell = 1;
     NSInteger index = count * floor(candlesPerCell) - 1;
     Tick *tick = [self tickForIndex:index];
-    if(!tick) return nil;
+    if(!tick) {
+        return nil;
+    }
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:tick.date];
     return date;;
 }
@@ -265,6 +272,21 @@ const float kRightOffset = 62;
     CGFloat offset = self.scrollView.contentOffset.x;
     int count = offset / 24;
     return count;
+}
+
+-(NSDateFormatter *)dateFormatter {
+    NSDateFormatter *df;
+    if(self.dataSource && [self.dataSource respondsToSelector:@selector(dateFormatter)]) {
+        df = [self.dataSource dateFormatter];
+    }
+    if(!df) {
+        df = [[NSDateFormatter alloc] init];
+        df.timeStyle = NSDateFormatterShortStyle;
+    }
+    
+    return df;
+    
+    
 }
 
 #pragma mark PracieViewDataSource
@@ -389,12 +411,5 @@ const float kRightOffset = 62;
     [self.scrollView setContentOffset:CGPointMake(scrollToX, 0) animated:NO];;
 }
 
-#pragma mark Observer
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
-    if([object isEqual:self.scrollView] && [keyPath isEqualToString:@"contentSize"]) {
-        [self.timeline setNeedsDisplay];
-        [self.tiling setNeedsDisplay];
-    }
-}
 
 @end
