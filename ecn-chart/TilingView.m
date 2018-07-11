@@ -40,14 +40,14 @@
     CGFloat candleWidth = [self.dataSource candleWidth];
     CGFloat offsetForCandles = [self.dataSource offsetForCandles] - candleWidth;
     
-    int rows = self.frame.size.width / 24.0;
-    int cols = self.frame.size.height / 24.0;
+    int rows = self.frame.size.width / cellSize;
+    int cols = self.frame.size.height / cellSize;
     for(int x = 0; x<rows; x++) {
         for(int y = 0; y<cols; y++) {
-            CGContextMoveToPoint(ctx, (x+1)*24.0 + offsetForCandles, 0);
-            CGContextAddLineToPoint(ctx, (x+1)*24.0 + offsetForCandles, self.frame.size.height);
-            CGContextMoveToPoint(ctx, 0, (y+1)*24.0);
-            CGContextAddLineToPoint(ctx, self.frame.size.width, (y+1)*24.0);
+            CGContextMoveToPoint(ctx, (x+1)*cellSize + offsetForCandles, 0);
+            CGContextAddLineToPoint(ctx, (x+1)*cellSize + offsetForCandles, self.frame.size.height);
+            CGContextMoveToPoint(ctx, 0, (y+1)*cellSize);
+            CGContextAddLineToPoint(ctx, self.frame.size.width, (y+1)*cellSize);
         }
     }
     

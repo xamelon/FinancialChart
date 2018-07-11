@@ -43,13 +43,13 @@
     CGContextSetFillColorWithColor(context, [UIColor blackColor].CGColor);
     CGContextMoveToPoint(context, rect.size.width - 12 - 40 - 5, 0);
     CGContextAddLineToPoint(context, rect.size.width - 12 - 40 - 5, self.frame.size.height);
-    int rows = self.frame.size.height / 24;
+    int rows = self.frame.size.height / cellSize;
     for(int y = 0; y<rows; y++) {
-        CGContextMoveToPoint(context, rect.size.width - 8 - 40 - 5, y*24);
-        CGContextAddLineToPoint(context, rect.size.width - 16 - 40 - 5, y*24);
+        CGContextMoveToPoint(context, rect.size.width - 8 - 40 - 5, y*cellSize);
+        CGContextAddLineToPoint(context, rect.size.width - 16 - 40 - 5, y*cellSize);
         NSString *text = @"Price";
         if([self.datasource respondsToSelector:@selector(priceForY:)]) {
-            float price = [self.datasource priceForY:(y*24)];
+            float price = [self.datasource priceForY:(y*cellSize)];
             if(price != price) {
                 text = @"";
             } else {
@@ -61,7 +61,7 @@
                                                  NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
                                                  }];
         UIGraphicsPushContext(ctx);
-        [text drawAtPoint:CGPointMake(rect.size.width - 15 - 35, (y*24)-size.height/2)
+        [text drawAtPoint:CGPointMake(rect.size.width - 15 - 35, (y*cellSize)-size.height/2)
            withAttributes:@{
                             NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
                             NSForegroundColorAttributeName: [UIColor blackColor]

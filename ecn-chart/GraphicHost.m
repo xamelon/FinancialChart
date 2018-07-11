@@ -14,8 +14,7 @@
 #import "PriceView.h"
 #import "Graphic.h"
 
-const float cellSize = 24;
-const float offset = 24;
+static const float offset = 0.0;
 const float maxScale = 3.0;
 const float minScale = 0.5;
 @interface GraphicHost() <UIScrollViewDelegate, TimeLineDataSource, PriceViewDataSource, GraphicDataSource>
@@ -181,8 +180,8 @@ const float kRightOffset = 62;
         NSLog(@"Tick date: %@", date);
         int candlesPerCell = (int)floor(self.candlesPerCell);
         if(candlesPerCell == 0) candlesPerCell = 1;
-        NSInteger maxWidth = ((self.frame.size.width - scalePoint.x) / 24) * roundf(candlesPerCell);
-        NSInteger minWidth = (scalePoint.x / 24) * roundf(candlesPerCell);
+        NSInteger maxWidth = ((self.frame.size.width - scalePoint.x) / cellSize) * roundf(candlesPerCell);
+        NSInteger minWidth = (scalePoint.x / cellSize) * roundf(candlesPerCell);
         minCandle = scalingIndexCandle - minWidth;
         maxCandle = scalingIndexCandle + maxWidth;
         int candles = self.frame.size.width / ([self candleWidth] * 2);
@@ -227,7 +226,7 @@ const float kRightOffset = 62;
 }
 
 -(CGFloat)cellSize {
-    return 24.0;
+    return cellSize;
 }
 
 #pragma mark UIScrollViewDelegate;
@@ -244,8 +243,8 @@ const float kRightOffset = 62;
 }
 
 -(CGFloat)offsetForCandles {
-    int cellCount = self.scrollView.contentOffset.x / 24;
-    CGFloat off = self.scrollView.contentOffset.x - 24 * cellCount;
+    int cellCount = self.scrollView.contentOffset.x / cellSize;
+    CGFloat off = self.scrollView.contentOffset.x - cellSize * cellCount;
     CGFloat offset = self.candleWidth - off;
     if(off < self.candleWidth/2) {
         
@@ -256,7 +255,7 @@ const float kRightOffset = 62;
 #pragma mark TimeLineDataSource
 
 -(NSDate *)dateAtPosition:(CGFloat)x {
-    int count = x / 24;
+    int count = x / cellSize;
     int candlesPerCell = (int)floor(self.candlesPerCell);
     if(candlesPerCell == 0) candlesPerCell = 1;
     NSInteger index = count * floor(candlesPerCell) - 1;
@@ -270,7 +269,7 @@ const float kRightOffset = 62;
 
 -(NSInteger)countOfTwoCells {
     CGFloat offset = self.scrollView.contentOffset.x;
-    int count = offset / 24;
+    int count = offset / cellSize;
     return count;
 }
 
@@ -357,7 +356,7 @@ const float kRightOffset = 62;
 }
 
 -(NSInteger)calculateMinCandle {
-    int cellCount = self.scrollView.contentOffset.x / 24;
+    int cellCount = self.scrollView.contentOffset.x / cellSize;
     minCandle = cellCount * floor(self.candlesPerCell);
     if(minCandle > self.dataSource.numberOfItems) minCandle = 0;
     return minCandle;

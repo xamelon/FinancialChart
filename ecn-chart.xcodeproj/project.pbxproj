@@ -59,6 +59,7 @@
 		68DB24C71FD0125D003F73F4 /* TimeLine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TimeLine.m; sourceTree = "<group>"; };
 		68DB24CB1FD19794003F73F4 /* PriceView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PriceView.h; sourceTree = "<group>"; };
 		68DB24CC1FD19794003F73F4 /* PriceView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PriceView.m; sourceTree = "<group>"; };
+		68EF0EF620F62A53008347CC /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +102,7 @@
 		685F2C6E1FC440750061E262 /* ecn-chart */ = {
 			isa = PBXGroup;
 			children = (
+				68EF0EF620F62A53008347CC /* PrefixHeader.pch */,
 				68BDA3EC20BD78A7000857D1 /* QuoteHelper.h */,
 				68BDA3ED20BD78A7000857D1 /* QuoteHelper.m */,
 				685F2C951FC440B40061E262 /* Candle.h */,
@@ -397,6 +399,8 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "${SRCROOT}/ecn-chart/PrefixHeader.pch";
 				INFOPLIST_FILE = "ecn-chart/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -417,6 +421,8 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "${SRCROOT}/ecn-chart/PrefixHeader.pch";
 				INFOPLIST_FILE = "ecn-chart/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
