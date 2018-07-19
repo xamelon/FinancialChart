@@ -113,11 +113,13 @@
             CGContextSetFillColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
             CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
             CGContextFillRect(context, CGRectMake(0, 0, size.width + 10, size.height + 5));
+            UIGraphicsPushContext(context);
             [text drawAtPoint:CGPointMake(2.5, 2.5)
                withAttributes:@{
                                 NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
                                 NSForegroundColorAttributeName: [UIColor whiteColor]
                                 }];
+            UIGraphicsPopContext();
         }
     }
     CGContextStrokePath(context);

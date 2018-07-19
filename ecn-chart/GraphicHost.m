@@ -114,7 +114,7 @@ const float kRightOffset = 62;
     int candlesPerCell = (int)floor(self.candlesPerCell);
     if(candlesPerCell == 0) candlesPerCell = 1;
     NSInteger tt = [self.dataSource numberOfItems];
-    CGFloat contentWidth = (tt / floor(candlesPerCell)) * self.cellSize + offset;
+    CGFloat contentWidth = tt * self.cellSize*2 + offset;
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
     
     self.timeline.frame = CGRectMake(0, 0, self.frame.size.width - kRightOffset, self.frame.size.height);
@@ -356,8 +356,10 @@ const float kRightOffset = 62;
 }
 
 -(NSInteger)calculateMinCandle {
-    int cellCount = self.scrollView.contentOffset.x / cellSize;
-    minCandle = cellCount * floor(self.candlesPerCell);
+    int candleCount = (self.scrollView.contentOffset.x + [self offsetForCandles]) / ([self candleWidth] * 2);
+    CGFloat allCandlesWidth = candleCount * self.candleWidth * 2;
+    minCandle = candleCount+1;
+    
     if(minCandle > self.dataSource.numberOfItems) minCandle = 0;
     return minCandle;
 }
@@ -365,8 +367,8 @@ const float kRightOffset = 62;
 -(NSInteger)calculateMaxCandle {
     NSInteger count = [self candleCount];
     
-    CGFloat maxOffset = self.graphic.frame.size.width;
-    int candles = maxOffset / (self.candleWidth * 2);
+    CGFloat maxOffset = self.graphic.frame.size.width - [self offsetForCandles];
+    int candles = floorf(maxOffset / (self.candleWidth * 2));
     maxCandle = minCandle + candles;
     if(maxCandle > count) {
         maxCandle = count;
