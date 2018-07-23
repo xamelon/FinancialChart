@@ -56,7 +56,7 @@
     nf.numberStyle = NSNumberFormatterDecimalStyle;
     [nf setDecimalSeparator:@"."];
     [nf setRoundingMode:NSNumberFormatterRoundUp];
-    [nf setMaximumSignificantDigits:5];
+    [nf setMinimumSignificantDigits:8];
     [nf setAllowsFloats:YES];
     [nf setAlwaysShowsDecimalSeparator:YES];
     return [nf stringFromNumber:number];

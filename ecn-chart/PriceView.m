@@ -26,12 +26,29 @@
         self.backgroundColor = [UIColor clearColor].CGColor;
         self.contentsScale = [UIScreen mainScreen].scale;
         self.shouldRasterize = NO;
+        CGFloat sizeForView = [self sizeForView];
+        
     }
     return self;
 }
 
 -(__kindof CAAnimation *)animationForKey:(NSString *)key {
     return nil;
+}
+
+-(CGFloat)sizeForView {
+    NSString *text;
+    float price = [self.datasource priceForY:self.frame.size.height / 2];
+    NSNumberFormatter *nf = [self.datasource numberFormatter];
+    if(price != price) {
+        text = @"";
+    } else {
+        text = [nf stringFromNumber:[QuoteHelper decimalNumberFromDouble:price]];
+    }
+    CGSize size = [text sizeWithAttributes:@{
+                                             NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:9.0],
+                                             }];
+    return size.width + 15;
 }
 
 -(void)drawInContext:(CGContextRef)ctx {
@@ -41,32 +58,34 @@
     CGContextClearRect(context, rect);
     CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
     CGContextSetFillColorWithColor(context, [UIColor blackColor].CGColor);
-    CGContextMoveToPoint(context, rect.size.width - 12 - 40 - 5, 0);
-    CGContextAddLineToPoint(context, rect.size.width - 12 - 40 - 5, self.frame.size.height);
+    NSNumberFormatter *nf = [self.datasource numberFormatter];
     int rows = self.frame.size.height / cellSize;
-    for(int y = 0; y<rows; y++) {
-        CGContextMoveToPoint(context, rect.size.width - 8 - 40 - 5, y*cellSize);
-        CGContextAddLineToPoint(context, rect.size.width - 16 - 40 - 5, y*cellSize);
+    CGSize textSize = CGSizeZero;
+    for(int y = 1; y<=rows; y++) {
+       
         NSString *text = @"Price";
         if([self.datasource respondsToSelector:@selector(priceForY:)]) {
             float price = [self.datasource priceForY:(y*cellSize)];
             if(price != price) {
                 text = @"";
             } else {
-                text = [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:price]];
+                text = [nf stringFromNumber:[QuoteHelper decimalNumberFromDouble:price]];
             }
         }
         
         CGSize size = [text sizeWithAttributes:@{
                                                  NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
                                                  }];
+        textSize = size;
         UIGraphicsPushContext(ctx);
-        [text drawAtPoint:CGPointMake(rect.size.width - 15 - 35, (y*cellSize)-size.height/2)
+        [text drawAtPoint:CGPointMake(rect.size.width - size.width - 5, (y*cellSize)-size.height/2)
            withAttributes:@{
                             NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
                             NSForegroundColorAttributeName: [UIColor blackColor]
                             }];
         UIGraphicsPopContext();
+        CGContextMoveToPoint(context, rect.size.width - size.width - 13, y*cellSize);
+        CGContextAddLineToPoint(context, rect.size.width - size.width - 7, y*cellSize);
     }
     CGContextStrokePath(context);
     if(!CGPointEqualToPoint(selectionPoint, CGPointZero)) {
@@ -76,16 +95,16 @@
         if(price != price) {
             text = @"";
         } else {
-            text = [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:price]];
+            text = [nf stringFromNumber:[QuoteHelper decimalNumberFromDouble:price]];;
         }
         CGSize size = [text sizeWithAttributes:@{
                                                  NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:9.0],
                                                  }];
         CGContextSetFillColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
         CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
-        CGContextFillRect(context, CGRectMake(rect.size.width - 12 - 40 - 5, selectionPoint.y-1, 55, size.height + 5));
+        CGContextFillRect(context, CGRectMake(rect.size.width - size.width - 5, selectionPoint.y-1, 55, size.height + 5));
         UIGraphicsPushContext(ctx);
-        [text drawAtPoint:CGPointMake(rect.size.width - 12 - 35, selectionPoint.y+1)
+        [text drawAtPoint:CGPointMake(rect.size.width - size.width - 3, selectionPoint.y+1)
            withAttributes:@{
                             NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:9.0],
                             NSForegroundColorAttributeName: [UIColor whiteColor]
@@ -93,8 +112,12 @@
         UIGraphicsPopContext();
         
     }
+    CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
+    CGContextMoveToPoint(context, rect.size.width - textSize.width - 10, 0);
+    CGContextAddLineToPoint(context, rect.size.width - textSize.width - 10, self.frame.size.height);
     
     CGContextStrokePath(context);
+    
 }
 
 -(void)drawPriceInPoint:(CGPoint)point {

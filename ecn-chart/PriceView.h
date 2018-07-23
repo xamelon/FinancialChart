@@ -12,6 +12,8 @@
 
 -(float)priceForY:(CGFloat)y;
 
+-(NSNumberFormatter *)numberFormatter;
+
 @end
 
 @interface PriceView : CALayer
@@ -19,5 +21,7 @@
 @property (weak, nonatomic) id <PriceViewDataSource> datasource;
 
 -(void)drawPriceInPoint:(CGPoint)point;
+
+-(CGFloat)sizeForView;
 
 @end

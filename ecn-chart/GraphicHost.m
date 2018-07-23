@@ -98,8 +98,8 @@ const float kRightOffset = 62;
     
     if(!self.priceView) {
         self.priceView = [[PriceView alloc] init];
-        self.priceView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
         self.priceView.datasource = self;
+        
         [self.layer addSublayer:self.priceView];
     }
     
@@ -110,17 +110,14 @@ const float kRightOffset = 62;
 
 -(void)layoutSubviews {
     [super layoutSubviews];
-    self.scrollView.frame = CGRectMake(0, 0, self.frame.size.width - kRightOffset, self.frame.size.height);
+    
     int candlesPerCell = (int)floor(self.candlesPerCell);
     if(candlesPerCell == 0) candlesPerCell = 1;
+    CGFloat priceWidth = [self.priceView sizeForView];
+    
     NSInteger tt = [self.dataSource numberOfItems];
     CGFloat contentWidth = tt * self.cellSize*2 + offset;
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
-    
-    self.timeline.frame = CGRectMake(0, 0, self.frame.size.width - kRightOffset, self.frame.size.height);
-    self.tiling.frame = CGRectMake(0, 0, self.frame.size.width - kRightOffset, self.frame.size.height);
-    self.priceView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-    [self.graphic setFrame:CGRectMake(0, 0, self.frame.size.width - kRightOffset, self.frame.size.height)];
     [self.graphic setNeedsDisplay];
     
 }
@@ -130,9 +127,22 @@ const float kRightOffset = 62;
     CGRect graphicOffset = self.graphic.frame;
     
     CGFloat offsetX = self.scrollView.contentOffset.x;
+    if(self.priceView.frame.size.width == 0 || self.priceView.frame.size.width == 15) {
+        CGFloat priceWidth = [self.priceView sizeForView];
+        if(priceWidth == 15) priceWidth = 0;
+        [self.priceView setFrame:CGRectMake(self.frame.size.width - priceWidth, 0, priceWidth, self.frame.size.height)];
+        [self.graphic setFrame:CGRectMake(0, 0, self.frame.size.width - priceWidth + 5, self.frame.size.height)];
+        [self.tiling setFrame:CGRectMake(0, 0, self.frame.size.width - priceWidth + 5, self.frame.size.height)];
+        [self.timeline setFrame:CGRectMake(0, 0, self.frame.size.width - priceWidth + 5, self.frame.size.height)];
+        self.scrollView.frame = CGRectMake(0, 0, self.frame.size.width - priceWidth + 5, self.frame.size.height);
+        [self.graphic setNeedsDisplay];;
+        [self.priceView setNeedsDisplay];
+        [self.timeline setNeedsDisplay];
+    }
+    
     graphicOffset.origin.x = offsetX;
-    [self.graphic setNeedsDisplay];;
     [self.priceView setNeedsDisplay];
+    [self.graphic setNeedsDisplay];;
     [self.timeline setNeedsDisplay];
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
     [self.tiling setNeedsDisplay];
@@ -141,8 +151,6 @@ const float kRightOffset = 62;
 -(void)reloadLastTick {
    [self reloadData];
 }
-
-
 
 -(void)scale:(UIPinchGestureRecognizer *)gesture {
     
@@ -410,6 +418,13 @@ const float kRightOffset = 62;
     if(candlesPerCell == 0) candlesPerCell = 1;
     CGFloat scrollToX = (64 * self.candleWidth * 2) + self.scrollView.contentOffset.x;
     [self.scrollView setContentOffset:CGPointMake(scrollToX, 0) animated:NO];;
+}
+
+-(NSNumberFormatter *)numberFormatter {
+    if(self.dataSource && [self.dataSource respondsToSelector:@selector(numberFormatter)]) {
+        return [self.dataSource numberFormatter];
+    }
+    return [[NSNumberFormatter alloc] init];
 }
 
 

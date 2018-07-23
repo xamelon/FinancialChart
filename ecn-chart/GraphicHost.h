@@ -24,6 +24,8 @@
 
 -(NSDateFormatter *)dateFormatter;
 
+-(NSNumberFormatter *)numberFormatter;
+
 @end
 
 @protocol GraphicHostDelegate <NSObject>
