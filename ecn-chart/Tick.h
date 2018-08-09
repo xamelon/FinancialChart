@@ -15,6 +15,7 @@
 @property float open;
 @property float close;
 @property NSInteger date;
+@property float volume;
 @property (strong, nonatomic) NSString *symbolName;
 
 @end

@@ -32,6 +32,10 @@
 
 -(void)needAdditionalData;
 
+-(void)longTapAtGraphicWithState:(UIGestureRecognizerState)state;
+
+-(void)graphicDidScroll;
+
 @end
 
 

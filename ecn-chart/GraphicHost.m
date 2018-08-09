@@ -106,6 +106,7 @@ const float kRightOffset = 62;
     [self bringSubviewToFront:self.scrollView];
     minCandle = 0;
     maxCandle = 0;
+    [self addObserver:self forKeyPath:@"bounds" options:0 context:nil];
 }
 
 -(void)layoutSubviews {
@@ -127,7 +128,7 @@ const float kRightOffset = 62;
     CGRect graphicOffset = self.graphic.frame;
     
     CGFloat offsetX = self.scrollView.contentOffset.x;
-    if(self.priceView.frame.size.width == 0 || self.priceView.frame.size.width == 15) {
+    //if(self.priceView.frame.size.width == 0 || self.priceView.frame.size.width == 15) {
         CGFloat priceWidth = [self.priceView sizeForView];
         if(priceWidth == 15) priceWidth = 0;
         [self.priceView setFrame:CGRectMake(self.frame.size.width - priceWidth, 0, priceWidth, self.frame.size.height)];
@@ -138,7 +139,7 @@ const float kRightOffset = 62;
         [self.graphic setNeedsDisplay];;
         [self.priceView setNeedsDisplay];
         [self.timeline setNeedsDisplay];
-    }
+    //}
     
     graphicOffset.origin.x = offsetX;
     [self.priceView setNeedsDisplay];
@@ -228,9 +229,14 @@ const float kRightOffset = 62;
     if(gesture.state == UIGestureRecognizerStateBegan || gesture.state == UIGestureRecognizerStateChanged) {
         [self.graphic drawLinesForSelectionPoint:selectionPoint];
         [self.priceView drawPriceInPoint:selectionPoint];
+        
+        
+        
     } else {
     }
-    
+    if(self.delegate && [self.delegate respondsToSelector:@selector(longTapAtGraphicWithState:)]) {
+        [self.delegate longTapAtGraphicWithState:gesture.state];
+    }
 }
 
 -(CGFloat)cellSize {
@@ -248,6 +254,10 @@ const float kRightOffset = 62;
     [self.graphic drawLinesForSelectionPoint:CGPointZero];
     
     [self reloadData];
+    
+    if(self.delegate && [self.delegate respondsToSelector:@selector(graphicDidScroll)]) {
+        [self.delegate graphicDidScroll];
+    }
 }
 
 -(CGFloat)offsetForCandles {
@@ -410,7 +420,7 @@ const float kRightOffset = 62;
 }
 
 -(void)scrollToEnd {
-    [self.scrollView scrollRectToVisible:CGRectMake(self.scrollView.contentSize.width-1, 0, 1, self.scrollView.frame.size.width) animated:NO];
+    [self.scrollView scrollRectToVisible:CGRectMake(self.scrollView.contentSize.width-1, 0, 1, 1) animated:NO];
 }
 
 -(void)scrollToBeginAfterReload {
@@ -427,5 +437,10 @@ const float kRightOffset = 62;
     return [[NSNumberFormatter alloc] init];
 }
 
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+    if([object isEqual:self] && [keyPath isEqualToString:@"bounds"]) {
+        NSLog(@"Change size of view");
+    }
+}
 
 @end

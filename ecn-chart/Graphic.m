@@ -103,12 +103,12 @@
         if(chartType != ChartTypeLine) {
             Tick *selectedTick = [self.dataSource candleForPoint:selectionPoint];
             NSString *text = [NSString stringWithFormat:@"Open: %@ Close: %@\nHigh: %@ Low: %@",
-                              [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.open]],
-                              [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.close]],
-                              [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.max]],
-                              [QuoteHelper stringFromDecimalNumber:[QuoteHelper decimalNumberFromDouble:selectedTick.min]]];
+                              [QuoteHelper decimalNumberFromDouble:selectedTick.open],
+                              [QuoteHelper decimalNumberFromDouble:selectedTick.close],
+                              [QuoteHelper decimalNumberFromDouble:selectedTick.max],
+                              [QuoteHelper decimalNumberFromDouble:selectedTick.min]];
             CGSize size = [text sizeWithAttributes:@{
-                                                     NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
+                                                     NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:10.0],
                                                      }];
             CGContextSetFillColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
             CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
