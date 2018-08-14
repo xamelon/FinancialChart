@@ -62,7 +62,7 @@
     int rows = self.frame.size.height / cellSize;
     CGSize textSize = CGSizeZero;
     for(int y = 1; y<=rows; y++) {
-       
+        
         NSString *text = @"Price";
         if([self.datasource respondsToSelector:@selector(priceForY:)]) {
             float price = [self.datasource priceForY:(y*cellSize)];
@@ -84,6 +84,12 @@
                             NSForegroundColorAttributeName: [UIColor blackColor]
                             }];
         UIGraphicsPopContext();
+        //draw grid lines
+        CGContextSetStrokeColorWithColor(context, [UIColor lightGrayColor].CGColor);
+        
+        CGContextMoveToPoint(context, 0, y*cellSize);
+        CGContextAddLineToPoint(context, rect.size.width-size.width-13, y*cellSize);
+        
         CGContextMoveToPoint(context, rect.size.width - size.width - 13, y*cellSize);
         CGContextAddLineToPoint(context, rect.size.width - size.width - 7, y*cellSize);
     }

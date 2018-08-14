@@ -13,11 +13,12 @@
 		685F2C971FC440B40061E262 /* Candle.m in Sources */ = {isa = PBXBuildFile; fileRef = 685F2C901FC440B20061E262 /* Candle.m */; };
 		685F2C981FC440B40061E262 /* GraphicHost.m in Sources */ = {isa = PBXBuildFile; fileRef = 685F2C911FC440B30061E262 /* GraphicHost.m */; };
 		685F2C991FC440B40061E262 /* Tick.m in Sources */ = {isa = PBXBuildFile; fileRef = 685F2C921FC440B30061E262 /* Tick.m */; };
-		685F2C9A1FC440B40061E262 /* TilingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 685F2C961FC440B40061E262 /* TilingView.m */; };
 		685F2C9C1FC442170061E262 /* GraphicHost.h in Headers */ = {isa = PBXBuildFile; fileRef = 685F2C931FC440B30061E262 /* GraphicHost.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		685F2C9D1FC4421A0061E262 /* Tick.h in Headers */ = {isa = PBXBuildFile; fileRef = 685F2C8F1FC440B20061E262 /* Tick.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		687F1F0B202317A40020E2C4 /* Graphic.h in Headers */ = {isa = PBXBuildFile; fileRef = 687F1F09202317A40020E2C4 /* Graphic.h */; };
 		687F1F0C202317A40020E2C4 /* Graphic.m in Sources */ = {isa = PBXBuildFile; fileRef = 687F1F0A202317A40020E2C4 /* Graphic.m */; };
+		688237192122BDC500F414BB /* BaseIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 688237172122BDC500F414BB /* BaseIndicator.h */; };
+		6882371A2122BDC500F414BB /* BaseIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 688237182122BDC500F414BB /* BaseIndicator.m */; };
 		68BDA3EE20BD78A7000857D1 /* QuoteHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 68BDA3EC20BD78A7000857D1 /* QuoteHelper.h */; };
 		68BDA3EF20BD78A7000857D1 /* QuoteHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 68BDA3ED20BD78A7000857D1 /* QuoteHelper.m */; };
 		68DB24C81FD0125D003F73F4 /* TimeLine.h in Headers */ = {isa = PBXBuildFile; fileRef = 68DB24C61FD0125D003F73F4 /* TimeLine.h */; };
@@ -48,11 +49,11 @@
 		685F2C911FC440B30061E262 /* GraphicHost.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GraphicHost.m; sourceTree = "<group>"; };
 		685F2C921FC440B30061E262 /* Tick.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tick.m; sourceTree = "<group>"; };
 		685F2C931FC440B30061E262 /* GraphicHost.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GraphicHost.h; sourceTree = "<group>"; };
-		685F2C941FC440B30061E262 /* TilingView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TilingView.h; sourceTree = "<group>"; };
 		685F2C951FC440B40061E262 /* Candle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Candle.h; sourceTree = "<group>"; };
-		685F2C961FC440B40061E262 /* TilingView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TilingView.m; sourceTree = "<group>"; };
 		687F1F09202317A40020E2C4 /* Graphic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Graphic.h; sourceTree = "<group>"; };
 		687F1F0A202317A40020E2C4 /* Graphic.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Graphic.m; sourceTree = "<group>"; };
+		688237172122BDC500F414BB /* BaseIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseIndicator.h; sourceTree = "<group>"; };
+		688237182122BDC500F414BB /* BaseIndicator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BaseIndicator.m; sourceTree = "<group>"; };
 		68BDA3EC20BD78A7000857D1 /* QuoteHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QuoteHelper.h; sourceTree = "<group>"; };
 		68BDA3ED20BD78A7000857D1 /* QuoteHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QuoteHelper.m; sourceTree = "<group>"; };
 		68DB24C61FD0125D003F73F4 /* TimeLine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimeLine.h; sourceTree = "<group>"; };
@@ -103,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				68EF0EF620F62A53008347CC /* PrefixHeader.pch */,
+				688237162122BDA000F414BB /* Indicators */,
 				68BDA3EC20BD78A7000857D1 /* QuoteHelper.h */,
 				68BDA3ED20BD78A7000857D1 /* QuoteHelper.m */,
 				685F2C951FC440B40061E262 /* Candle.h */,
@@ -113,8 +115,6 @@
 				687F1F0A202317A40020E2C4 /* Graphic.m */,
 				685F2C8F1FC440B20061E262 /* Tick.h */,
 				685F2C921FC440B30061E262 /* Tick.m */,
-				685F2C941FC440B30061E262 /* TilingView.h */,
-				685F2C961FC440B40061E262 /* TilingView.m */,
 				68DB24C61FD0125D003F73F4 /* TimeLine.h */,
 				68DB24C71FD0125D003F73F4 /* TimeLine.m */,
 				68DB24CB1FD19794003F73F4 /* PriceView.h */,
@@ -134,6 +134,15 @@
 			path = "ecn-chartTests";
 			sourceTree = "<group>";
 		};
+		688237162122BDA000F414BB /* Indicators */ = {
+			isa = PBXGroup;
+			children = (
+				688237172122BDC500F414BB /* BaseIndicator.h */,
+				688237182122BDC500F414BB /* BaseIndicator.m */,
+			);
+			path = Indicators;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -146,6 +155,7 @@
 				687F1F0B202317A40020E2C4 /* Graphic.h in Headers */,
 				685F2C7D1FC440750061E262 /* ecn_chart.h in Headers */,
 				685F2C9C1FC442170061E262 /* GraphicHost.h in Headers */,
+				688237192122BDC500F414BB /* BaseIndicator.h in Headers */,
 				685F2C9D1FC4421A0061E262 /* Tick.h in Headers */,
 				68DB24C81FD0125D003F73F4 /* TimeLine.h in Headers */,
 			);
@@ -250,8 +260,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				685F2C981FC440B40061E262 /* GraphicHost.m in Sources */,
-				685F2C9A1FC440B40061E262 /* TilingView.m in Sources */,
 				687F1F0C202317A40020E2C4 /* Graphic.m in Sources */,
+				6882371A2122BDC500F414BB /* BaseIndicator.m in Sources */,
 				68DB24CE1FD19794003F73F4 /* PriceView.m in Sources */,
 				68DB24C91FD0125D003F73F4 /* TimeLine.m in Sources */,
 				685F2C991FC440B40061E262 /* Tick.m in Sources */,

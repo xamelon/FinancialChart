@@ -33,10 +33,8 @@ const float lineHeight = 5.0;
 -(void)drawInContext:(CGContextRef)ctx {
     CGRect rect = self.frame;
     CGContextRef context = ctx;
-    CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
-    CGContextMoveToPoint(context, 0, rect.size.height-10);
-    CGContextAddLineToPoint(context, rect.size.width, rect.size.height-10);
     int cols = self.frame.size.width / cellSize;
+    
     CGFloat candleWidth = [self.dataSource candleWidth];
     CGFloat offsetForCandles = [self.dataSource offsetForCandles] - candleWidth;
     NSInteger countOfTwoCells = [self.dataSource countOfTwoCells];
@@ -46,12 +44,19 @@ const float lineHeight = 5.0;
         df = [self.dataSource dateFormatter];
     }
     
+    //for saving current date drawed
     if(countOfTwoCells % 2 != 0) {
         offsetForCandles -= cellSize;
+        cols++;
     }
+    
     for(int x = 0; x<cols+1; x=x+2) {
-        CGContextMoveToPoint(context, x*cellSize + offsetForCandles, self.frame.size.height-10);
-        CGContextAddLineToPoint(context, x*cellSize + offsetForCandles, self.frame.size.height-10-lineHeight);
+        
+        
+        CGContextSetStrokeColorWithColor(context, UIColor.blackColor.CGColor);
+        CGContextMoveToPoint(context, x*cellSize+offsetForCandles, self.frame.size.height-10);
+        CGContextAddLineToPoint(context, x*cellSize+offsetForCandles, self.frame.size.height-10-lineHeight);
+        CGContextStrokePath(context);
         NSDate *date;
         if([self.dataSource respondsToSelector:@selector(dateAtPosition:)]) {
             CGFloat position = x*cellSize +  countOfTwoCells*cellSize;
@@ -77,7 +82,17 @@ const float lineHeight = 5.0;
                                NSForegroundColorAttributeName: [UIColor blackColor]
                                }];
         UIGraphicsPopContext();
+        CGContextSetStrokeColorWithColor(context, UIColor.lightGrayColor.CGColor);
+        CGContextMoveToPoint(context, x*cellSize+offsetForCandles, 0);
+        CGContextAddLineToPoint(context, x*cellSize+offsetForCandles, self.frame.size.height-10);
+        CGContextMoveToPoint(context, (x+1)*cellSize+offsetForCandles, 0);
+        CGContextAddLineToPoint(context, (x+1)*cellSize+offsetForCandles, self.frame.size.height-10);
+        CGContextStrokePath(context);
     }
+    CGContextStrokePath(context);
+    CGContextSetStrokeColorWithColor(context, UIColor.blackColor.CGColor);
+    CGContextMoveToPoint(context, 0, rect.size.height-10);
+    CGContextAddLineToPoint(context, rect.size.width, rect.size.height-10);
     CGContextStrokePath(context);
 }
 

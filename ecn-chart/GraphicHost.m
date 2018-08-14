@@ -9,7 +9,6 @@
 #import "GraphicHost.h"
 #import "Candle.h"
 #import "Tick.h"
-#import "TilingView.h"
 #import "TimeLine.h"
 #import "PriceView.h"
 #import "Graphic.h"
@@ -26,7 +25,6 @@ const float minScale = 0.5;
 @property CGFloat candlesPerCell;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinch;
 @property (strong, nonatomic) UILongPressGestureRecognizer *longPress;
-@property (strong, nonatomic) TilingView *tiling;
 @property (strong, nonatomic) TimeLine *timeline;
 @property (strong, nonatomic) PriceView *priceView;
 @property (strong, nonatomic) Graphic *graphic;
@@ -74,11 +72,11 @@ const float kRightOffset = 62;
     if(!self.scrollView.superview) {
         [self addSubview:self.scrollView];
     }
-    if(!self.tiling) {
-        self.tiling = [[TilingView alloc] init];
-        self.tiling.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-        self.tiling.dataSource = self;
-        [self.layer addSublayer:self.tiling];
+    if(!self.priceView) {
+        self.priceView = [[PriceView alloc] init];
+        self.priceView.datasource = self;
+        
+        [self.layer addSublayer:self.priceView];
     }
     
     if(!self.timeline) {
@@ -96,12 +94,6 @@ const float kRightOffset = 62;
         [self.layer addSublayer:self.graphic];
     }
     
-    if(!self.priceView) {
-        self.priceView = [[PriceView alloc] init];
-        self.priceView.datasource = self;
-        
-        [self.layer addSublayer:self.priceView];
-    }
     
     [self bringSubviewToFront:self.scrollView];
     minCandle = 0;
@@ -114,7 +106,6 @@ const float kRightOffset = 62;
     
     int candlesPerCell = (int)floor(self.candlesPerCell);
     if(candlesPerCell == 0) candlesPerCell = 1;
-    CGFloat priceWidth = [self.priceView sizeForView];
     
     NSInteger tt = [self.dataSource numberOfItems];
     CGFloat contentWidth = tt * self.cellSize*2 + offset;
@@ -131,9 +122,8 @@ const float kRightOffset = 62;
     //if(self.priceView.frame.size.width == 0 || self.priceView.frame.size.width == 15) {
         CGFloat priceWidth = [self.priceView sizeForView];
         if(priceWidth == 15) priceWidth = 0;
-        [self.priceView setFrame:CGRectMake(self.frame.size.width - priceWidth, 0, priceWidth, self.frame.size.height)];
+        [self.priceView setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
         [self.graphic setFrame:CGRectMake(0, 0, self.frame.size.width - priceWidth + 5, self.frame.size.height)];
-        [self.tiling setFrame:CGRectMake(0, 0, self.frame.size.width - priceWidth + 5, self.frame.size.height)];
         [self.timeline setFrame:CGRectMake(0, 0, self.frame.size.width - priceWidth + 5, self.frame.size.height)];
         self.scrollView.frame = CGRectMake(0, 0, self.frame.size.width - priceWidth + 5, self.frame.size.height);
         [self.graphic setNeedsDisplay];;
@@ -146,7 +136,6 @@ const float kRightOffset = 62;
     [self.graphic setNeedsDisplay];;
     [self.timeline setNeedsDisplay];
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
-    [self.tiling setNeedsDisplay];
 }
 
 -(void)reloadLastTick {
