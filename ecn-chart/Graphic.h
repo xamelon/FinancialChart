@@ -15,8 +15,8 @@ typedef enum ChartType : NSInteger {
 } ChartType;
 
 @protocol GraphicDataSource <NSObject>
--(CGFloat)getMinValue;
--(CGFloat)getMaxValue;
+-(CGFloat)minValue;
+-(CGFloat)maxValue;
 -(CGFloat)candleWidth;
 -(NSInteger)maxCandle;
 -(NSInteger)minCandle;

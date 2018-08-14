@@ -12,11 +12,14 @@
 #import "TimeLine.h"
 #import "PriceView.h"
 #import "Graphic.h"
+#import "SMAIndicator.h"
+#import "SARIndicator.h"
+#import "EMAIndicator.h"
 
 static const float offset = 0.0;
 const float maxScale = 3.0;
 const float minScale = 0.5;
-@interface GraphicHost() <UIScrollViewDelegate, TimeLineDataSource, PriceViewDataSource, GraphicDataSource>
+@interface GraphicHost() <UIScrollViewDelegate, TimeLineDataSource, PriceViewDataSource, GraphicDataSource, IndicatorDataSource>
 
 @property CGFloat maxValue;
 @property CGFloat minValue;
@@ -28,6 +31,7 @@ const float minScale = 0.5;
 @property (strong, nonatomic) TimeLine *timeline;
 @property (strong, nonatomic) PriceView *priceView;
 @property (strong, nonatomic) Graphic *graphic;
+@property (strong, nonatomic) NSMutableArray <__kindof BaseIndicator *> *indicators;
 @end
 
 @implementation GraphicHost {
@@ -58,7 +62,7 @@ const float kRightOffset = 62;
 -(void)setupView {
     self.scale = 1.0;
     self.candlesPerCell = 4;
-    
+    self.indicators = [[NSMutableArray alloc] init];
     if(!self.scrollView) {
         self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
     }
@@ -86,6 +90,7 @@ const float kRightOffset = 62;
         [self.layer addSublayer:self.timeline];
     }
     
+    
     if(!self.graphic) {
         self.graphic = [[Graphic alloc] init];
         self.graphic.dataSource = self;
@@ -93,6 +98,28 @@ const float kRightOffset = 62;
         self.graphic.backgroundColor = [UIColor clearColor].CGColor;
         [self.layer addSublayer:self.graphic];
     }
+    
+    // TODO: delete this andi add indicators from user choose
+    SMAIndicator *sma = [[SMAIndicator alloc] init];
+    sma.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+    sma.backgroundColor = UIColor.clearColor.CGColor;
+    sma.dataSource = self;
+    [self.layer addSublayer:sma];
+    
+    SARIndicator *sar = [[SARIndicator alloc] init];
+    sar.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+    sar.backgroundColor = UIColor.clearColor.CGColor;
+    sar.dataSource = self;
+    [self.layer addSublayer:sar];
+    [self.indicators addObject:sma];
+    [self.indicators addObject:sar];
+    
+    EmaIndicator *ema = [[EmaIndicator alloc] init];
+    ema.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+    ema.backgroundColor = UIColor.clearColor.CGColor;
+    ema.dataSource = self;;
+    [self.layer addSublayer:ema];
+    [self.indicators addObject:ema];
     
     
     [self bringSubviewToFront:self.scrollView];
@@ -125,10 +152,13 @@ const float kRightOffset = 62;
         [self.priceView setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
         [self.graphic setFrame:CGRectMake(0, 0, self.frame.size.width - priceWidth + 5, self.frame.size.height)];
         [self.timeline setFrame:CGRectMake(0, 0, self.frame.size.width - priceWidth + 5, self.frame.size.height)];
-        self.scrollView.frame = CGRectMake(0, 0, self.frame.size.width - priceWidth + 5, self.frame.size.height);
-        [self.graphic setNeedsDisplay];;
-        [self.priceView setNeedsDisplay];
-        [self.timeline setNeedsDisplay];
+    for(__kindof BaseIndicator *indicator in self.indicators) {
+        [indicator setFrame:self.graphic.frame];
+        [indicator setNeedsDisplay];
+    }
+    
+    self.scrollView.frame = CGRectMake(0, 0, self.frame.size.width - priceWidth + 5, self.frame.size.height);
+    
     //}
     
     graphicOffset.origin.x = offsetX;
@@ -315,9 +345,12 @@ const float kRightOffset = 62;
         float open = tick.open;
         float close = tick.close;
         if(self.maxValue < max) self.maxValue = max;
-        if(self.maxValue < open) self.maxValue = open;
-        if(self.maxValue < close) self.maxValue = close;
     }
+    for(__kindof BaseIndicator *indicator in self.indicators) {
+        float max = [indicator maxValueInRange:NSMakeRange(minCandle, maxCandle-minCandle)];
+        if(max > self.maxValue) self.maxValue = max;
+    }
+    
     return self.maxValue;
 }
 
@@ -331,10 +364,13 @@ const float kRightOffset = 62;
         float close = tick.close;
         float min = tick.min;
         if(self.minValue > min) self.minValue = min;
-        if(self.minValue > open) self.minValue = open;
-        if(self.minValue > close) self.minValue = close;
         //NSLog(@"[MIN VALUE]: %f", self.minValue);
     }
+    for(__kindof BaseIndicator *indicator in self.indicators) {
+        float min = [indicator minValueInRange:NSMakeRange(minCandle, maxCandle-minCandle)];
+        if(min < self.minValue && min > 0.0) self.minValue = min;
+    }
+    
     return self.minValue;
 }
 
@@ -424,6 +460,13 @@ const float kRightOffset = 62;
         return [self.dataSource numberFormatter];
     }
     return [[NSNumberFormatter alloc] init];
+}
+
+#pragma mark IndicatorDataSource
+-(NSRange)currentVisibleRange {
+    NSInteger minCandle = [self minCandle];
+    NSInteger length = [self maxCandle] - minCandle;
+    return NSMakeRange(minCandle, length);
 }
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {

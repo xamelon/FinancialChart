@@ -44,8 +44,8 @@
 
 -(void)drawInContext:(CGContextRef)context {
     CGRect rect = self.frame;
-    CGFloat minValue = [self.dataSource getMinValue];
-    CGFloat maxValue = [self.dataSource getMaxValue];
+    CGFloat minValue = [self.dataSource minValue];
+    CGFloat maxValue = [self.dataSource maxValue];
     NSInteger minCandle = [self.dataSource minCandle];
     NSInteger maxCandle = [self.dataSource maxCandle];
     CGFloat candleWidth = [self.dataSource candleWidth];
