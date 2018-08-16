@@ -9,7 +9,7 @@
 #import "TimeLine.h"
 #import "GraphicHost.h"
 #import "Candle.h"
-#import "Graphic.h"
+#import "Graph.h"
 
 const float lineHeight = 5.0;
 

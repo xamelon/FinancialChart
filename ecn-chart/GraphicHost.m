@@ -11,15 +11,16 @@
 #import "Tick.h"
 #import "TimeLine.h"
 #import "PriceView.h"
-#import "Graphic.h"
-#import "SMAIndicator.h"
-#import "SARIndicator.h"
-#import "EMAIndicator.h"
+#import "Graph.h"
+#import "CandleGraphic.h"
+#import "VerticalAxis.h"
+#import "MACDIndicator.h"
+#import "RSIIndicator.h"
 
 static const float offset = 0.0;
 const float maxScale = 3.0;
 const float minScale = 0.5;
-@interface GraphicHost() <UIScrollViewDelegate, TimeLineDataSource, PriceViewDataSource, GraphicDataSource, IndicatorDataSource>
+@interface GraphicHost() <UIScrollViewDelegate, TimeLineDataSource, PriceViewDataSource, GraphDataSource>
 
 @property CGFloat maxValue;
 @property CGFloat minValue;
@@ -29,9 +30,8 @@ const float minScale = 0.5;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinch;
 @property (strong, nonatomic) UILongPressGestureRecognizer *longPress;
 @property (strong, nonatomic) TimeLine *timeline;
-@property (strong, nonatomic) PriceView *priceView;
-@property (strong, nonatomic) Graphic *graphic;
-@property (strong, nonatomic) NSMutableArray <__kindof BaseIndicator *> *indicators;
+@property (strong, nonatomic) Graph *graph;
+@property (strong, nonatomic) Graph *indicatorGraph;
 @end
 
 @implementation GraphicHost {
@@ -62,13 +62,12 @@ const float kRightOffset = 62;
 -(void)setupView {
     self.scale = 1.0;
     self.candlesPerCell = 4;
-    self.indicators = [[NSMutableArray alloc] init];
     if(!self.scrollView) {
         self.scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
     }
     [self.scrollView setContentSize:CGSizeMake(self.frame.size.width * 3, self.frame.size.height)];
     self.scrollView.delegate = self;
-    self.scrollView.bounces = NO;
+    self.scrollView.bounces = YES;
     self.pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(scale:)];
     [self addGestureRecognizer:self.pinch];
     self.longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longPress:)];
@@ -76,50 +75,49 @@ const float kRightOffset = 62;
     if(!self.scrollView.superview) {
         [self addSubview:self.scrollView];
     }
-    if(!self.priceView) {
-        self.priceView = [[PriceView alloc] init];
-        self.priceView.datasource = self;
-        
-        [self.layer addSublayer:self.priceView];
-    }
     
     if(!self.timeline) {
         self.timeline = [[TimeLine alloc] init];
         self.timeline.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
         self.timeline.dataSource = self;
         [self.layer addSublayer:self.timeline];
+        
     }
     
-    
-    if(!self.graphic) {
-        self.graphic = [[Graphic alloc] init];
-        self.graphic.dataSource = self;
-        self.graphic.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-        self.graphic.backgroundColor = [UIColor clearColor].CGColor;
-        [self.layer addSublayer:self.graphic];
+    if(!self.graph) {
+        self.graph = [[Graph alloc] init];
+        self.graph.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+        self.graph.dataSource = self;
+        [self.layer addSublayer:self.graph];
+        
+        CandleGraphic *candleGraphic = [[CandleGraphic alloc] init];
+        candleGraphic.hostedGraph = self.graph;
+        [self.graph.graphics addObject:candleGraphic];
+        
+        VerticalAxis *priceAxis = [[VerticalAxis alloc] init];
+        priceAxis.hostedGraph = self.graph;
+        self.graph.verticalAxis = priceAxis;
+        
+        
     }
     
-    // TODO: delete this andi add indicators from user choose
-    SMAIndicator *sma = [[SMAIndicator alloc] init];
-    sma.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-    sma.backgroundColor = UIColor.clearColor.CGColor;
-    sma.dataSource = self;
-    [self.layer addSublayer:sma];
+    self.indicatorGraph = [[Graph alloc] init];
+    self.indicatorGraph.frame = CGRectMake(0, self.frame.size.height-100, self.frame.size.width, 100);
+    self.indicatorGraph.dataSource = self;
+    self.indicatorGraph.topLineWidth = 2.0;
+    [self.layer addSublayer:self.indicatorGraph];
     
-    SARIndicator *sar = [[SARIndicator alloc] init];
-    sar.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-    sar.backgroundColor = UIColor.clearColor.CGColor;
-    sar.dataSource = self;
-    [self.layer addSublayer:sar];
-    [self.indicators addObject:sma];
-    [self.indicators addObject:sar];
+    RSIIndicator *rsi = [[RSIIndicator alloc] init];
+    rsi.hostedGraph = self.indicatorGraph;
+    [self.indicatorGraph.graphics addObject:rsi];
     
-    EmaIndicator *ema = [[EmaIndicator alloc] init];
-    ema.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-    ema.backgroundColor = UIColor.clearColor.CGColor;
-    ema.dataSource = self;;
-    [self.layer addSublayer:ema];
-    [self.indicators addObject:ema];
+    VerticalAxis *indicatorAxis = [[VerticalAxis alloc] init];
+    indicatorAxis.majorTicksCount = 5;
+    indicatorAxis.hostedGraph = self.indicatorGraph;
+    self.indicatorGraph.verticalAxis = indicatorAxis;
+    
+    
+    
     
     
     [self bringSubviewToFront:self.scrollView];
@@ -137,35 +135,30 @@ const float kRightOffset = 62;
     NSInteger tt = [self.dataSource numberOfItems];
     CGFloat contentWidth = tt * self.cellSize*2 + offset;
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
-    [self.graphic setNeedsDisplay];
+    [self.graph setNeedsDisplay];
     
 }
 
 -(void)reloadData {
     CGFloat contentWidth = ([self candleWidth] * 2 * [self.dataSource numberOfItems] + offset);
-    CGRect graphicOffset = self.graphic.frame;
+    CGRect graphicOffset = self.graph.frame;
     
     CGFloat offsetX = self.scrollView.contentOffset.x;
-    //if(self.priceView.frame.size.width == 0 || self.priceView.frame.size.width == 15) {
-        CGFloat priceWidth = [self.priceView sizeForView];
-        if(priceWidth == 15) priceWidth = 0;
-        [self.priceView setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
-        [self.graphic setFrame:CGRectMake(0, 0, self.frame.size.width - priceWidth + 5, self.frame.size.height)];
-        [self.timeline setFrame:CGRectMake(0, 0, self.frame.size.width - priceWidth + 5, self.frame.size.height)];
-    for(__kindof BaseIndicator *indicator in self.indicators) {
-        [indicator setFrame:self.graphic.frame];
-        [indicator setNeedsDisplay];
-    }
+    CGFloat mainAxisOffset = self.graph.verticalAxis.axisOffset;
+    [self.graph setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height-100)];
+    [self.indicatorGraph setFrame:CGRectMake(0, self.frame.size.height-100, self.frame.size.width, 100)];
+    [self.timeline setFrame:CGRectMake(0, 0, self.frame.size.width-mainAxisOffset, self.frame.size.height)];
     
-    self.scrollView.frame = CGRectMake(0, 0, self.frame.size.width - priceWidth + 5, self.frame.size.height);
-    
+    self.scrollView.frame = CGRectMake(0, 0, self.frame.size.width-mainAxisOffset, self.frame.size.height);
     //}
     
+    NSLog(@"Scroll view frame size: %f", self.scrollView.frame.size.width);
     graphicOffset.origin.x = offsetX;
-    [self.priceView setNeedsDisplay];
-    [self.graphic setNeedsDisplay];;
     [self.timeline setNeedsDisplay];
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
+    
+    [self.graph reloadData];
+    [self.indicatorGraph reloadData];
 }
 
 -(void)reloadLastTick {
@@ -178,8 +171,6 @@ const float kRightOffset = 62;
     if(gesture.state == UIGestureRecognizerStateBegan) {
         scalingIndexCandle = [self candleIndexForPoint:scalePoint];
         
-        [self.priceView drawPriceInPoint:CGPointZero];
-        [self.graphic drawLinesForSelectionPoint:CGPointZero];
         
     } else if(gesture.state == UIGestureRecognizerStateChanged) {
         
@@ -246,10 +237,6 @@ const float kRightOffset = 62;
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:tick.date];
     NSLog(@"Date: %@", date);
     if(gesture.state == UIGestureRecognizerStateBegan || gesture.state == UIGestureRecognizerStateChanged) {
-        [self.graphic drawLinesForSelectionPoint:selectionPoint];
-        [self.priceView drawPriceInPoint:selectionPoint];
-        
-        
         
     } else {
     }
@@ -269,8 +256,6 @@ const float kRightOffset = 62;
     }
     minCandle = [self calculateMinCandle];
     maxCandle = [self calculateMaxCandle];
-    [self.priceView drawPriceInPoint:CGPointZero];
-    [self.graphic drawLinesForSelectionPoint:CGPointZero];
     
     [self reloadData];
     
@@ -327,16 +312,16 @@ const float kRightOffset = 62;
 
 #pragma mark PracieViewDataSource
 -(float)priceForY:(CGFloat)y {
-    float minP = [self getMinValue];
-    float maxP = [self getMaxValue];
+    float minP = [self minValue];
+    float maxP = [self maxValue];
     float H = self.frame.size.height;
     float price = (-((y-20)/(H-40)) + 1) * (maxP - minP) + minP;
     return price;
 }
 
 #pragma mark GraphicDataSource
--(CGFloat)getMaxValue {
-    self.maxValue = 0;
+-(CGFloat)maxValue {
+    float maxValue = 0;
     NSInteger candleCount = [self.dataSource numberOfItems];
     if(maxCandle > candleCount) return 0.0;
     for(int i = minCandle; i<maxCandle; i++) {
@@ -344,34 +329,26 @@ const float kRightOffset = 62;
         float max = tick.max;
         float open = tick.open;
         float close = tick.close;
-        if(self.maxValue < max) self.maxValue = max;
-    }
-    for(__kindof BaseIndicator *indicator in self.indicators) {
-        float max = [indicator maxValueInRange:NSMakeRange(minCandle, maxCandle-minCandle)];
-        if(max > self.maxValue) self.maxValue = max;
+        if(maxValue < max) maxValue = max;
     }
     
-    return self.maxValue;
+    return maxValue;
 }
 
--(CGFloat)getMinValue {
-    self.minValue = CGFLOAT_MAX;
+-(CGFloat)minValue {
+    float minValue = HUGE_VALF;
     NSInteger candleCount = [self.dataSource numberOfItems];
     if(maxCandle > candleCount) return 0.0;
     for(int i = minCandle; i<maxCandle; i++) {
-        Tick *tick = [self.dataSource candleForIndex:i];
+        Tick *tick = [self tickForIndex:i];
         float open = tick.open;
         float close = tick.close;
         float min = tick.min;
-        if(self.minValue > min) self.minValue = min;
+        if(minValue > min) minValue = min;
         //NSLog(@"[MIN VALUE]: %f", self.minValue);
     }
-    for(__kindof BaseIndicator *indicator in self.indicators) {
-        float min = [indicator minValueInRange:NSMakeRange(minCandle, maxCandle-minCandle)];
-        if(min < self.minValue && min > 0.0) self.minValue = min;
-    }
     
-    return self.minValue;
+    return minValue;
 }
 
 -(Tick *)candleForPoint:(CGPoint)point {
@@ -381,6 +358,7 @@ const float kRightOffset = 62;
 }
 
 -(Tick *)tickForIndex:(NSInteger)i {
+
     return [self.dataSource candleForIndex:i];
 }
 
@@ -410,7 +388,7 @@ const float kRightOffset = 62;
 -(NSInteger)calculateMaxCandle {
     NSInteger count = [self candleCount];
     
-    CGFloat maxOffset = self.graphic.frame.size.width - [self offsetForCandles];
+    CGFloat maxOffset = self.graph.frame.size.width - [self offsetForCandles];
     int candles = floorf(maxOffset / (self.candleWidth * 2));
     maxCandle = minCandle + candles;
     if(maxCandle > count) {
@@ -445,7 +423,11 @@ const float kRightOffset = 62;
 }
 
 -(void)scrollToEnd {
-    [self.scrollView scrollRectToVisible:CGRectMake(self.scrollView.contentSize.width-1, 0, 1, 1) animated:NO];
+    [self reloadData];
+    NSLog(@"Scroll view frame size: %f", self.scrollView.frame.size.width);
+    CGFloat mainAxisOffset = self.graph.verticalAxis.axisOffset;
+    [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentSize.width-self.scrollView.frame.size.width, 0)];
+    
 }
 
 -(void)scrollToBeginAfterReload {

@@ -8,11 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@class Tick;
+
 @protocol PriceViewDataSource <NSObject>
 
 -(float)priceForY:(CGFloat)y;
 
 -(NSNumberFormatter *)numberFormatter;
+
+-(Tick *)tickForIndex:(NSInteger)index;
 
 @end
 

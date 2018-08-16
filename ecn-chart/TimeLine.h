@@ -10,7 +10,7 @@
 
 @class GraphicHost;
 
-@protocol GraphicDataSource;
+@protocol GraphDataSource;
 
 @protocol TimeLineDataSource <NSObject>
 
@@ -24,6 +24,6 @@
 
 @interface TimeLine : CALayer
 
-@property (weak, nonatomic) id <TimeLineDataSource, GraphicDataSource> dataSource;
+@property (weak, nonatomic) id <TimeLineDataSource, GraphDataSource> dataSource;
 
 @end

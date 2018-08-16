@@ -8,6 +8,7 @@
 
 #import "PriceView.h"
 #import "QuoteHelper.h"
+#import "Tick.h"
 
 @interface PriceView() {
     CGPoint selectionPoint;
@@ -38,7 +39,8 @@
 
 -(CGFloat)sizeForView {
     NSString *text;
-    float price = [self.datasource priceForY:self.frame.size.height / 2];
+    Tick *tick = [self.datasource tickForIndex:0];
+    float price = tick.max;
     NSNumberFormatter *nf = [self.datasource numberFormatter];
     if(price != price) {
         text = @"";
