@@ -9,8 +9,11 @@
 #import "SMAIndicator.h"
 #import "Tick.h"
 #import "Graph.h"
+#import "GraphicParam.h"
 
-@interface SMAIndicator()
+@interface SMAIndicator() {
+    NSMutableArray <GraphicParam *> *hiddenParams;
+}
 
 @property (strong, nonatomic) NSMutableArray *indicatorValues;
 
@@ -48,7 +51,7 @@
     }
     int j = 0;
     
-    CGContextSetStrokeColorWithColor(ctx, UIColor.blueColor.CGColor);
+    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0].CGColor);
     CGContextSetLineWidth(ctx, 1.0);
     
     for(NSInteger i = visibleRange.location; i<visibleRange.location + visibleRange.length; i++) {
@@ -99,6 +102,32 @@
     NSNumber *maxValue = [array valueForKeyPath:@"@max.self"];
     return maxValue;
 }
+
+
+-(NSMutableArray <GraphicParam *> *)params {
+    if(!hiddenParams) {
+        hiddenParams = [[NSMutableArray alloc] init];
+        GraphicParam *period = [[GraphicParam alloc] init];
+        period.name = NSLocalizedString(@"Period", nil);
+        period.type = GraphicParamTypeNumber;
+        period.value = @"15";
+        [hiddenParams addObject:period];
+    }
+    return hiddenParams;
+}
+
+-(void)setParams:(NSMutableArray<GraphicParam *> *)params {
+    hiddenParams = params;
+}
+
+-(GraphicType)graphicType {
+    return GraphicTypeMain;
+}
+
+-(NSString *)name {
+    return @"SMA";
+}
+
 
 
 @end

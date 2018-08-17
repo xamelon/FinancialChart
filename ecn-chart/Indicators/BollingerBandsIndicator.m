@@ -10,8 +10,10 @@
 #import "Tick.h"
 #import <UIKit/UIKit.h>
 #import "Graph.h"
-
-@interface BollingerBandsIndicator()
+#import "GraphicParam.h"
+@interface BollingerBandsIndicator() {
+    NSMutableArray *hiddenParams;
+}
 
 @property (strong, nonatomic) NSMutableArray <NSDictionary *> *indicatorValues;
 
@@ -162,6 +164,36 @@
     NSArray *botValues = [array valueForKey:@"top"];
     NSNumber *minValue = [botValues valueForKeyPath:@"@max.self"];
     return minValue;
+}
+
+-(NSMutableArray <GraphicParam *> *)params {
+    if(!hiddenParams) {
+        hiddenParams = [[NSMutableArray alloc] init];
+        GraphicParam *period = [[GraphicParam alloc] init];
+        period.name = @"Period";
+        period.value = @"14";
+        period.type = GraphicParamTypeNumber;
+        [hiddenParams addObject:period];
+        GraphicParam *deviation = [[GraphicParam alloc] init];
+        deviation.name = @"Deviation";
+        deviation.type = GraphicParamTypeNumber;
+        deviation.value = @"2";
+        [hiddenParams addObject:deviation];
+    }
+    
+    return hiddenParams;
+}
+
+-(void)setParams:(NSMutableArray<GraphicParam *> *)params {
+    hiddenParams = params;
+}
+
+-(GraphicType)graphicType {
+    return GraphicTypeMain;
+}
+
+-(NSString *)name {
+    return @"Bollinger Bands";
 }
 
 @end

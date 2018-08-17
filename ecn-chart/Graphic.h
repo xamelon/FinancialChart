@@ -8,6 +8,8 @@
 
 #import <QuartzCore/QuartzCore.h>
 
+@class GraphicParam;
+
 typedef enum GraphicType : NSInteger {
     GraphicTypeMain = 0,
     GraphicTypeBottom
@@ -20,10 +22,12 @@ NS_ASSUME_NONNULL_BEGIN
 @interface Graphic : CALayer
 
 @property (weak, nonatomic) Graph *hostedGraph;
+@property (strong, nonatomic) NSMutableArray <GraphicParam *> *params;
 
 -(NSDecimalNumber *)minValue;
 -(NSDecimalNumber *)maxValue;
 -(CGFloat)yPositionForValue:(float)value;
+-(NSString *)name;
 
 //need to implement in subclasses
 -(GraphicType)graphicType;

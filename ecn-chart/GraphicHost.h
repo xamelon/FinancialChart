@@ -10,7 +10,7 @@
 
 @class Candle;
 @class Tick;
-
+@class Graphic;
 
 @protocol GraphicHostDatasource <NSObject>
 
@@ -46,6 +46,12 @@
 @property (weak, nonatomic) id <GraphicHostDelegate> delegate;
 
 @property (assign, nonatomic) NSInteger graphicType;
+
+-(void)addIndicator:(__kindof Graphic *)indicator;
+
+-(void)deleteIndicator:(__kindof Graphic *)indicator;
+
+-(NSMutableArray *)indicators;
 
 -(void)insertTick:(Tick *)tick;
 

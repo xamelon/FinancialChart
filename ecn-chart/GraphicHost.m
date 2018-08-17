@@ -14,12 +14,7 @@
 #import "Graph.h"
 #import "CandleGraphic.h"
 #import "VerticalAxis.h"
-#import "MACDIndicator.h"
-#import "RSIIndicator.h"
-#import "StochasticIndicator.h"
-#import "EmaIndicator.h"
-#import "SMAIndicator.h"
-#import "BollingerBandsIndicator.h"
+#import "Graphic.h"
 
 static const float offset = 0.0;
 const float maxScale = 3.0;
@@ -34,8 +29,8 @@ const float minScale = 0.5;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinch;
 @property (strong, nonatomic) UILongPressGestureRecognizer *longPress;
 @property (strong, nonatomic) TimeLine *timeline;
-@property (strong, nonatomic) Graph *graph;
-@property (strong, nonatomic) Graph *indicatorGraph;
+@property (strong, nonatomic) Graph *mainGraph;
+@property (strong, nonatomic) NSMutableArray *graphs;
 @end
 
 @implementation GraphicHost {
@@ -51,6 +46,7 @@ const float kRightOffset = 62;
     self = [super initWithFrame:frame];
     if(self) {
         [self setupView];
+        self.graphs = [[NSMutableArray alloc] init];
     }
     return self;
 }
@@ -62,6 +58,9 @@ const float kRightOffset = 62;
     return self;
 }
 
+-(void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
+    CGContextClearRect(ctx, layer.frame);
+}
 
 -(void)setupView {
     self.scale = 1.0;
@@ -88,21 +87,20 @@ const float kRightOffset = 62;
         
     }
     
-    if(!self.graph) {
-        self.graph = [[Graph alloc] init];
-        self.graph.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-        self.graph.dataSource = self;
-        self.graph.padding = 20.0;
-        [self.layer addSublayer:self.graph];
+    if(!self.mainGraph) {
+        self.mainGraph = [[Graph alloc] init];
+        self.mainGraph.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+        self.mainGraph.dataSource = self;
+        self.mainGraph.padding = 20.0;
+        [self.layer addSublayer:self.mainGraph];
         
         CandleGraphic *candleGraphic = [[CandleGraphic alloc] init];
-        candleGraphic.hostedGraph = self.graph;
-        [self.graph.graphics addObject:candleGraphic];
+        candleGraphic.hostedGraph = self.mainGraph;
+        [self.mainGraph.graphics addObject:candleGraphic];
         
         VerticalAxis *priceAxis = [[VerticalAxis alloc] init];
-        priceAxis.hostedGraph = self.graph;
-        self.graph.verticalAxis = priceAxis;
-        
+        priceAxis.hostedGraph = self.mainGraph;
+        self.mainGraph.verticalAxis = priceAxis;
     }
     
     [self bringSubviewToFront:self.scrollView];
@@ -120,30 +118,40 @@ const float kRightOffset = 62;
     NSInteger tt = [self.dataSource numberOfItems];
     CGFloat contentWidth = tt * self.cellSize*2 + offset;
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
-    [self.graph setNeedsDisplay];
+    [self.mainGraph setNeedsDisplay];
     
 }
 
 -(void)reloadData {
     CGFloat contentWidth = ([self candleWidth] * 2 * [self.dataSource numberOfItems] + offset);
-    CGRect graphicOffset = self.graph.frame;
+    CGRect graphicOffset = self.mainGraph.frame;
     
     CGFloat offsetX = self.scrollView.contentOffset.x;
-    CGFloat mainAxisOffset = self.graph.verticalAxis.axisOffset;
-    [self.graph setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height-100)];
-    [self.indicatorGraph setFrame:CGRectMake(0, self.frame.size.height-100, self.frame.size.width, 80)];
+    CGFloat mainAxisOffset = self.mainGraph.verticalAxis.axisOffset;
+    CGFloat bottomOffset = self.graphs.count * 100;
+    [self.mainGraph setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height-bottomOffset)];
     [self.timeline setFrame:CGRectMake(0, 0, self.frame.size.width-mainAxisOffset, self.frame.size.height)];
-    
     self.scrollView.frame = CGRectMake(0, 0, self.frame.size.width-mainAxisOffset, self.frame.size.height);
     //}
+    for(int i = 0; i<self.graphs.count; i++) {
+        float yPosition = self.frame.size.height-(i+1)*100;
+        float height = 100.0;
+        if(i == 0) {
+            yPosition -= 10;
+        } else {
+            height -= 10;
+        }
+        Graph *graph = self.graphs[i];
+        graph.frame = CGRectMake(0, yPosition, self.frame.size.width, height);
+        [graph reloadData];
+    }
     
     NSLog(@"Scroll view frame size: %f", self.scrollView.frame.size.width);
     graphicOffset.origin.x = offsetX;
     [self.timeline setNeedsDisplay];
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
     
-    [self.graph reloadData];
-    [self.indicatorGraph reloadData];
+    [self.mainGraph reloadData];
 }
 
 -(void)reloadLastTick {
@@ -257,6 +265,65 @@ const float kRightOffset = 62;
         
     }
     return offset;
+}
+
+-(void)addIndicator:(__kindof Graphic *)indicator {
+    if([indicator graphicType] == GraphicTypeMain) {
+        indicator.hostedGraph = self.mainGraph;
+        [self.mainGraph.graphics addObject:indicator];
+    } else if([indicator graphicType] == GraphicTypeBottom) {
+        Graph *graph = [[Graph alloc] init];
+        graph.dataSource = self;
+        graph.topLineWidth = 2.0;
+        [self.graphs addObject:graph];
+        
+        VerticalAxis *axis = [[VerticalAxis alloc] init];
+        axis.hostedGraph = graph;
+        axis.majorTicksCount = 4;
+        graph.verticalAxis = axis;
+        
+        indicator.hostedGraph = graph;
+        [graph.graphics addObject:indicator];
+        
+        [self.layer addSublayer:graph];
+    }
+    [self reloadData];
+}
+
+-(void)deleteIndicator:(__kindof Graphic *)indicator {
+    for(__kindof Graphic *graphic in self.mainGraph.graphics) {
+        if([graphic isEqual:indicator]) {
+            [indicator removeFromSuperlayer];
+            [self.mainGraph.graphics removeObject:indicator];
+        }
+    }
+    Graph *graphToDelete;
+    for(Graph *graph in self.graphs) {
+            if([indicator.hostedGraph isEqual:graph]) {
+                graphToDelete = graph;
+            }
+        
+    }
+    if(graphToDelete) {
+        [graphToDelete removeFromSuperlayer];
+        [self.graphs removeObject:graphToDelete];
+    }
+    [self reloadData];
+}
+
+-(NSMutableArray *)indicators {
+    NSMutableArray *indicators = [[NSMutableArray alloc] init];
+    for(__kindof Graphic *graphic in self.mainGraph.graphics) {
+        if(![graphic isKindOfClass:[CandleGraphic class]]) {
+            [indicators addObject:graphic];
+        }
+    }
+    for(Graph *graph in self.graphs) {
+        for(__kindof Graphic *graphic in graph.graphics) {
+            [indicators addObject:graphic];
+        }
+    }
+    return indicators;
 }
 
 #pragma mark TimeLineDataSource
@@ -373,7 +440,7 @@ const float kRightOffset = 62;
 -(NSInteger)calculateMaxCandle {
     NSInteger count = [self candleCount];
     
-    CGFloat maxOffset = self.graph.frame.size.width - [self offsetForCandles];
+    CGFloat maxOffset = self.mainGraph.frame.size.width - [self offsetForCandles];
     int candles = floorf(maxOffset / (self.candleWidth * 2));
     maxCandle = minCandle + candles;
     if(maxCandle > count) {
@@ -410,7 +477,7 @@ const float kRightOffset = 62;
 -(void)scrollToEnd {
     [self reloadData];
     NSLog(@"Scroll view frame size: %f", self.scrollView.frame.size.width);
-    CGFloat mainAxisOffset = self.graph.verticalAxis.axisOffset;
+    CGFloat mainAxisOffset = self.mainGraph.verticalAxis.axisOffset;
     [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentSize.width-self.scrollView.frame.size.width, 0)];
     
 }

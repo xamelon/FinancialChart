@@ -11,8 +11,11 @@
 #import "Graph.h"
 #import "Tick.h"
 #import <UIKit/UIKit.h>
+#import "GraphicParam.h"
 
-@interface StochasticIndicator()
+@interface StochasticIndicator() {
+    NSMutableArray *hiddenParams;
+}
 
 @property (strong, nonatomic) NSMutableArray *indicatorValues;
 
@@ -136,5 +139,36 @@
     return [NSDecimalNumber decimalNumberWithString:@"100.0"];
 }
 
+-(NSMutableArray <GraphicParam *> *)params {
+    if(!hiddenParams) {
+        hiddenParams = [[NSMutableArray alloc] init];
+        GraphicParam *kPeriod = [[GraphicParam alloc] init];
+        kPeriod.name = @"%K Period";
+        kPeriod.value = @"5";
+        [hiddenParams addObject:kPeriod];
+        GraphicParam *dPeriod = [[GraphicParam alloc] init];
+        dPeriod.name = @"%D Period";
+        dPeriod.value =@"3";
+        [hiddenParams addObject:dPeriod];
+        GraphicParam *slow = [[GraphicParam alloc] init];
+        slow.name =@"Slowing";
+        slow.value =@"3";
+        [hiddenParams addObject:slow];
+    }
+    return hiddenParams;
+}
+
+-(void)setParams:(NSMutableArray<GraphicParam *> *)params {
+    hiddenParams = params;
+    
+}
+
+-(GraphicType)graphicType {
+    return GraphicTypeBottom;
+}
+
+-(NSString *)name {
+    return @"Stochastic";
+}
 
 @end

@@ -13,8 +13,11 @@
 #import "Tick.h"
 #import <UIKit/UIKit.h>
 #import "Graph.h"
+#import "GraphicParam.h"
 
-@interface EmaIndicator()
+@interface EmaIndicator() {
+    NSMutableArray *hiddenParams;
+}
 
 @property (strong, nonatomic) NSMutableArray <NSNumber *> *indicatorValues;
 
@@ -51,7 +54,7 @@
     }
     int j = 0;
     
-    CGContextSetStrokeColorWithColor(ctx, UIColor.yellowColor.CGColor);
+    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0].CGColor);
     CGContextSetLineWidth(ctx, 1.0);
     
     for(NSInteger i = visibleRange.location; i<visibleRange.location + visibleRange.length; i++) {
@@ -111,5 +114,28 @@
     return maxValue;
 }
 
+-(NSMutableArray <GraphicParam *> *)params {
+    if(!hiddenParams) {
+        hiddenParams = [[NSMutableArray alloc] init];
+        GraphicParam *param = [[GraphicParam alloc] init];
+        param.name = @"Period";
+        param.value = @"14";
+        param.type = GraphicParamTypeNumber;
+        [hiddenParams addObject:param];
+    }
+    return hiddenParams;
+}
+
+-(void)setParams:(NSMutableArray<GraphicParam *> *)params {
+    hiddenParams = params;
+}
+
+-(GraphicType)graphicType {
+    return GraphicTypeMain;
+}
+
+-(NSString *)name {
+    return @"EMA";
+}
 
 @end

@@ -11,6 +11,7 @@
 #import "Graph.h"
 #import <UIKit/UIKit.h>
 #import "Tick.h"
+#import "GraphicParam.h"
 
 typedef enum ValueType : NSInteger {
     ValueTypeMACD = 0,
@@ -20,7 +21,9 @@ typedef enum ValueType : NSInteger {
     ValueTypeLongEMA
 } ValueType;
 
-@interface MACDIndicator()
+@interface MACDIndicator() {
+    NSMutableArray *hiddenParams;
+}
 
 @property (strong, nonatomic) NSMutableArray <NSDictionary *> *indicatorValues;
 
@@ -223,6 +226,40 @@ typedef enum ValueType : NSInteger {
 -(NSDecimalNumber *)maxValue {
     
     return [[self minValue] decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithString:@"-1.0"]];
+}
+
+-(NSMutableArray <GraphicParam *> *) params {
+    if(!hiddenParams) {
+        hiddenParams = [[NSMutableArray alloc] init];
+        GraphicParam *fast = [[GraphicParam alloc] init];
+        fast.name = @"Fast EMA";
+        fast.value = @"12";
+        fast.type = GraphicParamTypeNumber;
+        [hiddenParams addObject:fast];
+        GraphicParam *slow = [[GraphicParam alloc] init];
+        slow.name = @"Slow";
+        slow.value = @"26";
+        slow.type = GraphicParamTypeNumber;
+        [hiddenParams addObject:slow];
+        GraphicParam *sma = [[GraphicParam alloc] init];
+        sma.name = @"MACD SMA";
+        sma.value = @"9";
+        sma.type = GraphicParamTypeNumber;
+        [hiddenParams addObject:sma];
+    }
+    return hiddenParams;
+}
+
+-(void)setParams:(NSMutableArray<GraphicParam *> *)params {
+    hiddenParams = params;
+}
+
+-(GraphicType)graphicType {
+    return GraphicTypeBottom;
+}
+
+-(NSString *)name {
+    return @"MACD";
 }
 
 @end

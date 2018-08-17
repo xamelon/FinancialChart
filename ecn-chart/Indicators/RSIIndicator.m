@@ -10,8 +10,11 @@
 #import <UIKit/UIKit.h>
 #import "Graph.h"
 #import "Tick.h"
+#import "GraphicParam.h"
 
-@interface RSIIndicator()
+@interface RSIIndicator(){
+    NSMutableArray *hiddenParams;
+}
 
 @property (strong, nonatomic) NSMutableArray <NSDictionary *> *indicatorValues;
 
@@ -144,6 +147,31 @@
     NSArray *gains = [array valueForKey:@"rsi"];
     NSNumber *maxValue = [gains valueForKeyPath:@"@max.self"];
     return maxValue;
+}
+
+-(NSMutableArray <GraphicParam *> *)params {
+    if(!hiddenParams) {
+        hiddenParams = [[NSMutableArray alloc] init];
+        GraphicParam *period = [[GraphicParam alloc] init];
+        period.name = @"Period";
+        period.value = @"14";
+        period.type = GraphicParamTypeNumber;
+        [hiddenParams addObject:period];
+    }
+    
+    return hiddenParams;
+}
+
+-(void)setParams:(NSMutableArray<GraphicParam *> *)params {
+    hiddenParams = params;
+}
+
+-(GraphicType)graphicType {
+    return GraphicTypeBottom;
+}
+
+-(NSString *)name {
+    return @"RSI";
 }
 
 @end

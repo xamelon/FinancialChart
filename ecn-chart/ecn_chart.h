@@ -9,6 +9,17 @@
 #import <UIKit/UIKit.h>
 #import <ecn_chart/GraphicHost.h>
 #import <ecn_chart/Tick.h>
+#import <ecn_chart/Graphic.h>
+#import <ecn_chart/GraphicParam.h>
+
+#import <ecn_chart/SMAIndicator.h>
+#import <ecn_chart/EMAIndicator.h>
+#import <ecn_chart/SARIndicator.h>
+#import <ecn_chart/BollingerBandsIndicator.h>
+#import <ecn_chart/MACDIndicator.h>
+#import <ecn_chart/RSIIndicator.h>
+#import <ecn_chart/StochasticIndicator.h>
+
 
 //! Project version number for ecn_chart.
 FOUNDATION_EXPORT double ecn_chartVersionNumber;

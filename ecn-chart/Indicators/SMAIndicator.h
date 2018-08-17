@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "Graphic.h"
+@class GraphicParam;
 
 @interface SMAIndicator : Graphic
 

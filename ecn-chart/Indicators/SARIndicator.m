@@ -10,8 +10,11 @@
 #import <UIKit/UIKit.h>
 #import "Tick.h"
 #import "Graph.h"
+#import "GraphicParam.h"
 
-@interface SARIndicator()
+@interface SARIndicator() {
+    NSMutableArray *hiddenParams;
+}
 
 @property (strong, nonatomic) NSMutableArray <NSDictionary *> *indicatorValues;
 
@@ -48,7 +51,7 @@
     }
     int j = 0;
     
-    CGContextSetStrokeColorWithColor(ctx, UIColor.blueColor.CGColor);
+    CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0].CGColor);
     CGContextSetLineWidth(ctx, 1.0);
     
     for(NSInteger i = visibleRange.location; i<visibleRange.location + visibleRange.length; i++) {
@@ -145,6 +148,35 @@
     NSArray *sarValues = [array valueForKey:@"sarValue"];
     NSNumber *maxValue = [sarValues valueForKeyPath:@"@min.self"];
     return maxValue;
+}
+
+-(NSMutableArray <GraphicParam *> *)params {
+    if(!hiddenParams) {
+        hiddenParams = [[NSMutableArray alloc] init];
+        GraphicParam *step = [[GraphicParam alloc] init];
+        step.name = NSLocalizedString(@"Step", nil);
+        step.value = @"0.02";
+        step.type = GraphicParamTypeNumber;
+        GraphicParam *maximum = [[GraphicParam alloc] init];
+        maximum.name = NSLocalizedString(@"Maximum", nil);
+        maximum.value = @"0.2";
+        maximum.type = GraphicParamTypeNumber;
+        [hiddenParams addObject:step];
+        [hiddenParams addObject:maximum];
+    }
+    return hiddenParams;
+}
+
+-(void)setParams:(NSMutableArray<GraphicParam *> *)params {
+    hiddenParams = params;
+}
+
+-(GraphicType)graphicType {
+    return GraphicTypeMain;
+}
+
+-(NSString *)name {
+    return @"Parabolic SAR";
 }
 
 @end
