@@ -42,6 +42,7 @@ typedef enum ChartType : NSInteger {
 @property (weak, nonatomic) id <GraphDataSource> dataSource;
 @property (strong, nonatomic) NSMutableArray <Graphic *> *graphics;
 @property (assign, nonatomic) CGFloat topLineWidth;
+@property (assign, nonatomic) CGFloat padding;
 
 -(void)reloadData;
 -(NSDecimalNumber *)minValue;

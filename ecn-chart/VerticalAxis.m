@@ -75,7 +75,7 @@
 
 -(float)calculatePriceForY:(float)y minValue:(float)minValue maxValue:(float)maxValue {
     float H = self.frame.size.height;
-    float price = (-((y-20)/(H-40)) + 1) * (maxValue - minValue) + minValue;
+    float price = (-((y-self.hostedGraph.padding)/(H-self.hostedGraph.padding * 2)) + 1) * (maxValue - minValue) + minValue;
     return price;
 }
 

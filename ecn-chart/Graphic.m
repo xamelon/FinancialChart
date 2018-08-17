@@ -31,7 +31,7 @@
 -(CGFloat)yPositionForValue:(float)value {
     CGFloat minValue = [self.hostedGraph minValue].floatValue;
     CGFloat maxValue = [self.hostedGraph maxValue].floatValue;
-    CGFloat y1 = 20+(self.frame.size.height-40) * (1 - (value - minValue)/(maxValue - minValue));
+    CGFloat y1 = self.hostedGraph.padding+(self.frame.size.height-self.hostedGraph.padding * 2) * (1 - (value - minValue)/(maxValue - minValue));
     return y1;
 }
 

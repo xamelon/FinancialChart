@@ -8,6 +8,11 @@
 
 #import <QuartzCore/QuartzCore.h>
 
+typedef enum GraphicType : NSInteger {
+    GraphicTypeMain = 0,
+    GraphicTypeBottom
+} GraphicType;
+
 @class Graph;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -19,6 +24,9 @@ NS_ASSUME_NONNULL_BEGIN
 -(NSDecimalNumber *)minValue;
 -(NSDecimalNumber *)maxValue;
 -(CGFloat)yPositionForValue:(float)value;
+
+//need to implement in subclasses
+-(GraphicType)graphicType;
 
 @end
 

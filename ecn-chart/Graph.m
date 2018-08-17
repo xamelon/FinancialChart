@@ -39,6 +39,7 @@
         CGContextAddLineToPoint(ctx, self.frame.size.width, 0.0);
         CGContextStrokePath(ctx);
     }
+    
 }
 
 -(void)reloadData {

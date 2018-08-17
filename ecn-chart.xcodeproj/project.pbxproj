@@ -23,6 +23,8 @@
 		685F2C991FC440B40061E262 /* Tick.m in Sources */ = {isa = PBXBuildFile; fileRef = 685F2C921FC440B30061E262 /* Tick.m */; };
 		685F2C9C1FC442170061E262 /* GraphicHost.h in Headers */ = {isa = PBXBuildFile; fileRef = 685F2C931FC440B30061E262 /* GraphicHost.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		685F2C9D1FC4421A0061E262 /* Tick.h in Headers */ = {isa = PBXBuildFile; fileRef = 685F2C8F1FC440B20061E262 /* Tick.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		686E61B32126A8C1005F701D /* StochasticIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 686E61B12126A8C1005F701D /* StochasticIndicator.h */; };
+		686E61B42126A8C1005F701D /* StochasticIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 686E61B22126A8C1005F701D /* StochasticIndicator.m */; };
 		6874D4AE2124169400EE36FA /* Graph.h in Headers */ = {isa = PBXBuildFile; fileRef = 6874D4AC2124169400EE36FA /* Graph.h */; };
 		6874D4AF2124169400EE36FA /* Graph.m in Sources */ = {isa = PBXBuildFile; fileRef = 6874D4AD2124169400EE36FA /* Graph.m */; };
 		6874D4B22124172A00EE36FA /* Graphic.h in Headers */ = {isa = PBXBuildFile; fileRef = 6874D4B02124172A00EE36FA /* Graphic.h */; };
@@ -76,6 +78,8 @@
 		685F2C921FC440B30061E262 /* Tick.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tick.m; sourceTree = "<group>"; };
 		685F2C931FC440B30061E262 /* GraphicHost.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GraphicHost.h; sourceTree = "<group>"; };
 		685F2C951FC440B40061E262 /* Candle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Candle.h; sourceTree = "<group>"; };
+		686E61B12126A8C1005F701D /* StochasticIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StochasticIndicator.h; sourceTree = "<group>"; };
+		686E61B22126A8C1005F701D /* StochasticIndicator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = StochasticIndicator.m; sourceTree = "<group>"; };
 		6874D4AC2124169400EE36FA /* Graph.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Graph.h; sourceTree = "<group>"; };
 		6874D4AD2124169400EE36FA /* Graph.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Graph.m; sourceTree = "<group>"; };
 		6874D4B02124172A00EE36FA /* Graphic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Graphic.h; sourceTree = "<group>"; };
@@ -193,6 +197,8 @@
 				6874D4B921246AD200EE36FA /* MACDIndicator.m */,
 				68108B58212592D5000B37B0 /* RSIIndicator.h */,
 				68108B59212592D5000B37B0 /* RSIIndicator.m */,
+				686E61B12126A8C1005F701D /* StochasticIndicator.h */,
+				686E61B22126A8C1005F701D /* StochasticIndicator.m */,
 			);
 			path = Indicators;
 			sourceTree = "<group>";
@@ -217,6 +223,7 @@
 				685F2C7D1FC440750061E262 /* ecn_chart.h in Headers */,
 				682A333B2122F51A003CCDB6 /* EmaIndicator.h in Headers */,
 				688237222122C75400F414BB /* BaseIndicator.h in Headers */,
+				686E61B32126A8C1005F701D /* StochasticIndicator.h in Headers */,
 				685F2C9C1FC442170061E262 /* GraphicHost.h in Headers */,
 				685F2C9D1FC4421A0061E262 /* Tick.h in Headers */,
 				68DB24C81FD0125D003F73F4 /* TimeLine.h in Headers */,
@@ -326,6 +333,7 @@
 				687F1F0C202317A40020E2C4 /* CandleGraphic.m in Sources */,
 				6874D4B32124172A00EE36FA /* Graphic.m in Sources */,
 				68DB24CE1FD19794003F73F4 /* PriceView.m in Sources */,
+				686E61B42126A8C1005F701D /* StochasticIndicator.m in Sources */,
 				682A333C2122F51A003CCDB6 /* EmaIndicator.m in Sources */,
 				68DB24C91FD0125D003F73F4 /* TimeLine.m in Sources */,
 				685F2C991FC440B40061E262 /* Tick.m in Sources */,

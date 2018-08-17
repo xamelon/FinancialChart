@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BaseIndicator.h"
+#import "Graphic.h"
 
-@interface SMAIndicator : BaseIndicator
+@interface SMAIndicator : Graphic
 
 @end

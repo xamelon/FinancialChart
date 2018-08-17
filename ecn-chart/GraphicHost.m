@@ -16,6 +16,10 @@
 #import "VerticalAxis.h"
 #import "MACDIndicator.h"
 #import "RSIIndicator.h"
+#import "StochasticIndicator.h"
+#import "EmaIndicator.h"
+#import "SMAIndicator.h"
+#import "BollingerBandsIndicator.h"
 
 static const float offset = 0.0;
 const float maxScale = 3.0;
@@ -88,6 +92,7 @@ const float kRightOffset = 62;
         self.graph = [[Graph alloc] init];
         self.graph.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
         self.graph.dataSource = self;
+        self.graph.padding = 20.0;
         [self.layer addSublayer:self.graph];
         
         CandleGraphic *candleGraphic = [[CandleGraphic alloc] init];
@@ -98,27 +103,7 @@ const float kRightOffset = 62;
         priceAxis.hostedGraph = self.graph;
         self.graph.verticalAxis = priceAxis;
         
-        
     }
-    
-    self.indicatorGraph = [[Graph alloc] init];
-    self.indicatorGraph.frame = CGRectMake(0, self.frame.size.height-100, self.frame.size.width, 100);
-    self.indicatorGraph.dataSource = self;
-    self.indicatorGraph.topLineWidth = 2.0;
-    [self.layer addSublayer:self.indicatorGraph];
-    
-    RSIIndicator *rsi = [[RSIIndicator alloc] init];
-    rsi.hostedGraph = self.indicatorGraph;
-    [self.indicatorGraph.graphics addObject:rsi];
-    
-    VerticalAxis *indicatorAxis = [[VerticalAxis alloc] init];
-    indicatorAxis.majorTicksCount = 5;
-    indicatorAxis.hostedGraph = self.indicatorGraph;
-    self.indicatorGraph.verticalAxis = indicatorAxis;
-    
-    
-    
-    
     
     [self bringSubviewToFront:self.scrollView];
     minCandle = 0;
@@ -146,7 +131,7 @@ const float kRightOffset = 62;
     CGFloat offsetX = self.scrollView.contentOffset.x;
     CGFloat mainAxisOffset = self.graph.verticalAxis.axisOffset;
     [self.graph setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height-100)];
-    [self.indicatorGraph setFrame:CGRectMake(0, self.frame.size.height-100, self.frame.size.width, 100)];
+    [self.indicatorGraph setFrame:CGRectMake(0, self.frame.size.height-100, self.frame.size.width, 80)];
     [self.timeline setFrame:CGRectMake(0, 0, self.frame.size.width-mainAxisOffset, self.frame.size.height)];
     
     self.scrollView.frame = CGRectMake(0, 0, self.frame.size.width-mainAxisOffset, self.frame.size.height);

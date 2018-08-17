@@ -6,11 +6,11 @@
 //  Copyright © 2018 Galament. All rights reserved.
 //
 
-#import "BaseIndicator.h"
+#import "Graphic.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface EmaIndicator : BaseIndicator
+@interface EmaIndicator : Graphic
 
 @end
 
