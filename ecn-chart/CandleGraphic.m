@@ -49,8 +49,8 @@
         if(minCandleValue > tick.min) minCandleValue = tick.min;
         
         float currentX = candleWidth/2 + (2 * candleWidth * j++) + offsetForCandles;
-        CGFloat open = 20+(self.frame.size.height-40) * (1 - (tick.open - minValue)/(maxValue - minValue));
-        CGFloat close = 20+(self.frame.size.height-40) * (1 - (tick.close - minValue)/(maxValue - minValue));
+        CGFloat open = [self yPositionForValue:tick.open];
+        CGFloat close = [self yPositionForValue:tick.close];
         if(tick.open > tick.close) {
             CGContextSetRGBFillColor(context, 233.0/255.0, 77.0/255.0, 37.0/255.0, 1.0);
             CGContextSetRGBStrokeColor(context, 233.0/255.0, 77.0/255.0, 37.0/255.0, 1.0);
@@ -61,8 +61,8 @@
         if(chartType == ChartTypeLine) {
             CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
         }
-        CGFloat y1 = 20+(self.frame.size.height-40) * (1 - (tick.max - minValue)/(maxValue - minValue));
-        CGFloat y2 = 20+(self.frame.size.height-40) * (1 - (tick.min - minValue)/(maxValue - minValue));
+        CGFloat y1 = [self yPositionForValue:tick.max];
+        CGFloat y2 = [self yPositionForValue:tick.min];
         if(chartType == ChartTypeLine) {
             if(i == minCandle) {
                 CGContextMoveToPoint(context, currentX, open);
@@ -145,14 +145,27 @@
 
 #pragma mark Graphic overrides
 -(NSDecimalNumber *)maxValue {
+    NSRange visibleRange = [self.hostedGraph.dataSource currentVisibleRange];
+    float maxValue = 0.0;
+    for(NSInteger i = visibleRange.location; i<visibleRange.location + visibleRange.length; i++) {
+        Tick *tick = [self.hostedGraph.dataSource tickForIndex:i];
+        if(tick.max > maxValue) maxValue = tick.max;
+    }
+    return [[NSDecimalNumber alloc] initWithFloat:maxValue];
     
-    NSDecimalNumber *decimalMax = [[NSDecimalNumber alloc] initWithFloat:maxCandleValue];
-    NSLog(@"Max candle value: %f", maxCandleValue);
-    return decimalMax;
 }
 
 -(NSDecimalNumber *)minValue {
-    return [[NSDecimalNumber alloc] initWithFloat:minCandleValue];
+    NSRange range = [self.hostedGraph.dataSource currentVisibleRange];
+    if(range.length == 0.0) {
+        return [NSDecimalNumber decimalNumberWithString:@"0.0"];
+    }
+    float minValue = HUGE_VALF;
+    for(NSInteger i = range.location; i<range.location + range.length; i++) {
+        Tick *tick = [self.hostedGraph.dataSource tickForIndex:i];
+        if(tick.min < minValue) minValue = tick.min;
+    }
+    return [[NSDecimalNumber alloc] initWithFloat:minValue];
 }
 
 @end
