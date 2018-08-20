@@ -24,13 +24,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) Graph *hostedGraph;
 @property (strong, nonatomic) NSMutableArray <GraphicParam *> *params;
 
--(NSDecimalNumber *)minValue;
--(NSDecimalNumber *)maxValue;
 -(CGFloat)yPositionForValue:(float)value;
--(NSString *)name;
 
 //need to implement in subclasses
 -(GraphicType)graphicType;
+-(NSString *)name;
+-(NSDecimalNumber *)minValue;
+-(NSDecimalNumber *)maxValue;
 
 @end
 

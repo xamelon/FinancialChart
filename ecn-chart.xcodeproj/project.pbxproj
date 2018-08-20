@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		68108B5A212592D5000B37B0 /* RSIIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 68108B58212592D5000B37B0 /* RSIIndicator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		68108B5B212592D5000B37B0 /* RSIIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 68108B59212592D5000B37B0 /* RSIIndicator.m */; };
+		68224F7E212AAA1A00CFBCE3 /* ATRIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 68224F7C212AAA1900CFBCE3 /* ATRIndicator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		68224F7F212AAA1A00CFBCE3 /* ATRIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 68224F7D212AAA1900CFBCE3 /* ATRIndicator.m */; };
 		682A33372122E9A5003CCDB6 /* SARIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 682A33352122E9A5003CCDB6 /* SARIndicator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		682A33382122E9A5003CCDB6 /* SARIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 682A33362122E9A5003CCDB6 /* SARIndicator.m */; };
 		682A333B2122F51A003CCDB6 /* EmaIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 682A33392122F51A003CCDB6 /* EmaIndicator.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -60,6 +62,8 @@
 /* Begin PBXFileReference section */
 		68108B58212592D5000B37B0 /* RSIIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RSIIndicator.h; sourceTree = "<group>"; };
 		68108B59212592D5000B37B0 /* RSIIndicator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RSIIndicator.m; sourceTree = "<group>"; };
+		68224F7C212AAA1900CFBCE3 /* ATRIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ATRIndicator.h; sourceTree = "<group>"; };
+		68224F7D212AAA1900CFBCE3 /* ATRIndicator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ATRIndicator.m; sourceTree = "<group>"; };
 		682A33352122E9A5003CCDB6 /* SARIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SARIndicator.h; sourceTree = "<group>"; };
 		682A33362122E9A5003CCDB6 /* SARIndicator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SARIndicator.m; sourceTree = "<group>"; };
 		682A33392122F51A003CCDB6 /* EmaIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EmaIndicator.h; sourceTree = "<group>"; };
@@ -199,6 +203,8 @@
 				68108B59212592D5000B37B0 /* RSIIndicator.m */,
 				686E61B12126A8C1005F701D /* StochasticIndicator.h */,
 				686E61B22126A8C1005F701D /* StochasticIndicator.m */,
+				68224F7C212AAA1900CFBCE3 /* ATRIndicator.h */,
+				68224F7D212AAA1900CFBCE3 /* ATRIndicator.m */,
 			);
 			path = Indicators;
 			sourceTree = "<group>";
@@ -226,6 +232,7 @@
 				686B27592126E4F20058F142 /* GraphicParam.h in Headers */,
 				685F2C9C1FC442170061E262 /* GraphicHost.h in Headers */,
 				685F2C9D1FC4421A0061E262 /* Tick.h in Headers */,
+				68224F7E212AAA1A00CFBCE3 /* ATRIndicator.h in Headers */,
 				68DB24C81FD0125D003F73F4 /* TimeLine.h in Headers */,
 				6874D4B22124172A00EE36FA /* Graphic.h in Headers */,
 			);
@@ -342,6 +349,7 @@
 				68108B5B212592D5000B37B0 /* RSIIndicator.m in Sources */,
 				6882371E2122C3C600F414BB /* SMAIndicator.m in Sources */,
 				6874D4AF2124169400EE36FA /* Graph.m in Sources */,
+				68224F7F212AAA1A00CFBCE3 /* ATRIndicator.m in Sources */,
 				682A33382122E9A5003CCDB6 /* SARIndicator.m in Sources */,
 				6874D4BB21246AD200EE36FA /* MACDIndicator.m in Sources */,
 				685F2C971FC440B40061E262 /* Candle.m in Sources */,

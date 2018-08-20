@@ -19,6 +19,7 @@
 #import <ecn_chart/MACDIndicator.h>
 #import <ecn_chart/RSIIndicator.h>
 #import <ecn_chart/StochasticIndicator.h>
+#import <ecn_chart/ATRIndicator.h>
 
 
 //! Project version number for ecn_chart.
