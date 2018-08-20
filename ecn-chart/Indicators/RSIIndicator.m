@@ -134,19 +134,11 @@
 }
 
 -(NSDecimalNumber *)minValue {
-    NSRange visibleRange = [self.hostedGraph.dataSource currentVisibleRange];
-    NSArray *array = [self.indicatorValues subarrayWithRange:visibleRange];
-    NSArray *gains = [array valueForKey:@"rsi"];
-    NSNumber *maxValue = [gains valueForKeyPath:@"@min.self"];
-    return maxValue;
+    return [NSDecimalNumber decimalNumberWithString:@"0.0"];
 }
 
 -(NSDecimalNumber *)maxValue {
-    NSRange visibleRange = [self.hostedGraph.dataSource currentVisibleRange];
-    NSArray *array = [self.indicatorValues subarrayWithRange:visibleRange];
-    NSArray *gains = [array valueForKey:@"rsi"];
-    NSNumber *maxValue = [gains valueForKeyPath:@"@max.self"];
-    return maxValue;
+    return [NSDecimalNumber decimalNumberWithString:@"100.0"];
 }
 
 -(NSMutableArray <GraphicParam *> *)params {
