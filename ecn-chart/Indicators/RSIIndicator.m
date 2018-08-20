@@ -123,7 +123,6 @@
                            @"emaLoss": emaLoss
                            };
         Tick *tick = [self.hostedGraph.dataSource tickForIndex:index];
-        NSLog(@"Gain: %@ Loss: %@ RSI: %@ Close: %f", gain, loss, rsi, tick.close);
         
         
     } else {

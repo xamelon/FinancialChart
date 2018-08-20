@@ -36,7 +36,6 @@
     CGFloat candleWidth = [self.hostedGraph.dataSource candleWidth];
     CGFloat offsetForCandles = [self.hostedGraph.dataSource offsetForCandles];
     NSInteger count = [self.hostedGraph.dataSource candleCount];
-    NSLog(@"Offset Candle: %f", offsetForCandles);
     if(count > self.indicatorValues.count) {
         self.indicatorValues = [[NSMutableArray alloc] init];
         for(int i = 0; i<count; i++) {

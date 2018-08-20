@@ -101,7 +101,6 @@
                   @"k": k,
                   @"d": d
                   };
-        NSLog(@"DValue: %@ KValue: %@", d, k);
         
     } else {
         value = self.indicatorValues[index];

@@ -40,7 +40,6 @@
     CGFloat candleWidth = [self.hostedGraph.dataSource candleWidth];
     CGFloat offsetForCandles = [self.hostedGraph.dataSource offsetForCandles];
     NSInteger count = [self.hostedGraph.dataSource candleCount];
-    NSLog(@"Offset Candle: %f", offsetForCandles);
     if(count > self.indicatorValues.count) {
         self.indicatorValues = [[NSMutableArray alloc] init];
         for(int i = 0; i<count; i++) {
@@ -80,7 +79,6 @@
         if(index == 20) {
             double sum = 0.0;
             for(NSInteger i = index-19; i<=index; i++) {
-                NSLog(@"Index candle %d", i);
                 Tick *tick = [self.hostedGraph.dataSource tickForIndex:i];
                 sum += tick.close;
             }
@@ -90,7 +88,6 @@
             NSNumber *previousEma = self.indicatorValues[index-1];
             float multiplier = (2.0 / (20.0 + 1.0));
             float ema = (tick.close - previousEma.floatValue) * multiplier + previousEma.floatValue;
-            NSLog(@"Ema: %f tick.close: %f multiplier: %f", ema, tick.close, multiplier);
             number = [NSNumber numberWithFloat:ema];
         }
     } else {

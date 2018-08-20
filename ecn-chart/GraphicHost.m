@@ -146,7 +146,6 @@ const float kRightOffset = 62;
         [graph reloadData];
     }
     
-    NSLog(@"Scroll view frame size: %f", self.scrollView.frame.size.width);
     graphicOffset.origin.x = offsetX;
     [self.timeline setNeedsDisplay];
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
@@ -189,7 +188,6 @@ const float kRightOffset = 62;
         }
         Tick *tick = [self.dataSource candleForIndex:scalingIndexCandle];
         NSDate *date = [NSDate dateWithTimeIntervalSince1970:tick.date];
-        NSLog(@"Tick date: %@", date);
         int candlesPerCell = (int)floor(self.candlesPerCell);
         if(candlesPerCell == 0) candlesPerCell = 1;
         NSInteger maxWidth = ((self.frame.size.width - scalePoint.x) / cellSize) * roundf(candlesPerCell);
@@ -204,11 +202,9 @@ const float kRightOffset = 62;
             minCandle = 0;
         }
         if(maxCandle >= [self.dataSource numberOfItems]) maxCandle = [self.dataSource numberOfItems];
-        NSLog(@"Scale candles: %d %d %d", scalingIndexCandle, minCandle, maxCandle);
         CGPoint offset = self.scrollView.contentOffset;
         float setOffset = minCandle * [self candleWidth] * 2;
         if(setOffset != setOffset) {
-            NSLog(@"WTF");
         } else {
             offset.x = minCandle * [self candleWidth] * 2;
         }
@@ -228,7 +224,6 @@ const float kRightOffset = 62;
     NSInteger candleIndex = [self candleIndexForPoint:selectionPoint];
     Tick *tick = [self.dataSource candleForIndex:candleIndex];;
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:tick.date];
-    NSLog(@"Date: %@", date);
     if(gesture.state == UIGestureRecognizerStateBegan || gesture.state == UIGestureRecognizerStateChanged) {
         
     } else {
@@ -476,7 +471,6 @@ const float kRightOffset = 62;
 
 -(void)scrollToEnd {
     [self reloadData];
-    NSLog(@"Scroll view frame size: %f", self.scrollView.frame.size.width);
     CGFloat mainAxisOffset = self.mainGraph.verticalAxis.axisOffset;
     [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentSize.width-self.scrollView.frame.size.width, 0)];
     
@@ -505,7 +499,6 @@ const float kRightOffset = 62;
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
     if([object isEqual:self] && [keyPath isEqualToString:@"bounds"]) {
-        NSLog(@"Change size of view");
     }
 }
 
