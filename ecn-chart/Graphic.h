@@ -25,6 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) NSMutableArray <GraphicParam *> *params;
 
 -(CGFloat)yPositionForValue:(float)value;
+-(CGFloat)xPositionForIteration:(NSInteger)iteration;
 
 //need to implement in subclasses
 -(GraphicType)graphicType;

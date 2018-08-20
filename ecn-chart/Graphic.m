@@ -35,4 +35,11 @@
     return y1;
 }
 
+-(CGFloat)xPositionForIteration:(NSInteger)iteration {
+    CGFloat offsetForCandles = [self.hostedGraph.dataSource offsetForCandles];
+    CGFloat candleWidth = [self.hostedGraph.dataSource candleWidth];
+    CGFloat currentX = candleWidth + (2 * candleWidth * iteration) + offsetForCandles;
+    return currentX;
+}
+
 @end

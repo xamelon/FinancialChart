@@ -77,18 +77,18 @@
 -(NSNumber *)valueForIndex:(NSInteger)index {
     NSNumber *number = [NSNumber numberWithFloat:0.0];
     if(index >= self.indicatorValues.count) {
-        if(index == 10) {
+        if(index == 20) {
             double sum = 0.0;
-            for(NSInteger i = index-9; i<=index; i++) {
+            for(NSInteger i = index-19; i<=index; i++) {
                 NSLog(@"Index candle %d", i);
                 Tick *tick = [self.hostedGraph.dataSource tickForIndex:i];
                 sum += tick.close;
             }
-            number = [NSNumber numberWithDouble:sum/10.0];
-        } else if(index > 10) {
+            number = [NSNumber numberWithDouble:sum/20.0];
+        } else if(index > 20) {
             Tick *tick = [self.hostedGraph.dataSource tickForIndex:index];
             NSNumber *previousEma = self.indicatorValues[index-1];
-            float multiplier = (2.0 / (10.0 + 1.0));
+            float multiplier = (2.0 / (20.0 + 1.0));
             float ema = (tick.close - previousEma.floatValue) * multiplier + previousEma.floatValue;
             NSLog(@"Ema: %f tick.close: %f multiplier: %f", ema, tick.close, multiplier);
             number = [NSNumber numberWithFloat:ema];

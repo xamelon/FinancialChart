@@ -11,6 +11,8 @@
 		68108B5B212592D5000B37B0 /* RSIIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 68108B59212592D5000B37B0 /* RSIIndicator.m */; };
 		68224F7E212AAA1A00CFBCE3 /* ATRIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 68224F7C212AAA1900CFBCE3 /* ATRIndicator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		68224F7F212AAA1A00CFBCE3 /* ATRIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 68224F7D212AAA1900CFBCE3 /* ATRIndicator.m */; };
+		68224F82212ACE2F00CFBCE3 /* KeltnerChannelIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 68224F80212ACE2E00CFBCE3 /* KeltnerChannelIndicator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		68224F83212ACE2F00CFBCE3 /* KeltnerChannelIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 68224F81212ACE2F00CFBCE3 /* KeltnerChannelIndicator.m */; };
 		682A33372122E9A5003CCDB6 /* SARIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 682A33352122E9A5003CCDB6 /* SARIndicator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		682A33382122E9A5003CCDB6 /* SARIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 682A33362122E9A5003CCDB6 /* SARIndicator.m */; };
 		682A333B2122F51A003CCDB6 /* EmaIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 682A33392122F51A003CCDB6 /* EmaIndicator.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -64,6 +66,8 @@
 		68108B59212592D5000B37B0 /* RSIIndicator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RSIIndicator.m; sourceTree = "<group>"; };
 		68224F7C212AAA1900CFBCE3 /* ATRIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ATRIndicator.h; sourceTree = "<group>"; };
 		68224F7D212AAA1900CFBCE3 /* ATRIndicator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ATRIndicator.m; sourceTree = "<group>"; };
+		68224F80212ACE2E00CFBCE3 /* KeltnerChannelIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeltnerChannelIndicator.h; sourceTree = "<group>"; };
+		68224F81212ACE2F00CFBCE3 /* KeltnerChannelIndicator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KeltnerChannelIndicator.m; sourceTree = "<group>"; };
 		682A33352122E9A5003CCDB6 /* SARIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SARIndicator.h; sourceTree = "<group>"; };
 		682A33362122E9A5003CCDB6 /* SARIndicator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SARIndicator.m; sourceTree = "<group>"; };
 		682A33392122F51A003CCDB6 /* EmaIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EmaIndicator.h; sourceTree = "<group>"; };
@@ -205,6 +209,8 @@
 				686E61B22126A8C1005F701D /* StochasticIndicator.m */,
 				68224F7C212AAA1900CFBCE3 /* ATRIndicator.h */,
 				68224F7D212AAA1900CFBCE3 /* ATRIndicator.m */,
+				68224F80212ACE2E00CFBCE3 /* KeltnerChannelIndicator.h */,
+				68224F81212ACE2F00CFBCE3 /* KeltnerChannelIndicator.m */,
 			);
 			path = Indicators;
 			sourceTree = "<group>";
@@ -222,6 +228,7 @@
 				682A334021230C00003CCDB6 /* BollingerBandsIndicator.h in Headers */,
 				6874D4B621243A8700EE36FA /* VerticalAxis.h in Headers */,
 				68BDA3EE20BD78A7000857D1 /* QuoteHelper.h in Headers */,
+				68224F82212ACE2F00CFBCE3 /* KeltnerChannelIndicator.h in Headers */,
 				682A33372122E9A5003CCDB6 /* SARIndicator.h in Headers */,
 				68108B5A212592D5000B37B0 /* RSIIndicator.h in Headers */,
 				6874D4BA21246AD200EE36FA /* MACDIndicator.h in Headers */,
@@ -347,6 +354,7 @@
 				685F2C991FC440B40061E262 /* Tick.m in Sources */,
 				68BDA3EF20BD78A7000857D1 /* QuoteHelper.m in Sources */,
 				68108B5B212592D5000B37B0 /* RSIIndicator.m in Sources */,
+				68224F83212ACE2F00CFBCE3 /* KeltnerChannelIndicator.m in Sources */,
 				6882371E2122C3C600F414BB /* SMAIndicator.m in Sources */,
 				6874D4AF2124169400EE36FA /* Graph.m in Sources */,
 				68224F7F212AAA1A00CFBCE3 /* ATRIndicator.m in Sources */,

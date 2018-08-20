@@ -41,7 +41,7 @@
     for(NSInteger i = visibleRange.location; i<visibleRange.location+visibleRange.length; i++) {
         NSDictionary *value = self.indicatorValues[i];
         NSNumber *atrValue = value[@"atr"];
-        CGFloat currentX = currentX = candleWidth + (2 * candleWidth * j) + offsetForCandles;
+        CGFloat currentX = candleWidth + (2 * candleWidth * j) + offsetForCandles;
         CGFloat currentY = [self yPositionForValue:atrValue.floatValue];
         if(j==0) {
             CGContextMoveToPoint(ctx, currentX, currentY);
