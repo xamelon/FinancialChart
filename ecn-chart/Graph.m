@@ -66,21 +66,21 @@
 }
 
 -(NSDecimalNumber *)minValue {
-    NSDecimalNumber *minValue = [NSDecimalNumber minimumDecimalNumber];
+    float minValue = HUGE_VALF;
     for(Graphic *graphic in self.graphics) {
         NSDecimalNumber *graphicMinValue = [graphic minValue];
-        if([minValue compare:graphicMinValue] == NSOrderedAscending) minValue = graphicMinValue;
+        if(graphicMinValue.floatValue < minValue) minValue = graphicMinValue.floatValue;
     }
-    return minValue;
+    return [[NSDecimalNumber alloc] initWithFloat:minValue];
 }
 
 -(NSDecimalNumber *)maxValue {
-    NSDecimalNumber *maxValue = [NSDecimalNumber maximumDecimalNumber];
+    float maxValue = 0.0;
     for(Graphic *graphic in self.graphics) {
         NSDecimalNumber *graphicMaxValue = [graphic maxValue];
-        if([maxValue compare:graphicMaxValue] == NSOrderedDescending) maxValue = graphicMaxValue;
+        if(maxValue < graphicMaxValue.floatValue) maxValue = graphicMaxValue.floatValue;
     }
-    return maxValue;
+    return [[NSDecimalNumber alloc] initWithFloat:maxValue];;
 }
 
 @end

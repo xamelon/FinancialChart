@@ -367,36 +367,6 @@ const float kRightOffset = 62;
 }
 
 #pragma mark GraphicDataSource
--(CGFloat)maxValue {
-    float maxValue = 0;
-    NSInteger candleCount = [self.dataSource numberOfItems];
-    if(maxCandle > candleCount) return 0.0;
-    for(int i = minCandle; i<maxCandle; i++) {
-        Tick *tick = [self.dataSource candleForIndex:i];
-        float max = tick.max;
-        float open = tick.open;
-        float close = tick.close;
-        if(maxValue < max) maxValue = max;
-    }
-    
-    return maxValue;
-}
-
--(CGFloat)minValue {
-    float minValue = HUGE_VALF;
-    NSInteger candleCount = [self.dataSource numberOfItems];
-    if(maxCandle > candleCount) return 0.0;
-    for(int i = minCandle; i<maxCandle; i++) {
-        Tick *tick = [self tickForIndex:i];
-        float open = tick.open;
-        float close = tick.close;
-        float min = tick.min;
-        if(minValue > min) minValue = min;
-        //NSLog(@"[MIN VALUE]: %f", self.minValue);
-    }
-    
-    return minValue;
-}
 
 -(Tick *)candleForPoint:(CGPoint)point {
     NSInteger index = [self candleIndexForPoint:point];
