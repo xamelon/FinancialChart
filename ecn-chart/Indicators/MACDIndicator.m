@@ -38,6 +38,13 @@ typedef enum ValueType : NSInteger {
     return self;;
 }
 
+
+-(void)reloadData {
+    self.indicatorValues = [NSMutableArray new];
+    [self setNeedsDisplay];
+}
+
+
 -(void)drawInContext:(CGContextRef)ctx {
     CGContextClearRect(ctx, self.frame);
     NSRange visibleRange = NSMakeRange(0, 0);
@@ -110,51 +117,57 @@ typedef enum ValueType : NSInteger {
 }
 
 -(NSDictionary *)valueForIndex:(NSInteger)index {
+    GraphicParam *fastPeriod = hiddenParams[0];
+    GraphicParam *slowPeriod = hiddenParams[1];
+    GraphicParam *macdPeriod = hiddenParams[2];
+    NSInteger fastValue = fastPeriod.value.integerValue;
+    NSInteger slowValue = slowPeriod.value.integerValue;
+    NSInteger macdPeriodValue = macdPeriod.value.integerValue;
     NSDictionary *indicatorValue;
     if(index >= self.indicatorValues.count) {
         NSNumber *shortEma, *longEma, *signal, *histogram, *macd;
         
         
-            if(index < 12) {
+            if(index < fastValue) {
                 shortEma = [NSNumber numberWithFloat:0.0];
-            } else if(index == 12) {
-                float shortEmaVlaue = [self calculateSMAForIndex:index withPeriod:12];
+            } else if(index ==fastValue) {
+                float shortEmaVlaue = [self calculateSMAForIndex:index withPeriod:fastValue];
                 shortEma = [NSNumber numberWithFloat:shortEmaVlaue];
             } else {
-                float shortEmaValue = [self calculateEMAForIndex:index withPeriod:12 forType:ValueTypeShortEMA];
+                float shortEmaValue = [self calculateEMAForIndex:index withPeriod:fastValue forType:ValueTypeShortEMA];
                 shortEma = [NSNumber numberWithFloat:shortEmaValue];
             }
         
         
-            if(index < 26) {
+            if(index < slowValue) {
                 longEma = [NSNumber numberWithFloat:0.0];
-            } else if(index == 26) {
-                float longEmaValue = [self calculateSMAForIndex:index withPeriod:26];
+            } else if(index == slowValue) {
+                float longEmaValue = [self calculateSMAForIndex:index withPeriod:slowValue];
                 longEma = [NSNumber numberWithFloat:longEmaValue];
             } else {
-                float longEmaValue = [self calculateEMAForIndex:index withPeriod:26 forType:ValueTypeLongEMA];
+                float longEmaValue = [self calculateEMAForIndex:index withPeriod:slowValue forType:ValueTypeLongEMA];
                 longEma = [NSNumber numberWithFloat:longEmaValue];
             }
         
         float macdValue = shortEma.floatValue - longEma.floatValue;
         macd = [NSNumber numberWithFloat:macdValue];
         
-            if(index < 35) {
+            if(index < macdPeriodValue + slowValue) {
                 signal = [NSNumber numberWithFloat:0.0];
-            } else if(index == 35) {
+            } else if(index == macdPeriodValue + slowValue) {
                 float sma = 0.0;
-                for(int i = index-34; i<index; i++) {
+                for(int i = index-(macdPeriodValue-1); i<index; i++) {
                     NSDictionary *indicatorValue = self.indicatorValues[i];
                     float value = [indicatorValue[@"macd"] floatValue];
                     sma += value;
                 }
                 sma += macdValue;
-                sma = sma / 9.0;
+                sma = sma / macdPeriodValue;
                 signal = [NSNumber numberWithFloat:sma];
             } else {
                 NSDictionary *value = self.indicatorValues[index-1];
                 float previousEMA = [value[@"signal"] floatValue];;
-                float multiplier = 2.0 / (9.0 + 1.0);
+                float multiplier = 2.0 / (macdPeriodValue + 1.0);
                 float signalValue = (macdValue - previousEMA) * multiplier + previousEMA;
                 signal = [NSNumber numberWithFloat:signalValue];
             }
@@ -199,13 +212,22 @@ typedef enum ValueType : NSInteger {
     return emaValue;
 }
 
--(CGFloat)yPositionForValue:(float)value {
-    CGFloat minValue = [self.hostedGraph minValue].floatValue;
-    CGFloat maxValue = [self.hostedGraph maxValue].floatValue;
-    CGFloat y1 = 20+(self.frame.size.height-40) * (1 - (value - minValue)/(maxValue - minValue));
-    return y1;
-}
 -(NSDecimalNumber *)minValue {
+    NSRange currentVisibleRange = [self.hostedGraph.dataSource currentVisibleRange];
+    NSArray <NSDictionary *> *values = [self.indicatorValues subarrayWithRange:currentVisibleRange];
+    float minValue = HUGE_VALF;
+    for(NSDictionary *dict in values) {
+        NSNumber *macd = dict[@"macd"];
+        NSNumber *signal = dict[@"signal"];
+        NSNumber *histogram = dict[@"histogram"];
+        float min = MIN(macd.floatValue, signal.floatValue);
+        min = MIN(min, histogram.floatValue);
+        minValue = MIN(min, minValue);
+    }
+    return [[NSDecimalNumber alloc] initWithFloat:minValue];
+}
+
+-(NSDecimalNumber *)maxValue {
     NSRange currentVisibleRange = [self.hostedGraph.dataSource currentVisibleRange];
     NSArray <NSDictionary *> *values = [self.indicatorValues subarrayWithRange:currentVisibleRange];
     float minValue = 0.0;
@@ -213,18 +235,11 @@ typedef enum ValueType : NSInteger {
         NSNumber *macd = dict[@"macd"];
         NSNumber *signal = dict[@"signal"];
         NSNumber *histogram = dict[@"histogram"];
-        if(minValue < fabsf(macd.floatValue)) minValue = fabsf(macd.floatValue);
-        if(minValue < fabsf(signal.floatValue)) minValue = fabsf(signal.floatValue);
-        if(minValue < fabsf(histogram.floatValue)) minValue = fabsf(histogram.floatValue);
+        float min = MAX(macd.floatValue, signal.floatValue);
+        min = MAX(min, histogram.floatValue);
+        minValue = MAX(min, minValue);
     }
-    
-    
-    return [[NSDecimalNumber alloc] initWithFloat:-minValue];
-}
-
--(NSDecimalNumber *)maxValue {
-    
-    return [[self minValue] decimalNumberByMultiplyingBy:[NSDecimalNumber decimalNumberWithString:@"-1.0"]];
+    return [[NSDecimalNumber alloc] initWithFloat:minValue];
 }
 
 -(NSMutableArray <GraphicParam *> *) params {
@@ -236,7 +251,7 @@ typedef enum ValueType : NSInteger {
         fast.type = GraphicParamTypeNumber;
         [hiddenParams addObject:fast];
         GraphicParam *slow = [[GraphicParam alloc] init];
-        slow.name = @"Slow";
+        slow.name = @"Slow EMA";
         slow.value = @"26";
         slow.type = GraphicParamTypeNumber;
         [hiddenParams addObject:slow];
