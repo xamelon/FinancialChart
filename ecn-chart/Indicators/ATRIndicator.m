@@ -22,6 +22,13 @@
 
 @implementation ATRIndicator
 
+
+
+-(void)reloadData {
+    self.indicatorValues = [NSMutableArray new];
+    [self setNeedsDisplay];
+}
+
 -(void)drawInContext:(CGContextRef)ctx {
     NSRange visibleRange = [self.hostedGraph.dataSource currentVisibleRange];
     NSInteger candleCount = [self.hostedGraph.dataSource candleCount];
@@ -56,6 +63,8 @@
 }
 
 -(NSDictionary *)valueForIndex:(NSInteger)index {
+    GraphicParam *period = hiddenParams[0];
+    NSInteger periodValue = period.value.integerValue;
     NSDictionary *value;
     if(index >= self.indicatorValues.count) {
         NSNumber *tr = [NSNumber numberWithFloat:0.0];
@@ -71,7 +80,7 @@
             float trValue = [self calculateTRWithTick:tick previousTick:previousTick];
             tr = [NSNumber numberWithFloat:trValue];
         }
-        if(index == 14) {
+        if(index == periodValue) {
             float atrValue = 0.0;
             for(int i = 0; i<index-1; i++) {
                 NSDictionary *dict = self.indicatorValues[i];
@@ -79,14 +88,14 @@
                 atrValue += atr.floatValue;
             }
             atrValue += tr.floatValue;
-            atrValue = atrValue / 14.0;
+            atrValue = atrValue / periodValue;
             atr = [[NSNumber alloc] initWithFloat:atrValue];
-        } else if(index > 14) {
+        } else if(index > periodValue) {
             NSDictionary *previousValue = self.indicatorValues[index-1];
             NSNumber *previousAtr = previousValue[@"atr"];
-            float atrValue = previousAtr.floatValue * 13.0;
+            float atrValue = previousAtr.floatValue * (periodValue-1);
             atrValue += tr.floatValue;
-            atrValue = atrValue / 14.0;
+            atrValue = atrValue / periodValue;
             atr = [NSNumber numberWithFloat:atrValue];
         }
         value = @{

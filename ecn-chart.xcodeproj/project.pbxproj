@@ -33,7 +33,7 @@
 		686B275A2126E4F20058F142 /* GraphicParam.m in Sources */ = {isa = PBXBuildFile; fileRef = 686B27582126E4F20058F142 /* GraphicParam.m */; };
 		686E61B32126A8C1005F701D /* StochasticIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 686E61B12126A8C1005F701D /* StochasticIndicator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		686E61B42126A8C1005F701D /* StochasticIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 686E61B22126A8C1005F701D /* StochasticIndicator.m */; };
-		6874D4AE2124169400EE36FA /* Graph.h in Headers */ = {isa = PBXBuildFile; fileRef = 6874D4AC2124169400EE36FA /* Graph.h */; };
+		6874D4AE2124169400EE36FA /* Graph.h in Headers */ = {isa = PBXBuildFile; fileRef = 6874D4AC2124169400EE36FA /* Graph.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6874D4AF2124169400EE36FA /* Graph.m in Sources */ = {isa = PBXBuildFile; fileRef = 6874D4AD2124169400EE36FA /* Graph.m */; };
 		6874D4B22124172A00EE36FA /* Graphic.h in Headers */ = {isa = PBXBuildFile; fileRef = 6874D4B02124172A00EE36FA /* Graphic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6874D4B32124172A00EE36FA /* Graphic.m in Sources */ = {isa = PBXBuildFile; fileRef = 6874D4B12124172A00EE36FA /* Graphic.m */; };

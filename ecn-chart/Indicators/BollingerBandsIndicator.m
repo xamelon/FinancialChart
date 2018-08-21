@@ -30,6 +30,13 @@
     return self;
 }
 
+
+-(void)reloadData {
+    self.indicatorValues = [NSMutableArray new];
+    [self setNeedsDisplay];
+}
+
+
 -(void)drawInContext:(CGContextRef)ctx {
     CGRect frame = self.frame;
     NSRange visibleRange = NSMakeRange(0, 0);
@@ -115,27 +122,31 @@
                             @"top": [NSNumber numberWithFloat:0.0],
                             @"bot": [NSNumber numberWithFloat:0.0]
                             };
+    GraphicParam *period = hiddenParams[0];
+    GraphicParam *deviation = hiddenParams[1];
+    NSInteger periodValue = period.value.integerValue;
+    float deviationValue = deviation.value.floatValue;
     if(index >= self.indicatorValues.count) {
-        if(index >= 20) {
+        if(index >= periodValue) {
             //calculating sma
             float sma = 0.0;
-            for(NSInteger i = index-19; i<=index; i++) {
+            for(NSInteger i = index-(periodValue-1); i<=index; i++) {
                 Tick *tick = [self.hostedGraph.dataSource tickForIndex:i];
                 sma += tick.close;
             }
-            sma = sma/20.0;
+            sma = sma/periodValue;
             
             float deviation = 0.0;
-            for(NSInteger i = index-19; i<=index; i++) {
+            for(NSInteger i = index-(periodValue-1); i<=index; i++) {
                 Tick *tick = [self.hostedGraph.dataSource tickForIndex:i];
                 float sum = tick.close - sma;
                 deviation += sum * sum;
             }
-            deviation = deviation/20.0;
+            deviation = deviation/periodValue;
             deviation = sqrt(deviation);
             //calculating standard price deviation
-            float topLine = sma + deviation * 2;
-            float botLine = sma - deviation * 2;
+            float topLine = sma + deviation * deviationValue;
+            float botLine = sma - deviation * deviationValue;
             value = @{
                      @"mid": [NSNumber numberWithFloat:sma],
                      @"top": [NSNumber numberWithFloat:topLine],

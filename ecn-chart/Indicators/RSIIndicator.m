@@ -22,6 +22,13 @@
 
 @implementation RSIIndicator
 
+
+
+-(void)reloadData {
+    self.indicatorValues = [NSMutableArray new];
+    [self setNeedsDisplay];
+}
+
 -(void)drawInContext:(CGContextRef)ctx {
     CGFloat count = [self.hostedGraph.dataSource candleCount];
     CGFloat offsetForCandles = [self.hostedGraph.dataSource offsetForCandles];
@@ -64,6 +71,8 @@
 }
 
 -(NSDictionary *)valueForIndex:(NSInteger)index {
+    GraphicParam *period = hiddenParams[0];
+    NSInteger periodValue = period.value.integerValue;
     NSDictionary *indicatorValue;
     if(index >= self.indicatorValues.count) {
         NSNumber *gain = [NSNumber numberWithFloat:0.0];
@@ -84,29 +93,29 @@
         }
         //calculate rs
         
-        if(index >= 14) {
+        if(index >= periodValue) {
             float averageGain = 0.0;
             float averageLoss = 0.0;
-            for(int i = index-13; i<index; i++) {
+            for(int i = index-(periodValue-1); i<index; i++) {
                 NSDictionary *value = self.indicatorValues[i];
                 averageGain += [value[@"gain"] floatValue];
                 averageLoss += [value[@"loss"] floatValue];
              }
             averageLoss += loss.floatValue;
             averageGain += gain.floatValue;
-            averageLoss = averageLoss / 14.0;
-            averageGain = averageGain / 14.0;
+            averageLoss = averageLoss / periodValue;
+            averageGain = averageGain / periodValue;
             emaGain = [NSNumber numberWithFloat:averageGain];
             emaLoss = [NSNumber numberWithFloat:averageLoss];
             float rs = 0.0;
-            if(index == 14) {
+            if(index == periodValue) {
                 rs = averageGain / averageLoss;
             } else {
                 NSDictionary *value = self.indicatorValues[index-1];
                 NSNumber *previousLoss = value[@"emaLoss"];
                 NSNumber *previousGain = value[@"emaGain"];
-                float emaGainValue = ((previousGain.floatValue * 13.0) + gain.floatValue) / 14.0;
-                float emaLossValue = ((previousLoss.floatValue * 13.0) + loss.floatValue) / 14.0;
+                float emaGainValue = ((previousGain.floatValue * (periodValue-1)) + gain.floatValue) / periodValue;
+                float emaLossValue = ((previousLoss.floatValue * (periodValue-1)) + loss.floatValue) / periodValue;
                 emaGain = [NSNumber numberWithFloat:emaGainValue];
                 emaLoss = [NSNumber numberWithFloat:emaLossValue];
                 rs = emaGainValue / emaLossValue;

@@ -32,6 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 -(NSString *)name;
 -(NSDecimalNumber *)minValue;
 -(NSDecimalNumber *)maxValue;
+-(void)reloadData;
 
 @end
 

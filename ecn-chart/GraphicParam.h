@@ -17,6 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface GraphicParam : NSObject
 
+@property (assign, nonatomic) NSInteger ID;
 @property (strong, nonatomic) NSString *name;
 @property (strong, nonatomic) NSString *value;
 @property (assign, nonatomic) GraphicParamType type;

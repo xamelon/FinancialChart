@@ -34,6 +34,13 @@
     return self;
 }
 
+
+-(void)reloadData {
+    self.indicatorValues = [NSMutableArray new];
+    [self setNeedsDisplay];
+}
+
+
 -(void)drawInContext:(CGContextRef)ctx {
     CGRect frame = self.frame;
     NSRange visibleRange = NSMakeRange(0, 0);
@@ -74,19 +81,21 @@
 }
 
 -(NSNumber *)valueForIndex:(NSInteger)index {
+    GraphicParam *period = hiddenParams[0];
+    NSInteger periodValue = period.value.integerValue;
     NSNumber *number = [NSNumber numberWithFloat:0.0];
     if(index >= self.indicatorValues.count) {
-        if(index == 20) {
+        if(index == periodValue) {
             double sum = 0.0;
-            for(NSInteger i = index-19; i<=index; i++) {
+            for(NSInteger i = index-(periodValue-1); i<=index; i++) {
                 Tick *tick = [self.hostedGraph.dataSource tickForIndex:i];
                 sum += tick.close;
             }
-            number = [NSNumber numberWithDouble:sum/20.0];
+            number = [NSNumber numberWithDouble:sum/periodValue];
         } else if(index > 20) {
             Tick *tick = [self.hostedGraph.dataSource tickForIndex:index];
             NSNumber *previousEma = self.indicatorValues[index-1];
-            float multiplier = (2.0 / (20.0 + 1.0));
+            float multiplier = (2.0 / (periodValue + 1.0));
             float ema = (tick.close - previousEma.floatValue) * multiplier + previousEma.floatValue;
             number = [NSNumber numberWithFloat:ema];
         }

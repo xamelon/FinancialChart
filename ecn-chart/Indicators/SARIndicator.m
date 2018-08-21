@@ -31,6 +31,12 @@
     return self;
 }
 
+
+-(void)reloadData {
+    self.indicatorValues = [NSMutableArray new];
+    [self setNeedsDisplay];
+}
+
 -(void)drawInContext:(CGContextRef)ctx {
     CGRect frame = self.frame;
     NSRange visibleRange = NSMakeRange(0, 0);
@@ -68,13 +74,17 @@
 }
 
 -(NSDictionary *)valueForIndex:(NSInteger)index {
+    GraphicParam *step = hiddenParams[0];
+    GraphicParam *maximum = hiddenParams[1];
+    float stepValue = step.value.floatValue;
+    float maximumValue = maximum.value.floatValue;
     NSDictionary *sarValue;
     if(index >= self.indicatorValues.count) {
         Tick *tick = [self.hostedGraph.dataSource tickForIndex:index];
         if(index == 0) {
             sarValue = @{
                        @"sarValue": @(tick.min),
-                       @"af": @(0.02),
+                       @"af": @(stepValue),
                        @"ep": @(tick.max),
                        @"risingTrend": @(YES)
                        };
@@ -88,24 +98,24 @@
             float newSar = [self sarWithPreviousSar:previousSarValue previousEp:previousEp af:af trend:trend];
             if(trend && tick.max > previousEp) {
                 previousEp = tick.max;
-                if(af < 0.2) {
-                    af += 0.02;
+                if(af < maximumValue) {
+                    af += stepValue;
                 }
             } else if(!trend && tick.min < previousEp) {
                 previousEp = tick.min;
-                if(af < 0.2) {
-                    af += 0.02;
+                if(af < maximumValue) {
+                    af += stepValue;
                 }
             }
             
             if(trend && newSar > tick.min) {
                 trend = false;
-                af = 0.02;
+                af = stepValue;
                 newSar = previousEp;
                 previousEp= tick.min;
             } else if(!trend && newSar < tick.max) {
                 trend = true;
-                af = 0.02;
+                af = stepValue;
                 newSar = previousEp;
                 previousEp = tick.max;
             }
@@ -153,10 +163,12 @@
     if(!hiddenParams) {
         hiddenParams = [[NSMutableArray alloc] init];
         GraphicParam *step = [[GraphicParam alloc] init];
+        step.ID = 0;
         step.name = NSLocalizedString(@"Step", nil);
         step.value = @"0.02";
         step.type = GraphicParamTypeNumber;
         GraphicParam *maximum = [[GraphicParam alloc] init];
+        maximum.ID = 1;
         maximum.name = NSLocalizedString(@"Maximum", nil);
         maximum.value = @"0.2";
         maximum.type = GraphicParamTypeNumber;

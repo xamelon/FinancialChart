@@ -23,6 +23,13 @@
 
 @implementation StochasticIndicator
 
+
+
+-(void)reloadData {
+    self.indicatorValues = [NSMutableArray new];
+    [self setNeedsDisplay];
+}
+
 -(void)drawInContext:(CGContextRef)ctx {
     CGFloat candleWidth = [self.hostedGraph.dataSource candleWidth];
     NSInteger candleCount = [self.hostedGraph.dataSource candleCount];
@@ -70,15 +77,21 @@
 }
 
 -(NSDictionary *)valueForIndex:(NSInteger)index {
+    GraphicParam *kPeriod = hiddenParams[0];
+    GraphicParam *dPeriod = hiddenParams[1];
+    GraphicParam *slowing = hiddenParams[2];
+    NSInteger kPeriodValue = kPeriod.value.integerValue;
+    NSInteger dPeriodValue = dPeriod.value.integerValue;
+    NSInteger slowingValue = slowing.value.integerValue;
     NSDictionary *value;
     if(index >= self.indicatorValues.count) {
         NSNumber *k = [NSNumber numberWithFloat:0.0];
         NSNumber *d = [NSNumber numberWithFloat:0.0];
-        if(index > 14) {
+        if(index > kPeriodValue) {
             Tick *tick = [self.hostedGraph.dataSource tickForIndex:index];
             float max = 0.0;
             float min = HUGE_VALF;;
-            for(int i = index-13; i<=index; i++) {
+            for(int i = index-(kPeriodValue-1); i<=index; i++) {
                 Tick *t = [self.hostedGraph.dataSource tickForIndex:i];
                 if(t.max > max) max = t.max;
                 if(t.min < min) min = t.min;
@@ -86,15 +99,15 @@
             float kValue = ((tick.close - min) / (max - min)) * 100;
             k = [NSNumber numberWithFloat:kValue];
         }
-        if(index > 17) {
+        if(index >kPeriodValue+dPeriodValue) {
             float dValue = 0.0;
-            for(int i = index-2; i<index; i++) {
+            for(int i = index-(dPeriodValue-1); i<index; i++) {
                 NSDictionary *value = self.indicatorValues[i];
                 NSNumber *previousK = value[@"k"];
                 dValue += previousK.floatValue;
             }
             dValue += k.floatValue;
-            dValue = dValue/3;
+            dValue = dValue/slowingValue;
             d = [NSNumber numberWithFloat:dValue];
         }
         value = @{
@@ -143,7 +156,7 @@
         hiddenParams = [[NSMutableArray alloc] init];
         GraphicParam *kPeriod = [[GraphicParam alloc] init];
         kPeriod.name = @"%K Period";
-        kPeriod.value = @"5";
+        kPeriod.value = @"14";
         [hiddenParams addObject:kPeriod];
         GraphicParam *dPeriod = [[GraphicParam alloc] init];
         dPeriod.name = @"%D Period";

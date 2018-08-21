@@ -31,7 +31,13 @@
     return self;
 }
 
+-(void)reloadData {
+    self.indicatorValues = [NSMutableArray new];
+    [self setNeedsDisplay];
+}
+
 -(void)drawInContext:(CGContextRef)ctx {
+    
     CGRect frame = self.frame;
     NSRange visibleRange = NSMakeRange(0, 0);
     CGFloat candleWidth = [self.hostedGraph.dataSource candleWidth];
@@ -71,15 +77,17 @@
 }
 
 -(NSNumber *)valueForIndex:(NSInteger)index {
+    GraphicParam *param = hiddenParams[0];
+    float period = param.value.floatValue;
     NSNumber *value = [NSNumber numberWithFloat:0.0];
     if(index >= self.indicatorValues.count) {
-        if(index > 5) {
+        if(index > period) {
             double sum = 0.0;
-            for(NSInteger i = index-4; i<=index; i++) {
+            for(NSInteger i = index-(period-1); i<=index; i++) {
                 Tick *tick = [self.hostedGraph.dataSource tickForIndex:i];
                 sum += tick.close;
             }
-            value = [NSNumber numberWithDouble:sum/5.0];
+            value = [NSNumber numberWithDouble:sum/period];
         }
     } else {
         value = self.indicatorValues[index];
@@ -107,7 +115,7 @@
     if(!hiddenParams) {
         hiddenParams = [[NSMutableArray alloc] init];
         GraphicParam *period = [[GraphicParam alloc] init];
-        period.name = NSLocalizedString(@"Period", nil);
+        period.name = @"Period";
         period.type = GraphicParamTypeNumber;
         period.value = @"15";
         [hiddenParams addObject:period];

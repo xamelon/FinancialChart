@@ -21,6 +21,13 @@
 
 @implementation KeltnerChannelIndicator
 
+
+
+-(void)reloadData {
+    self.indicatorValues = [NSMutableArray new];
+    [self setNeedsDisplay];
+}
+
 -(void)drawInContext:(CGContextRef)ctx {
     NSInteger candleCount = [self.hostedGraph.dataSource candleCount];
     CGFloat candleWidth = [self.hostedGraph.dataSource candleWidth];
@@ -81,6 +88,10 @@
 }
 
 -(NSDictionary *)valueForIndex:(NSInteger)index {
+    GraphicParam *period = hiddenParams[0];
+    GraphicParam *multiplier = hiddenParams[1];
+    NSInteger periodValue = period.value.integerValue;
+    NSInteger multiplierValue = multiplier.value.integerValue;
     NSDictionary *value;
     if(index >= self.indicatorValues.count) {
         NSNumber *tr = [NSNumber numberWithFloat:0.0];
@@ -97,7 +108,7 @@
             float trValue = [self calculateTRWithTick:tick previousTick:previousTick];
             tr = [NSNumber numberWithFloat:trValue];
         }
-        if(index == 10) {
+        if(index == periodValue/2) {
             float atrValue = 0.0;
             for(int i = 0; i<index-1; i++) {
                 NSDictionary *dict = self.indicatorValues[i];
@@ -105,37 +116,37 @@
                 atrValue += atr.floatValue;
             }
             atrValue += tr.floatValue;
-            atrValue = atrValue / 10.0;
+            atrValue = atrValue / (periodValue / 2);
             atr = [[NSNumber alloc] initWithFloat:atrValue];
-        } else if(index > 10) {
+        } else if(index > periodValue / 2) {
             NSDictionary *previousValue = self.indicatorValues[index-1];
             NSNumber *previousAtr = previousValue[@"atr"];
-            float atrValue = previousAtr.floatValue * 9.0;
+            float atrValue = previousAtr.floatValue * (periodValue / 2 - 1);
             atrValue += tr.floatValue;
-            atrValue = atrValue / 10.0;
+            atrValue = atrValue / (periodValue / 2);
             atr = [NSNumber numberWithFloat:atrValue];
         }
-        if(index == 20) {
+        if(index == periodValue) {
             float initialEma = 0.0;
-            for(NSInteger i = index-19; i<=index; i++) {
+            for(NSInteger i = index-periodValue; i<=index; i++) {
                 Tick *tick = [self.hostedGraph.dataSource tickForIndex:i];
                 initialEma += tick.close;
                 
             }
-            initialEma = initialEma / 20.0;
+            initialEma = initialEma / periodValue;
             ema = [NSNumber numberWithFloat:initialEma];
-        } else if(index > 20) {
+        } else if(index > periodValue) {
             NSDictionary *previousValue = self.indicatorValues[index-1];
             NSNumber *previousEma = previousValue[@"ema"];
             Tick *tick = [self.hostedGraph.dataSource tickForIndex:index];
-            float multiplier = (2.0 / (20.0 + 1.0));
+            float multiplier = (2.0 / (periodValue + 1.0));
             float emaValue = (tick.close - previousEma.floatValue) * multiplier + previousEma.floatValue;
             ema = [NSNumber numberWithFloat:emaValue];
         }
         
         NSNumber *midLine = ema;
-        float topLineValue = ema.floatValue + 2.0 * atr.floatValue;
-        float botLineValue= ema.floatValue - 2.0 * atr.floatValue;
+        float topLineValue = ema.floatValue + multiplierValue * atr.floatValue;
+        float botLineValue= ema.floatValue - multiplierValue * atr.floatValue;
         NSNumber *topLine = [NSNumber numberWithFloat:topLineValue];
         NSNumber *botLine = [NSNumber numberWithFloat:botLineValue];
         

@@ -10,6 +10,7 @@
 #import <ecn_chart/GraphicHost.h>
 #import <ecn_chart/Tick.h>
 #import <ecn_chart/Graphic.h>
+#import <ecn_chart/Graph.h>
 #import <ecn_chart/GraphicParam.h>
 
 #import <ecn_chart/SMAIndicator.h>
