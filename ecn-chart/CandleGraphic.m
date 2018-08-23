@@ -16,15 +16,34 @@
     CGPoint selectionPoint;
     CGFloat maxCandleValue;
     CGFloat minCandleValue;
+    UIColor *_redColor;
+    UIColor *_greenColor;
+    UIColor *_blackColor;
 }
 
 @end
 
 @implementation CandleGraphic
 
+-(id)init {
+    self = [super init];
+    if(self) {
+        [self setupLayer];
+    }
+    
+    return self;
+}
+
+-(void)setupLayer {
+    _redColor = [UIColor colorWithRed:20.0/255.0 green:166.0/255.0 blue:66.0/255.0 alpha:1.0];
+    _greenColor = [UIColor colorWithRed:233.0/255.0 green:77.0/255.0 blue:37.0/255.0 alpha:1.0];
+    _blackColor = [UIColor blackColor];
+}
+
 -(void)drawInContext:(CGContextRef)context {
     maxCandleValue = 0.0;
     minCandleValue = HUGE_VAL;
+    
     
     CGRect rect = self.frame;
     CGFloat minValue = [self.hostedGraph.dataSource minValue];
@@ -35,9 +54,6 @@
     NSInteger candleCount = [self.hostedGraph.dataSource candleCount];
     ChartType chartType =  [self.hostedGraph.dataSource chartType];
     CGContextClearRect(context, rect);
-    CGContextSetRGBFillColor(context, 1.0, 1.0, 1.0, 1.0);
-    CGContextSetRGBFillColor(context, 1.0, 0.0, 0.0, 1.0);
-    CGContextSetRGBStrokeColor(context, 1.0, 0.0, 0.0, 1.0);
     
     int j = 0;
     CGFloat offsetForCandles = [self.hostedGraph.dataSource offsetForCandles];
@@ -52,14 +68,14 @@
         CGFloat open = [self yPositionForValue:tick.open];
         CGFloat close = [self yPositionForValue:tick.close];
         if(tick.open > tick.close) {
-            CGContextSetRGBFillColor(context, 233.0/255.0, 77.0/255.0, 37.0/255.0, 1.0);
-            CGContextSetRGBStrokeColor(context, 233.0/255.0, 77.0/255.0, 37.0/255.0, 1.0);
+            CGContextSetStrokeColorWithColor(context, _greenColor.CGColor);
+            CGContextSetFillColorWithColor(context, _greenColor.CGColor);
         } else {
-            CGContextSetRGBFillColor(context, 20.0/255.0, 160.0/255.0, 66.0/255.0, 1.0);
-            CGContextSetRGBStrokeColor(context, 20.0/255.0, 160.0/255.0, 66.0/255.0, 1.0);
+            CGContextSetStrokeColorWithColor(context, _redColor.CGColor);
+            CGContextSetFillColorWithColor(context, _redColor.CGColor);
         }
         if(chartType == ChartTypeLine) {
-            CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
+            CGContextSetStrokeColorWithColor(context, _blackColor.CGColor);
         }
         CGFloat y1 = [self yPositionForValue:tick.max];
         CGFloat y2 = [self yPositionForValue:tick.min];
@@ -121,6 +137,7 @@
 -(void)drawCandle:(CGFloat)open close:(CGFloat)close y1:(CGFloat)y1 y2:(CGFloat)y2 currentX:(CGFloat)currentX candleWidth:(CGFloat)candleWidth context:(CGContextRef)context  {
     float openCloseHeight = fabs(open-close);
     if(openCloseHeight <= 0) openCloseHeight = 1;
+    
     CGRect rect1 = CGRectMake(currentX, MIN(open, close), candleWidth, openCloseHeight);
     CGContextFillRect(context, rect1);
     CGContextMoveToPoint(context, currentX + candleWidth/2, y1);

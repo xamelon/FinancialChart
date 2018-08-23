@@ -17,15 +17,20 @@
     if(self) {
         self.backgroundColor = [UIColor clearColor].CGColor;
         self.contentsScale = [UIScreen mainScreen].scale;
-        self.shouldRasterize = NO;
+        self.shouldRasterize = YES;
         self.rasterizationScale = [UIScreen mainScreen].scale;
+        self.drawsAsynchronously = YES;
+        
     }
     return self;
 }
 
 -(id<CAAction>)actionForKey:(nonnull NSString *)aKey
 {
-    return nil;
+    if([aKey isEqualToString:@"contents"]) {
+        return nil;
+    }
+    return [super actionForKey:aKey];
 }
 
 -(CGFloat)yPositionForValue:(float)value {

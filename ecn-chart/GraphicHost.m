@@ -46,6 +46,7 @@ const float kRightOffset = 62;
     self = [super initWithFrame:frame];
     if(self) {
         [self setupView];
+        self.layer.contentsScale = [UIScreen mainScreen].scale;
         self.graphs = [[NSMutableArray alloc] init];
     }
     return self;
