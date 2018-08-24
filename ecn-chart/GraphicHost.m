@@ -380,6 +380,10 @@ const float kRightOffset = 62;
     return [self.dataSource candleForIndex:i];
 }
 
+-(NSArray *)dataForRange:(NSRange)range {
+    return [self.dataSource dataForRange:range];
+}
+
 -(CGPoint)roundToNearCandlePoint:(CGPoint)point {
     int candles = (point.x - self.candleWidth) / (self.candleWidth * 2);
     CGFloat currentX = self.offsetForCandles + (self.candleWidth * 2) * candles + self.candleWidth;

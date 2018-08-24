@@ -15,22 +15,15 @@
 -(id)init {
     self = [super init];
     if(self) {
-        self.backgroundColor = [UIColor clearColor].CGColor;
         self.contentsScale = [UIScreen mainScreen].scale;
-        self.shouldRasterize = YES;
-        self.rasterizationScale = [UIScreen mainScreen].scale;
         self.drawsAsynchronously = YES;
-        
     }
     return self;
 }
 
 -(id<CAAction>)actionForKey:(nonnull NSString *)aKey
 {
-    if([aKey isEqualToString:@"contents"]) {
-        return nil;
-    }
-    return [super actionForKey:aKey];
+    return nil;
 }
 
 -(CGFloat)yPositionForValue:(float)value {

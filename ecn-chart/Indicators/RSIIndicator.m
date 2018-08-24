@@ -30,6 +30,7 @@
 }
 
 -(void)drawInContext:(CGContextRef)ctx {
+    CGContextClearRect(ctx, self.frame);
     CGFloat count = [self.hostedGraph.dataSource candleCount];
     CGFloat offsetForCandles = [self.hostedGraph.dataSource offsetForCandles];
     CGFloat candleWidth = [self.hostedGraph.dataSource candleWidth];

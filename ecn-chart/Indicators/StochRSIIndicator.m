@@ -29,6 +29,7 @@
 }
 
 -(void)drawInContext:(CGContextRef)ctx {
+    CGContextClearRect(ctx, self.frame);
     NSInteger candleCount = [self.hostedGraph.dataSource candleCount];
     NSRange visibleRange = [self.hostedGraph.dataSource currentVisibleRange];
     if(candleCount >= self.indicatorValues.count) {

@@ -20,6 +20,8 @@
 
 -(Tick *)candleForIndex:(NSInteger)index;
 
+-(NSArray <Tick *> *)dataForRange:(NSRange)range;
+
 @optional
 
 -(NSDateFormatter *)dateFormatter;
@@ -56,6 +58,8 @@
 -(void)insertTick:(Tick *)tick;
 
 -(void)reloadLastTick;
+
+-(NSArray *)dataForRange:(NSRange)range;
 
 -(void)reloadData;
 

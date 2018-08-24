@@ -10,6 +10,8 @@
 #import "Tick.h"
 #import "QuoteHelper.h"
 #import "Graph.h"
+#import <mach/mach.h>
+#import <mach/mach_time.h>
 
 
 @interface CandleGraphic() {
@@ -19,7 +21,10 @@
     UIColor *_redColor;
     UIColor *_greenColor;
     UIColor *_blackColor;
+    NSRange lastUsedRangeForMaxValue;
+    NSRange lastUsedRangeForMinValue;
 }
+
 
 @end
 
@@ -41,17 +46,16 @@
 }
 
 -(void)drawInContext:(CGContextRef)context {
-    maxCandleValue = 0.0;
-    minCandleValue = HUGE_VAL;
     
+    uint64_t startTime = mach_absolute_time();
+    static mach_timebase_info_data_t    sTimebaseInfo;
+
     
     CGRect rect = self.frame;
-    CGFloat minValue = [self.hostedGraph.dataSource minValue];
-    CGFloat maxValue = [self.hostedGraph.dataSource maxValue];
+    NSRange visibleRange = [self.hostedGraph.dataSource currentVisibleRange];
     NSInteger minCandle = [self.hostedGraph.dataSource minCandle];
     NSInteger maxCandle = [self.hostedGraph.dataSource maxCandle];
     CGFloat candleWidth = [self.hostedGraph.dataSource candleWidth];
-    NSInteger candleCount = [self.hostedGraph.dataSource candleCount];
     ChartType chartType =  [self.hostedGraph.dataSource chartType];
     CGContextClearRect(context, rect);
     
@@ -59,6 +63,8 @@
     CGFloat offsetForCandles = [self.hostedGraph.dataSource offsetForCandles];
     for(NSInteger i = minCandle; i<maxCandle; i++) {
         Tick *tick = [self.hostedGraph.dataSource tickForIndex:i];
+        if(maxCandleValue < tick.max) maxCandleValue = tick.max;
+        if(minCandleValue > tick.min) minCandleValue = tick.min;
         //just calculate minValue and maxValue
         //it's very good place
         if(maxCandleValue < tick.max) maxCandleValue = tick.max;
@@ -90,43 +96,13 @@
             [self drawBar:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
         }
     }
-    CGContextStrokePath(context);
-    if(!CGPointEqualToPoint(selectionPoint, CGPointZero)) {
-        CGPoint points[] = {
-            CGPointMake(0, selectionPoint.y),
-            CGPointMake(self.frame.size.width, selectionPoint.y)
-        };
-        CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
-        CGContextAddLines(context, points, 2);
-        CGPoint points1[] = {
-            CGPointMake(selectionPoint.x, 0),
-            CGPointMake(selectionPoint.x, self.frame.size.height)
-        };
-        CGContextAddLines(context, points1, 2);
-        CGContextStrokePath(context);
-        if(chartType != ChartTypeLine) {
-            Tick *selectedTick = [self.hostedGraph.dataSource candleForPoint:selectionPoint];
-            NSString *text = [NSString stringWithFormat:@"Open: %@ Close: %@\nHigh: %@ Low: %@",
-                              [QuoteHelper decimalNumberFromDouble:selectedTick.open],
-                              [QuoteHelper decimalNumberFromDouble:selectedTick.close],
-                              [QuoteHelper decimalNumberFromDouble:selectedTick.max],
-                              [QuoteHelper decimalNumberFromDouble:selectedTick.min]];
-            CGSize size = [text sizeWithAttributes:@{
-                                                     NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:10.0],
-                                                     }];
-            CGContextSetFillColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
-            CGContextSetStrokeColorWithColor(context, [UIColor colorWithRed:(21.0/255.0) green:(126.0/255.0) blue:(251.0/255.0) alpha:1.0].CGColor);
-            CGContextFillRect(context, CGRectMake(0, 0, size.width + 10, size.height + 5));
-            UIGraphicsPushContext(context);
-            [text drawAtPoint:CGPointMake(2.5, 2.5)
-               withAttributes:@{
-                                NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
-                                NSForegroundColorAttributeName: [UIColor whiteColor]
-                                }];
-            UIGraphicsPopContext();
-        }
+    if ( sTimebaseInfo.denom == 0 ) {
+        (void) mach_timebase_info(&sTimebaseInfo);
     }
-    CGContextStrokePath(context);
+    uint64_t endTime = mach_absolute_time();
+    endTime = endTime - startTime;
+    uint64_t elapsedNano = endTime * sTimebaseInfo.numer / sTimebaseInfo.denom;
+    NSLog(@"FPS Time: %f", elapsedNano / 1000000.0);
 }
 
 -(void)drawLinesForSelectionPoint:(CGPoint)point {
@@ -163,26 +139,44 @@
 #pragma mark Graphic overrides
 -(NSDecimalNumber *)maxValue {
     NSRange visibleRange = [self.hostedGraph.dataSource currentVisibleRange];
-    float maxValue = 0.0;
+    /* maxCandleValue = 0.0;
     for(NSInteger i = visibleRange.location; i<visibleRange.location + visibleRange.length; i++) {
         Tick *tick = [self.hostedGraph.dataSource tickForIndex:i];
-        if(tick.max > maxValue) maxValue = tick.max;
+        if(tick.max > maxCandleValue) maxCandleValue = tick.max;
     }
-    return [[NSDecimalNumber alloc] initWithFloat:maxValue];
+    return [[NSDecimalNumber alloc] initWithFloat:maxCandleValue]; */
+    if(NSEqualRanges(lastUsedRangeForMaxValue, visibleRange)) {
+        return [[NSDecimalNumber alloc] initWithFloat:maxCandleValue];;
+    }
+    
+    NSArray *array = [self.hostedGraph.dataSource dataForRange:visibleRange];
+    NSNumber *maxNumber = [array valueForKeyPath:@"@max.max"];
+    maxCandleValue = maxNumber.floatValue;
+    lastUsedRangeForMaxValue = visibleRange;
+    return maxNumber;
     
 }
 
 -(NSDecimalNumber *)minValue {
-    NSRange range = [self.hostedGraph.dataSource currentVisibleRange];
-    if(range.length == 0.0) {
+    NSRange visibleRange = [self.hostedGraph.dataSource currentVisibleRange];
+    /* if(visibleRange.length == 0.0) {
         return [NSDecimalNumber decimalNumberWithString:@"0.0"];
     }
-    float minValue = HUGE_VALF;
-    for(NSInteger i = range.location; i<range.location + range.length; i++) {
+    minCandleValue = HUGE_VALF;
+    for(NSInteger i = visibleRange.location; i<visibleRange.location + visibleRange.length; i++) {
         Tick *tick = [self.hostedGraph.dataSource tickForIndex:i];
-        if(tick.min < minValue) minValue = tick.min;
+        if(tick.min < minCandleValue) minCandleValue = tick.min;
     }
-    return [[NSDecimalNumber alloc] initWithFloat:minValue];
+    return [[NSDecimalNumber alloc] initWithFloat:minCandleValue]; */
+    if(NSEqualRanges(lastUsedRangeForMinValue, visibleRange)) {
+        return [[NSDecimalNumber alloc] initWithFloat:minCandleValue];;
+    }
+    NSArray *array = [self.hostedGraph.dataSource dataForRange:visibleRange];
+    NSNumber *maxNumber = [array valueForKeyPath:@"@min.min"];
+    //NSLog(@"Call min value: %@", maxNumber);
+    minCandleValue = maxNumber.floatValue;
+    lastUsedRangeForMinValue = visibleRange;
+    return maxNumber;
 }
 
 @end

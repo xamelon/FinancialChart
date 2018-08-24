@@ -33,6 +33,7 @@ typedef enum ChartType : NSInteger {
 -(CGFloat)offsetForCandles;
 -(ChartType)chartType;
 -(NSRange)currentVisibleRange;
+-(NSArray *)dataForRange:(NSRange)range;
 -(NSNumberFormatter *)numberFormatter;
 @end
 

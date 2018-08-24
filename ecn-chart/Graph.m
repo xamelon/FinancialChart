@@ -11,6 +11,15 @@
 #import "Graphic.h"
 #import "VerticalAxis.h"
 
+@interface Graph() {
+    float maxValue;
+    float minValue;
+    NSRange lastUsedRangeForMinValue;
+    NSRange lastUsedRangeForMaxValue;
+}
+
+@end
+
 @implementation Graph
 
 -(id)init {
@@ -66,7 +75,12 @@
 }
 
 -(NSDecimalNumber *)minValue {
-    float minValue = HUGE_VALF;
+    NSRange visibleRange = [self.dataSource currentVisibleRange];
+    if(NSEqualRanges(visibleRange, lastUsedRangeForMinValue)) {
+        return [[NSDecimalNumber alloc] initWithFloat:minValue];
+    }
+    lastUsedRangeForMinValue = visibleRange;
+    minValue = HUGE_VALF;
     for(Graphic *graphic in self.graphics) {
         NSDecimalNumber *graphicMinValue = [graphic minValue];
         if(graphicMinValue.floatValue < minValue) minValue = graphicMinValue.floatValue;
@@ -75,7 +89,12 @@
 }
 
 -(NSDecimalNumber *)maxValue {
-    float maxValue = 0.0;
+    NSRange visibleRange = [self.dataSource currentVisibleRange];
+    if(NSEqualRanges(visibleRange, lastUsedRangeForMaxValue)) {
+        return [[NSDecimalNumber alloc] initWithFloat:maxValue];
+    }
+    lastUsedRangeForMaxValue = visibleRange;
+    maxValue = 0.0;
     for(Graphic *graphic in self.graphics) {
         NSDecimalNumber *graphicMaxValue = [graphic maxValue];
         if(maxValue < graphicMaxValue.floatValue) maxValue = graphicMaxValue.floatValue;
