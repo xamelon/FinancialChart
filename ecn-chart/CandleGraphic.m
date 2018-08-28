@@ -46,11 +46,6 @@
 }
 
 -(void)drawInContext:(CGContextRef)context {
-    
-    uint64_t startTime = mach_absolute_time();
-    static mach_timebase_info_data_t    sTimebaseInfo;
-
-    
     CGRect rect = self.frame;
     NSRange visibleRange = [self.hostedGraph.dataSource currentVisibleRange];
     NSInteger minCandle = [self.hostedGraph.dataSource minCandle];
@@ -96,13 +91,6 @@
             [self drawBar:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
         }
     }
-    if ( sTimebaseInfo.denom == 0 ) {
-        (void) mach_timebase_info(&sTimebaseInfo);
-    }
-    uint64_t endTime = mach_absolute_time();
-    endTime = endTime - startTime;
-    uint64_t elapsedNano = endTime * sTimebaseInfo.numer / sTimebaseInfo.denom;
-    NSLog(@"FPS Time: %f", elapsedNano / 1000000.0);
 }
 
 -(void)drawLinesForSelectionPoint:(CGPoint)point {

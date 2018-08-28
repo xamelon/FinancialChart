@@ -287,11 +287,15 @@ const float kRightOffset = 62;
 }
 
 -(void)deleteIndicator:(__kindof Graphic *)indicator {
+    Graphic *indicatorToDelete;
     for(__kindof Graphic *graphic in self.mainGraph.graphics) {
         if([graphic isEqual:indicator]) {
             [indicator removeFromSuperlayer];
-            [self.mainGraph.graphics removeObject:indicator];
+            indicatorToDelete = indicator;
         }
+    }
+    if(indicatorToDelete) {
+        [self.mainGraph.graphics removeObject:indicatorToDelete];
     }
     Graph *graphToDelete;
     for(Graph *graph in self.graphs) {
