@@ -52,6 +52,10 @@
     if(self.globalAxisOffset > 0.0) {
         usingAxisOffset = self.globalAxisOffset;
     }
+    if([maxValue isEqual:[NSDecimalNumber decimalNumberWithString:@"0.0"]]) {
+        usingAxisOffset = 0.0;
+        self.axisOffset = 0.0;
+    }
     
     CGContextSetStrokeColorWithColor(ctx, UIColor.blackColor.CGColor);
     CGContextMoveToPoint(ctx, self.frame.size.width - usingAxisOffset, 0);

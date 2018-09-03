@@ -61,7 +61,7 @@
     }
     CGFloat horizontalOffset = 0.0;
     if(self.verticalAxis) {
-        horizontalOffset = self.verticalAxis.axisOffset + 5;
+        horizontalOffset = self.verticalAxis.globalAxisOffset + 5;
     }
     for(__kindof Graphic *graphic in self.graphics) {
         if(graphic.superlayer == nil) {
