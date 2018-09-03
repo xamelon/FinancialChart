@@ -10,7 +10,6 @@
 #import "Candle.h"
 #import "Tick.h"
 #import "TimeLine.h"
-#import "PriceView.h"
 #import "Graph.h"
 #import "CandleGraphic.h"
 #import "VerticalAxis.h"
@@ -19,7 +18,7 @@
 static const float offset = 0.0;
 const float maxScale = 3.0;
 const float minScale = 0.5;
-@interface GraphicHost() <UIScrollViewDelegate, TimeLineDataSource, PriceViewDataSource, GraphDataSource>
+@interface GraphicHost() <UIScrollViewDelegate, TimeLineDataSource, GraphDataSource>
 
 @property CGFloat maxValue;
 @property CGFloat minValue;
@@ -128,7 +127,11 @@ const float kRightOffset = 62;
     CGRect graphicOffset = self.mainGraph.frame;
     
     CGFloat offsetX = self.scrollView.contentOffset.x;
-    CGFloat mainAxisOffset = self.mainGraph.verticalAxis.axisOffset;
+    CGFloat mainAxisOffset = [self calculateMaximumAxisOffset];
+    self.mainGraph.verticalAxis.globalAxisOffset = mainAxisOffset;
+    for(Graph *g in self.graphs) {
+        g.verticalAxis.globalAxisOffset = mainAxisOffset;
+    }
     CGFloat bottomOffset = self.graphs.count * 100;
     [self.mainGraph setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height-bottomOffset)];
     [self.timeline setFrame:CGRectMake(0, 0, self.frame.size.width-mainAxisOffset, self.frame.size.height)];
@@ -156,6 +159,18 @@ const float kRightOffset = 62;
 
 -(void)reloadLastTick {
    [self reloadData];
+}
+
+-(CGFloat)calculateMaximumAxisOffset {
+    CGFloat maximumOffset = 0.0;
+    CGFloat mainAxisOffset = self.mainGraph.verticalAxis.axisOffset;
+    if(mainAxisOffset > maximumOffset) maximumOffset = mainAxisOffset;
+    for(Graph *graph in self.graphs) {
+        CGFloat offset = graph.verticalAxis.axisOffset;
+        if(offset > maximumOffset) maximumOffset = offset;
+    }
+    
+    return maximumOffset;
 }
 
 -(void)scale:(UIPinchGestureRecognizer *)gesture {

@@ -12,6 +12,7 @@
 
 @interface PriceView() {
     CGPoint selectionPoint;
+    NSNumberFormatter *nf;
 }
 
 @property (strong, nonatomic) CAGradientLayer* gradientLayer;
@@ -40,8 +41,10 @@
 -(CGFloat)sizeForView {
     NSString *text;
     Tick *tick = [self.datasource tickForIndex:0];
-    float price = tick.max;
-    NSNumberFormatter *nf = [self.datasource numberFormatter];
+    float price = tick.min;
+    if(!nf) {
+        nf = [self.datasource numberFormatter];
+    }
     if(price != price) {
         text = @"";
     } else {
@@ -60,7 +63,9 @@
     CGContextClearRect(context, rect);
     CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
     CGContextSetFillColorWithColor(context, [UIColor blackColor].CGColor);
-    NSNumberFormatter *nf = [self.datasource numberFormatter];
+    if(nf) {
+        nf = [self.datasource numberFormatter];
+    }
     int rows = self.frame.size.height / cellSize;
     CGSize textSize = CGSizeZero;
     for(int y = 1; y<=rows; y++) {
@@ -132,33 +137,6 @@
     selectionPoint = point;
     [self setNeedsDisplay];
 }
-
--(NSString *)formatFloatToString:(float)num {
-    NSNumber *number = [NSNumber numberWithFloat:num];
-    NSNumberFormatter *nf = [[NSNumberFormatter alloc] init];
-    [nf setPositiveFormat:@"#.########*0"];
-    [nf setUsesSignificantDigits:YES];
-    [nf setMaximumSignificantDigits:9];
-    [nf setAllowsFloats:YES];
-    [nf setAlwaysShowsDecimalSeparator:YES];
-    return [nf stringFromNumber:number];
-}
-
--(int)lengthForFloat:(float)number {
-    int tort = (int)number;
-    int numberLength = 0;
-    do {
-        numberLength++;
-        tort /= 10;
-    } while(tort);
-    return numberLength;
-}
-
--(int)precisionForFloat:(float)number {
-    int precision = [self lengthForFloat:number];
-    return 5-precision > 0 ? 5-precision : 0;
-}
-
 
 
 @end

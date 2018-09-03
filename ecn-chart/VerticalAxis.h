@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (weak, nonatomic) Graph *hostedGraph;
 @property (assign, nonatomic) NSInteger majorTicksCount;
+@property (assign, nonatomic) CGFloat globalAxisOffset;
 @property (assign, nonatomic) CGFloat axisOffset;
 
 @end
