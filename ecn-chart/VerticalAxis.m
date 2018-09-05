@@ -45,8 +45,8 @@
     CGSize size = [minPriceWidth sizeWithAttributes:@{
                                                       NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:10.0]
                                                       }];
-    size.width = size.width + 15;
-    self.axisOffset = size.width;
+    
+    self.axisOffset = size.width + 6;
     
     CGFloat usingAxisOffset = self.axisOffset;
     if(self.globalAxisOffset > 0.0) {
@@ -69,7 +69,7 @@
         float price = [self calculatePriceForY:y*rowHeight minValue:minValue.floatValue maxValue:maxValue.floatValue];
         NSString *priceText = [[self.hostedGraph.dataSource numberFormatter] stringFromNumber:[[NSDecimalNumber alloc] initWithFloat:price]];
         UIGraphicsPushContext(ctx);
-        [priceText drawAtPoint:CGPointMake(self.frame.size.width-usingAxisOffset+8, y*rowHeight - size.height/2.0)
+        [priceText drawAtPoint:CGPointMake(self.frame.size.width-usingAxisOffset+6, y*rowHeight - size.height/2.0)
                 withAttributes:@{
                                  NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:10.0]
                                  }];

@@ -150,11 +150,12 @@ const float kRightOffset = 62;
         [graph reloadData];
     }
     
-    graphicOffset.origin.x = offsetX;
+    
     [self.timeline setNeedsDisplay];
     [self.scrollView setContentSize:CGSizeMake(contentWidth, self.frame.size.height)];
     
     [self.mainGraph reloadData];
+    graphicOffset.origin.x = offsetX;
 }
 
 -(void)reloadLastTick {
