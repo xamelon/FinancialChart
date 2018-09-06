@@ -37,7 +37,7 @@
 		6874D4AF2124169400EE36FA /* Graph.m in Sources */ = {isa = PBXBuildFile; fileRef = 6874D4AD2124169400EE36FA /* Graph.m */; };
 		6874D4B22124172A00EE36FA /* Graphic.h in Headers */ = {isa = PBXBuildFile; fileRef = 6874D4B02124172A00EE36FA /* Graphic.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6874D4B32124172A00EE36FA /* Graphic.m in Sources */ = {isa = PBXBuildFile; fileRef = 6874D4B12124172A00EE36FA /* Graphic.m */; };
-		6874D4B621243A8700EE36FA /* VerticalAxis.h in Headers */ = {isa = PBXBuildFile; fileRef = 6874D4B421243A8700EE36FA /* VerticalAxis.h */; };
+		6874D4B621243A8700EE36FA /* VerticalAxis.h in Headers */ = {isa = PBXBuildFile; fileRef = 6874D4B421243A8700EE36FA /* VerticalAxis.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6874D4B721243A8700EE36FA /* VerticalAxis.m in Sources */ = {isa = PBXBuildFile; fileRef = 6874D4B521243A8700EE36FA /* VerticalAxis.m */; };
 		6874D4BA21246AD200EE36FA /* MACDIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 6874D4B821246AD200EE36FA /* MACDIndicator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6874D4BB21246AD200EE36FA /* MACDIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 6874D4B921246AD200EE36FA /* MACDIndicator.m */; };

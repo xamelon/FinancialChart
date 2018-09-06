@@ -28,7 +28,7 @@ const float minScale = 0.5;
 @property (nonatomic, strong) UIPinchGestureRecognizer *pinch;
 @property (strong, nonatomic) UILongPressGestureRecognizer *longPress;
 @property (strong, nonatomic) TimeLine *timeline;
-@property (strong, nonatomic) Graph *mainGraph;
+
 @property (strong, nonatomic) NSMutableArray *graphs;
 @end
 

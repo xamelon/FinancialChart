@@ -12,6 +12,7 @@
 #import <ecn_chart/Graphic.h>
 #import <ecn_chart/Graph.h>
 #import <ecn_chart/GraphicParam.h>
+#import <ecn_chart/VerticalAxis.h>
 
 #import <ecn_chart/SMAIndicator.h>
 #import <ecn_chart/EMAIndicator.h>

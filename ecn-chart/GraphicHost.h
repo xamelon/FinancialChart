@@ -11,6 +11,7 @@
 @class Candle;
 @class Tick;
 @class Graphic;
+@class Graph;
 
 @protocol GraphicHostDatasource <NSObject>
 
@@ -48,6 +49,8 @@
 @property (weak, nonatomic) id <GraphicHostDelegate> delegate;
 
 @property (assign, nonatomic) NSInteger graphicType;
+
+@property (strong, nonatomic) Graph *mainGraph;
 
 -(void)addIndicator:(__kindof Graphic *)indicator;
 
