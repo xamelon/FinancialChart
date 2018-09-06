@@ -101,11 +101,11 @@ const float kRightOffset = 62;
         VerticalAxis *priceAxis = [[VerticalAxis alloc] init];
         priceAxis.hostedGraph = self.mainGraph;
         self.mainGraph.verticalAxis = priceAxis;
+        
+        [self.mainGraph reloadData];
     }
     
     [self bringSubviewToFront:self.scrollView];
-    minCandle = 0;
-    maxCandle = 0;
     [self addObserver:self forKeyPath:@"bounds" options:0 context:nil];
 }
 
@@ -123,10 +123,14 @@ const float kRightOffset = 62;
 }
 
 -(void)reloadData {
-    CGFloat contentWidth = ([self candleWidth] * 2 * [self.dataSource numberOfItems] + offset);
+    NSInteger numberOfItems = [self.dataSource numberOfItems];
+    CGFloat candleWidth = [self candleWidth];
+    CGFloat contentWidth = (candleWidth * 2 * numberOfItems + offset);
     CGRect graphicOffset = self.mainGraph.frame;
     
     CGFloat offsetX = self.scrollView.contentOffset.x;
+    minCandle = [self calculateMinCandle];
+    maxCandle = [self calculateMaxCandle];
     CGFloat mainAxisOffset = [self calculateMaximumAxisOffset];
     self.mainGraph.verticalAxis.globalAxisOffset = mainAxisOffset;
     for(Graph *g in self.graphs) {
@@ -423,7 +427,7 @@ const float kRightOffset = 62;
     CGFloat allCandlesWidth = candleCount * self.candleWidth * 2;
     minCandle = candleCount+1;
     
-    if(minCandle > self.dataSource.numberOfItems) minCandle = 0;
+    if(minCandle > self.dataSource.numberOfItems || minCandle < 0) minCandle = 0;
     return minCandle;
 }
 
@@ -435,6 +439,9 @@ const float kRightOffset = 62;
     maxCandle = minCandle + candles;
     if(maxCandle > count) {
         maxCandle = count;
+    }
+    if(maxCandle < 0) {
+        maxCandle = 0;
     }
     return maxCandle;
 }
@@ -465,7 +472,6 @@ const float kRightOffset = 62;
 }
 
 -(void)scrollToEnd {
-    [self reloadData];
     CGFloat mainAxisOffset = self.mainGraph.verticalAxis.axisOffset;
     [self.scrollView setContentOffset:CGPointMake(self.scrollView.contentSize.width-self.scrollView.frame.size.width, 0)];
     
@@ -487,8 +493,7 @@ const float kRightOffset = 62;
 
 #pragma mark IndicatorDataSource
 -(NSRange)currentVisibleRange {
-    NSInteger minCandle = [self minCandle];
-    NSInteger length = [self maxCandle] - minCandle;
+    NSInteger length = maxCandle - minCandle;
     return NSMakeRange(minCandle, length);
 }
 

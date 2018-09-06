@@ -46,12 +46,11 @@
                                                       NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:10.0]
                                                       }];
     
-    self.axisOffset = size.width + 6;
-    
     CGFloat usingAxisOffset = self.axisOffset;
     if(self.globalAxisOffset > 0.0) {
         usingAxisOffset = self.globalAxisOffset;
     }
+    
     if([maxValue isEqual:[NSDecimalNumber decimalNumberWithString:@"0.0"]]) {
         usingAxisOffset = 0.0;
         self.axisOffset = 0.0;
@@ -90,6 +89,16 @@
     float H = self.frame.size.height;
     float price = (-((y-self.hostedGraph.padding)/(H-self.hostedGraph.padding * 2)) + 1) * (maxValue - minValue) + minValue;
     return price;
+}
+
+-(CGFloat)axisOffset {
+     NSDecimalNumber *maxValue = [self.hostedGraph maxValue];
+    NSString *minPriceWidth = [[self.hostedGraph.dataSource numberFormatter] stringFromNumber:maxValue];
+    CGSize size = [minPriceWidth sizeWithAttributes:@{
+                                                      NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:10.0]
+                                                      }];
+    
+    return size.width + 6.0;
 }
 
 
