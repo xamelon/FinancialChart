@@ -45,6 +45,10 @@
     _blackColor = [UIColor blackColor];
 }
 
+-(void)reloadData{
+    [self setNeedsDisplay];
+}
+
 -(void)drawInContext:(CGContextRef)context {
     CGRect rect = self.frame;
     NSRange visibleRange = [self.hostedGraph.dataSource currentVisibleRange];

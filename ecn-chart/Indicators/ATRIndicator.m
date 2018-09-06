@@ -26,6 +26,14 @@
 
 -(void)reloadData {
     self.indicatorValues = [NSMutableArray new];
+    NSInteger candleCount = [self.hostedGraph.dataSource candleCount];
+    if(candleCount >= self.indicatorValues.count) {
+        self.indicatorValues = [[NSMutableArray alloc] init];
+        for(int i = 0; i<candleCount; i++) {
+            NSDictionary *value = [self valueForIndex:i];
+            [self.indicatorValues addObject:value];
+        }
+    }
     [self setNeedsDisplay];
 }
 
@@ -34,13 +42,6 @@
     NSInteger candleCount = [self.hostedGraph.dataSource candleCount];
     CGFloat candleWidth = [self.hostedGraph.dataSource candleWidth];
     CGFloat offsetForCandles = [self.hostedGraph.dataSource offsetForCandles];
-    if(candleCount >= self.indicatorValues.count) {
-        self.indicatorValues = [[NSMutableArray alloc] init];
-        for(int i = 0; i<candleCount; i++) {
-            NSDictionary *value = [self valueForIndex:i];
-            [self.indicatorValues addObject:value];
-        }
-    }
     CGContextBeginPath(ctx);
     CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0].CGColor);
     CGContextSetLineWidth(ctx, 1.0);
@@ -122,6 +123,9 @@
 
 -(NSDecimalNumber *)minValue {
     NSRange visibleRange = [self.hostedGraph.dataSource currentVisibleRange];
+    if(visibleRange.location > self.indicatorValues.count || visibleRange.location + visibleRange.length > self.indicatorValues.count) {
+        return [NSDecimalNumber decimalNumberWithString:@"0.0"];
+    }
     NSArray *array = [self.indicatorValues subarrayWithRange:visibleRange];
     NSArray *atrValues = [array valueForKey:@"atr"];
     NSNumber *maxNumber = [atrValues valueForKeyPath:@"@min.self"];
@@ -130,6 +134,9 @@
 
 -(NSDecimalNumber *)maxValue {
     NSRange visibleRange = [self.hostedGraph.dataSource currentVisibleRange];
+    if(visibleRange.location > self.indicatorValues.count || visibleRange.location + visibleRange.length > self.indicatorValues.count) {
+        return [NSDecimalNumber decimalNumberWithString:@"0.0"];
+    }
     NSArray *array = [self.indicatorValues subarrayWithRange:visibleRange];
     NSArray *atrValues = [array valueForKey:@"atr"];
     NSNumber *maxNumber = [atrValues valueForKeyPath:@"@max.self"];

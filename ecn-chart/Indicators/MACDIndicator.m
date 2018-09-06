@@ -31,16 +31,16 @@ typedef enum ValueType : NSInteger {
 
 @implementation MACDIndicator
 
--(id)init {
-    self = [super init];
-    if(self) {
-    }
-    return self;;
-}
-
-
 -(void)reloadData {
     self.indicatorValues = [NSMutableArray new];
+    NSInteger count = [self.hostedGraph.dataSource candleCount];
+    if(count > self.indicatorValues.count) {
+        self.indicatorValues = [[NSMutableArray alloc] init];
+        for(int i = 0; i<count; i++) {
+            NSDictionary *dict = [self valueForIndex:i];
+            [self.indicatorValues addObject:dict];
+        }
+    }
     [self setNeedsDisplay];
 }
 
@@ -50,14 +50,7 @@ typedef enum ValueType : NSInteger {
     NSRange visibleRange = NSMakeRange(0, 0);
     CGFloat candleWidth = [self.hostedGraph.dataSource candleWidth];
     CGFloat offsetForCandles = [self.hostedGraph.dataSource offsetForCandles];
-    NSInteger count = [self.hostedGraph.dataSource candleCount];
-    if(count > self.indicatorValues.count) {
-        self.indicatorValues = [[NSMutableArray alloc] init];
-        for(int i = 0; i<count; i++) {
-            NSDictionary *dict = [self valueForIndex:i];
-            [self.indicatorValues addObject:dict];
-        }
-    }
+    
     if(self.hostedGraph.dataSource && [self.hostedGraph.dataSource respondsToSelector:@selector(currentVisibleRange)]) {
         visibleRange = [self.hostedGraph.dataSource currentVisibleRange];
     }
@@ -214,6 +207,9 @@ typedef enum ValueType : NSInteger {
 
 -(NSDecimalNumber *)minValue {
     NSRange currentVisibleRange = [self.hostedGraph.dataSource currentVisibleRange];
+    if(currentVisibleRange.location > self.indicatorValues.count || currentVisibleRange.location + currentVisibleRange.length > self.indicatorValues.count) {
+        return [NSDecimalNumber decimalNumberWithString:@"0.0"];
+    }
     NSArray <NSDictionary *> *values = [self.indicatorValues subarrayWithRange:currentVisibleRange];
     float minValue = HUGE_VALF;
     for(NSDictionary *dict in values) {
@@ -229,6 +225,9 @@ typedef enum ValueType : NSInteger {
 
 -(NSDecimalNumber *)maxValue {
     NSRange currentVisibleRange = [self.hostedGraph.dataSource currentVisibleRange];
+    if(currentVisibleRange.location > self.indicatorValues.count || currentVisibleRange.location + currentVisibleRange.length > self.indicatorValues.count) {
+        return [NSDecimalNumber decimalNumberWithString:@"0.0"];
+    }
     NSArray <NSDictionary *> *values = [self.indicatorValues subarrayWithRange:currentVisibleRange];
     float minValue = 0.0;
     for(NSDictionary *dict in values) {

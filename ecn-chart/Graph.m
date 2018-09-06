@@ -69,7 +69,7 @@
         }
         
         graphic.frame = CGRectMake(0, 0, self.frame.size.width-horizontalOffset, self.frame.size.height);
-        [graphic setNeedsDisplay];
+        [graphic reloadData];
     }
     [self setNeedsDisplay]; 
 }

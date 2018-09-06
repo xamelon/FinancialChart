@@ -303,6 +303,7 @@ const float kRightOffset = 62;
         
         [self.layer addSublayer:graph];
     }
+    [indicator reloadData];
     [self reloadData];
 }
 
