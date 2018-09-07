@@ -81,6 +81,7 @@
         }
         if(chartType == ChartTypeLine) {
             CGContextSetStrokeColorWithColor(context, _blackColor.CGColor);
+            CGContextSetLineWidth(context, 1.0);
         }
         CGFloat y1 = [self yPositionForValue:tick.max];
         CGFloat y2 = [self yPositionForValue:tick.min];
@@ -95,6 +96,8 @@
             [self drawBar:open close:close y1:y1 y2:y2 currentX:currentX candleWidth:candleWidth context:context];
         }
     }
+    
+    CGContextStrokePath(context);
 }
 
 -(void)drawLinesForSelectionPoint:(CGPoint)point {
