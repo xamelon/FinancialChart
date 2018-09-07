@@ -174,4 +174,8 @@
     return maxNumber;
 }
 
+-(NSString *)description {
+    return @"";
+}
+
 @end

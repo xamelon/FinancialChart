@@ -11,12 +11,14 @@
 #import "Graphic.h"
 #import "VerticalAxis.h"
 
-@interface Graph() {
+@interface Graph() <CALayerDelegate> {
     float maxValue;
     float minValue;
     NSRange lastUsedRangeForMinValue;
     NSRange lastUsedRangeForMaxValue;
 }
+
+@property (strong, nonatomic) CALayer *descriptionLayer;
 
 @end
 
@@ -30,6 +32,14 @@
         self.shouldRasterize = NO;
         self.rasterizationScale = [UIScreen mainScreen].scale;
         self.graphics = [[NSMutableArray alloc] init];
+        
+        self.descriptionLayer = [[CALayer alloc] init];
+        self.descriptionLayer.frame = CGRectMake(0, 0, 10, 10);
+        self.descriptionLayer.contentsScale = [UIScreen mainScreen].scale;
+        
+        self.descriptionLayer.backgroundColor = [UIColor clearColor].CGColor;
+        self.descriptionLayer.delegate = self;
+        [self addSublayer:self.descriptionLayer];
         
     }
     return self;
@@ -53,7 +63,7 @@
 
 -(void)reloadData {
     if(self.verticalAxis.superlayer == nil) {
-        [self addSublayer:self.verticalAxis];
+        [self insertSublayer:self.verticalAxis below:self.descriptionLayer];
     }
     if([self.verticalAxis.superlayer isEqual:self]) {
         self.verticalAxis.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
@@ -65,12 +75,13 @@
     }
     for(__kindof Graphic *graphic in self.graphics) {
         if(graphic.superlayer == nil) {
-            [self addSublayer:graphic];
+            [self insertSublayer:graphic above:self.verticalAxis];
         }
         
         graphic.frame = CGRectMake(0, 0, self.frame.size.width-horizontalOffset, self.frame.size.height);
         [graphic reloadData];
     }
+    [self.descriptionLayer setNeedsDisplay];
     [self setNeedsDisplay]; 
 }
 
@@ -100,6 +111,34 @@
         if(maxValue < graphicMaxValue.floatValue) maxValue = graphicMaxValue.floatValue;
     }
     return [[NSDecimalNumber alloc] initWithFloat:maxValue];;
+}
+
+#pragma mark - CALayerDelegate
+-(void)drawLayer:(CALayer *)layer inContext:(CGContextRef)ctx {
+    if([layer isEqual:self.descriptionLayer]) {
+        __kindof Graphic *graphic = self.graphics.firstObject;
+        NSString *description = [graphic description];
+        if(description.length == 0) return;
+        CGSize descriptionSize = [description sizeWithAttributes:@{
+                                                                   NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0]
+                                                                   }];
+        
+        descriptionSize.height += 5;
+        descriptionSize.width += 5;
+        self.descriptionLayer.frame = CGRectMake(0, 0, descriptionSize.width, descriptionSize.height);
+        
+        CGContextSetLineWidth(ctx, 0.0);
+        CGContextSetFillColorWithColor(ctx, [UIColor colorWithRed:0.0 green:(122.0/255.0) blue:1.0 alpha:1.0].CGColor);
+        CGContextFillRect(ctx, CGRectMake(0, 0, descriptionSize.width, descriptionSize.height));
+        UIGraphicsPushContext(ctx);
+        [description drawAtPoint:CGPointMake(2.5, 2.5)
+                  withAttributes:@{
+                                   NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:8.0],
+                                   NSForegroundColorAttributeName: [UIColor whiteColor]
+                                   }];
+        UIGraphicsPopContext();
+        
+    }
 }
 
 @end

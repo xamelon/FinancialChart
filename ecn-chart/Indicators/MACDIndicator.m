@@ -275,4 +275,11 @@ typedef enum ValueType : NSInteger {
     return @"MACD";
 }
 
+-(NSString *)description {
+    GraphicParam *fastEma = hiddenParams[0];
+    GraphicParam *slowEma = hiddenParams[1];
+    GraphicParam *sma = hiddenParams[2];
+    return [NSString stringWithFormat:@"MACD(%@, %@, %@)", fastEma.value, slowEma.value, sma.value];
+}
+
 @end
