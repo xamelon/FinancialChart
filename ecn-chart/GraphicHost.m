@@ -435,7 +435,7 @@ const float kRightOffset = 62;
 -(NSInteger)calculateMaxCandle {
     NSInteger count = [self candleCount];
     
-    CGFloat maxOffset = self.mainGraph.frame.size.width - [self offsetForCandles];
+    CGFloat maxOffset = self.mainGraph.frame.size.width - [self offsetForCandles] - self.mainGraph.verticalAxis.globalAxisOffset;;
     int candles = floorf(maxOffset / (self.candleWidth * 2));
     maxCandle = minCandle + candles;
     if(maxCandle > count) {
