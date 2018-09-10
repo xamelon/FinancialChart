@@ -184,4 +184,12 @@
     return @"Stochastic";
 }
 
+-(NSString *)description {
+    GraphicParam *kPeriod = hiddenParams[0];
+    GraphicParam *dPeriod = hiddenParams[1];
+    GraphicParam *slow = hiddenParams[2];
+    NSString *description = [NSString stringWithFormat:@"Stoch(%@, %@, %@)", kPeriod.value, dPeriod.value, slow.value];
+    return description;
+}
+
 @end

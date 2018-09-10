@@ -176,4 +176,10 @@
     return @"RSI";
 }
 
+-(NSString *)description {
+    GraphicParam *period = hiddenParams.firstObject;
+    NSString *description = [NSString stringWithFormat:@"RSI(%@)", period.value];
+    return description;
+}
+
 @end

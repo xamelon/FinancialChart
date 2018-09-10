@@ -168,4 +168,10 @@
     return GraphicTypeBottom;
 }
 
+-(NSString *)description {
+    GraphicParam *period = hiddenParams[0];
+    NSString *description = [NSString stringWithFormat:@"ATR(%@)", period.value];
+    return description;
+}
+
 @end
