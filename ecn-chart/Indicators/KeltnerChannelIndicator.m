@@ -25,14 +25,7 @@
 
 -(void)reloadData {
     self.indicatorValues = [NSMutableArray new];
-    [self setNeedsDisplay];
-}
-
--(void)drawInContext:(CGContextRef)ctx {
     NSInteger candleCount = [self.hostedGraph.dataSource candleCount];
-    CGFloat candleWidth = [self.hostedGraph.dataSource candleWidth];
-    CGFloat offsetforCandles = [self.hostedGraph.dataSource offsetForCandles];
-    NSRange currentVisibleRange = [self.hostedGraph.dataSource currentVisibleRange];
     if(candleCount >= self.indicatorValues.count) {
         self.indicatorValues = [[NSMutableArray alloc] init];
         for(int i = 0; i<candleCount; i++) {
@@ -40,6 +33,14 @@
             [self.indicatorValues addObject:value];
         }
     }
+    [self setNeedsDisplay];
+}
+
+-(void)drawInContext:(CGContextRef)ctx {
+    CGFloat candleWidth = [self.hostedGraph.dataSource candleWidth];
+    CGFloat offsetforCandles = [self.hostedGraph.dataSource offsetForCandles];
+    NSRange currentVisibleRange = [self.hostedGraph.dataSource currentVisibleRange];
+    
     CGContextSetStrokeColorWithColor(ctx, [UIColor colorWithRed:0.0 green:122.0/255.0 blue:1.0 alpha:1.0].CGColor);
     CGContextSetLineWidth(ctx, 1.0);
     NSArray *subarray = [self.indicatorValues subarrayWithRange:currentVisibleRange];

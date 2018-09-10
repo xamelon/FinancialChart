@@ -33,6 +33,14 @@
 
 -(void)reloadData {
     self.indicatorValues = [NSMutableArray new];
+    NSInteger count = [self.hostedGraph.dataSource candleCount];
+    if(count > self.indicatorValues.count) {
+        self.indicatorValues = [[NSMutableArray alloc] init];
+        for(int i = 0; i<count; i++) {
+            NSNumber *value = [self valueForIndex:i];
+            [self.indicatorValues addObject:value];
+        }
+    }
     [self setNeedsDisplay];
 }
 
@@ -42,14 +50,7 @@
     NSRange visibleRange = NSMakeRange(0, 0);
     CGFloat candleWidth = [self.hostedGraph.dataSource candleWidth];
     CGFloat offsetForCandles = [self.hostedGraph.dataSource offsetForCandles];
-    NSInteger count = [self.hostedGraph.dataSource candleCount];
-    if(count > self.indicatorValues.count) {
-        self.indicatorValues = [[NSMutableArray alloc] init];
-        for(int i = 0; i<count; i++) {
-            NSNumber *value = [self valueForIndex:i];
-            [self.indicatorValues addObject:value];
-        }
-    }
+    
     
     if(self.hostedGraph.dataSource && [self.hostedGraph.dataSource respondsToSelector:@selector(currentVisibleRange)]) {
         visibleRange = [self.hostedGraph.dataSource currentVisibleRange];
