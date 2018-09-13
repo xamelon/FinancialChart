@@ -106,7 +106,6 @@ const float kRightOffset = 62;
     }
     
     [self bringSubviewToFront:self.scrollView];
-    [self addObserver:self forKeyPath:@"bounds" options:0 context:nil];
 }
 
 -(void)layoutSubviews {
@@ -496,11 +495,6 @@ const float kRightOffset = 62;
 -(NSRange)currentVisibleRange {
     NSInteger length = maxCandle - minCandle;
     return NSMakeRange(minCandle, length);
-}
-
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
-    if([object isEqual:self] && [keyPath isEqualToString:@"bounds"]) {
-    }
 }
 
 @end
