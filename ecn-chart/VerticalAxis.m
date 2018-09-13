@@ -10,7 +10,10 @@
 #import <UIKit/UIKit.h>
 #import "Graph.h"
 
-@interface VerticalAxis()
+@interface VerticalAxis() {
+    NSInteger ticksCount;
+    
+}
 
 @property (strong, nonatomic) NSNumberFormatter *nf;
 
@@ -35,12 +38,16 @@
 }
 
 -(void)drawInContext:(CGContextRef)ctx {
-    if(self.majorTicksCount == 0) self.majorTicksCount = 8;
+    if(self.majorTicksCount == 0) {
+        ticksCount = (self.frame.size.height / cellSize) + 1;
+    } else {
+        ticksCount = self.majorTicksCount;
+    }
     CGContextSetLineWidth(ctx, 1.0);
     NSDecimalNumber *minValue = [self.hostedGraph minValue];
     NSDecimalNumber *maxValue = [self.hostedGraph maxValue];
     
-    CGFloat rowHeight = self.frame.size.height / self.majorTicksCount;
+    CGFloat rowHeight = self.frame.size.height / ticksCount;
     NSString *minPriceWidth = [[self.hostedGraph.dataSource numberFormatter] stringFromNumber:maxValue];
     CGSize size = [minPriceWidth sizeWithAttributes:@{
                                                       NSFontAttributeName: [UIFont fontWithName:@"Menlo" size:10.0]
@@ -62,7 +69,7 @@
     
     UIGraphicsPushContext(ctx);
     CGContextStrokePath(ctx);
-    for(int y = 1; y<self.majorTicksCount; y++) {
+    for(int y = 1; y<ticksCount; y++) {
         CGContextMoveToPoint(ctx, self.frame.size.width-usingAxisOffset-3, y*rowHeight);
         CGContextAddLineToPoint(ctx, self.frame.size.width-usingAxisOffset+3, y*rowHeight);
         float price = [self calculatePriceForY:y*rowHeight minValue:minValue.floatValue maxValue:maxValue.floatValue];
@@ -77,7 +84,7 @@
     CGContextStrokePath(ctx);
     
     CGContextSetStrokeColorWithColor(ctx, UIColor.lightGrayColor.CGColor);
-    for(int y = 0; y<self.majorTicksCount; y++) {
+    for(int y = 0; y<ticksCount; y++) {
         CGContextMoveToPoint(ctx, 0, y*rowHeight);
         CGContextAddLineToPoint(ctx, self.frame.size.width-usingAxisOffset, y*rowHeight);
     }
