@@ -24,6 +24,7 @@
 #import <ecn_chart/ATRIndicator.h>
 #import <ecn_chart/KeltnerChannelIndicator.h>
 #import <ecn_chart/StochRSIIndicator.h>
+#import <ecn_chart/CCIIndicator.h>
 
 
 //! Project version number for ecn_chart.

@@ -45,6 +45,8 @@
 		687F1F0C202317A40020E2C4 /* CandleGraphic.m in Sources */ = {isa = PBXBuildFile; fileRef = 687F1F0A202317A40020E2C4 /* CandleGraphic.m */; };
 		6882371D2122C3C600F414BB /* SMAIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 6882371B2122C3C600F414BB /* SMAIndicator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6882371E2122C3C600F414BB /* SMAIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 6882371C2122C3C600F414BB /* SMAIndicator.m */; };
+		68B8C938214BDDA000633FE2 /* CCIIndicator.h in Headers */ = {isa = PBXBuildFile; fileRef = 68B8C936214BDDA000633FE2 /* CCIIndicator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		68B8C939214BDDA000633FE2 /* CCIIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B8C937214BDDA000633FE2 /* CCIIndicator.m */; };
 		68BDA3EE20BD78A7000857D1 /* QuoteHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 68BDA3EC20BD78A7000857D1 /* QuoteHelper.h */; };
 		68BDA3EF20BD78A7000857D1 /* QuoteHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 68BDA3ED20BD78A7000857D1 /* QuoteHelper.m */; };
 		68DB24C81FD0125D003F73F4 /* TimeLine.h in Headers */ = {isa = PBXBuildFile; fileRef = 68DB24C61FD0125D003F73F4 /* TimeLine.h */; };
@@ -106,6 +108,8 @@
 		687F1F0A202317A40020E2C4 /* CandleGraphic.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CandleGraphic.m; sourceTree = "<group>"; };
 		6882371B2122C3C600F414BB /* SMAIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SMAIndicator.h; sourceTree = "<group>"; };
 		6882371C2122C3C600F414BB /* SMAIndicator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SMAIndicator.m; sourceTree = "<group>"; };
+		68B8C936214BDDA000633FE2 /* CCIIndicator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CCIIndicator.h; sourceTree = "<group>"; };
+		68B8C937214BDDA000633FE2 /* CCIIndicator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CCIIndicator.m; sourceTree = "<group>"; };
 		68BDA3EC20BD78A7000857D1 /* QuoteHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = QuoteHelper.h; sourceTree = "<group>"; };
 		68BDA3ED20BD78A7000857D1 /* QuoteHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = QuoteHelper.m; sourceTree = "<group>"; };
 		68DB24C61FD0125D003F73F4 /* TimeLine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TimeLine.h; sourceTree = "<group>"; };
@@ -217,6 +221,8 @@
 				68224F81212ACE2F00CFBCE3 /* KeltnerChannelIndicator.m */,
 				68224F84212AEFFF00CFBCE3 /* StochRSIIndicator.h */,
 				68224F85212AEFFF00CFBCE3 /* StochRSIIndicator.m */,
+				68B8C936214BDDA000633FE2 /* CCIIndicator.h */,
+				68B8C937214BDDA000633FE2 /* CCIIndicator.m */,
 			);
 			path = Indicators;
 			sourceTree = "<group>";
@@ -234,6 +240,7 @@
 				682A334021230C00003CCDB6 /* BollingerBandsIndicator.h in Headers */,
 				6874D4B621243A8700EE36FA /* VerticalAxis.h in Headers */,
 				68BDA3EE20BD78A7000857D1 /* QuoteHelper.h in Headers */,
+				68B8C938214BDDA000633FE2 /* CCIIndicator.h in Headers */,
 				68224F82212ACE2F00CFBCE3 /* KeltnerChannelIndicator.h in Headers */,
 				682A33372122E9A5003CCDB6 /* SARIndicator.h in Headers */,
 				68108B5A212592D5000B37B0 /* RSIIndicator.h in Headers */,
@@ -353,6 +360,7 @@
 				685F2C981FC440B40061E262 /* GraphicHost.m in Sources */,
 				687F1F0C202317A40020E2C4 /* CandleGraphic.m in Sources */,
 				686B275A2126E4F20058F142 /* GraphicParam.m in Sources */,
+				68B8C939214BDDA000633FE2 /* CCIIndicator.m in Sources */,
 				6874D4B32124172A00EE36FA /* Graphic.m in Sources */,
 				68DB24CE1FD19794003F73F4 /* PriceView.m in Sources */,
 				686E61B42126A8C1005F701D /* StochasticIndicator.m in Sources */,
